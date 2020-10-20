@@ -1,5 +1,6 @@
 /*
 !.gitignore
-!CMakeLists.txt
 !OpenGeo3D/
+!CMakeLists.txt
+!LICENSE
 !README.md
