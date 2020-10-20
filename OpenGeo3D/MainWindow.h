@@ -14,6 +14,10 @@ protected:
     void closeEvent(QCloseEvent* event) override;
 
 private:
+    void quit();
+    void about();
+
+private:
     void createActions();
     void createDockWindows();
 

@@ -1,5 +1,4 @@
 #include "Strings.h"
-#include <QCoreApplication>
 
 QString Strings::appName() {
 	return QString::fromUtf8(APP_NAME);
@@ -7,6 +6,26 @@ QString Strings::appName() {
 
 QString Strings::confirmToQuitApp() {
 	return QString::asprintf("确定退出%s吗？", APP_NAME);
+}
+
+QString Strings::menuTitleOfFile() {
+	return QString::fromUtf8("文件(&F)");
+}
+
+QString Strings::menuTitleOfQuit() {
+	return QString::fromUtf8("退出(&Q)");
+}
+
+QString Strings::menuTitleOfHelp() {
+	return QString::fromUtf8("帮助(&H)");
+}
+
+QString Strings::menuTitleOfAbout() {
+	return QString::fromUtf8("关于(&A)");
+}
+
+QString Strings::aboutApp() {
+	return QString::asprintf("%s v%s", APP_NAME, APP_VERSION);
 }
 
 QString Strings::titleOfSceneTree() {
