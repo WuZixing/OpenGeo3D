@@ -9,6 +9,7 @@ public:
 
 	static QString menuTitleOfFile();
 	static QString menuTitleOfQuit();
+	static QString menuTitleOfWindows();
 	static QString menuTitleOfHelp();
 	static QString menuTitleOfAbout();
 

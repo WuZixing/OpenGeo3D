@@ -16,6 +16,10 @@ QString Strings::menuTitleOfQuit() {
 	return QString::fromUtf8("退出(&Q)");
 }
 
+QString Strings::menuTitleOfWindows() {
+	return QString::fromUtf8("窗口(&W)");
+}
+
 QString Strings::menuTitleOfHelp() {
 	return QString::fromUtf8("帮助(&H)");
 }
