@@ -1,21 +1,32 @@
 #pragma once
 
-#include <QString>
+#include "wxWidgets.h"
 
 class Strings {
 public:
-	static QString appName();
-	static QString confirmToQuitApp();
+	static wxString AppName();
+	static wxString AppVersion();
+	static wxString AppDescription();
 
-	static QString menuTitleOfFile();
-	static QString menuTitleOfQuit();
-	static QString menuTitleOfWindows();
-	static QString menuTitleOfHelp();
-	static QString menuTitleOfAbout();
+	/// @name menu
+	///@{
+	static wxString TitleOfMenuFile();
+	static wxString TitleOfMenuWindow();
+	static wxString TitleOfMenuHelp();
+	static wxString TitleOfMenuItemOpenFile();
+	static wxString TitleOfMenuItemQuit();
+	static wxString TitleOfMenuItemAbout();
+	///@}
 
-	static QString aboutApp();
+	static wxString ConfirmToQuit();
 
-	static QString titleOfSceneTree();
-	static QString titleOfSceneDataTab();
-	static QString titleOfSceneVisualizationTab();
+	/// @name title of windows
+	///@{
+	static wxString TitleOfSceneTree();
+	static wxString TitleOfDataInfo();
+	static wxString TitleOfVisInfo();
+	///@}
+
+	static wxString NameOfStructureModel();
+	static wxString NameOfGridModel();
 };

@@ -1,5 +1,7 @@
 /*
 !.gitignore
+!.gitmodules
+!Geo3DML-CPP/
 !OpenGeo3D/
 !CMakeLists.txt
 !LICENSE

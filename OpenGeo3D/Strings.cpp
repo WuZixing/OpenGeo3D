@@ -1,45 +1,60 @@
 #include "Strings.h"
 
-QString Strings::appName() {
-	return QString::fromUtf8(APP_NAME);
+wxString Strings::AppName() {
+	return wxString::FromUTF8(APP_NAME);
 }
 
-QString Strings::confirmToQuitApp() {
-	return QString::asprintf("确定退出%s吗？", APP_NAME);
+wxString Strings::AppVersion() {
+	return wxString::FromUTF8(APP_VERSION);
 }
 
-QString Strings::menuTitleOfFile() {
-	return QString::fromUtf8("文件(&F)");
+wxString Strings::AppDescription() {
+	return Strings::AppName() + wxString::FromUTF8("是一个开源的、基于网格模型的三维地质建模工具。");
 }
 
-QString Strings::menuTitleOfQuit() {
-	return QString::fromUtf8("退出(&Q)");
+wxString Strings::TitleOfMenuFile() {
+	return wxString::FromUTF8("文件(&F)");
 }
 
-QString Strings::menuTitleOfWindows() {
-	return QString::fromUtf8("窗口(&W)");
+wxString Strings::TitleOfMenuWindow() {
+	return wxString::FromUTF8("窗口(&W)");
 }
 
-QString Strings::menuTitleOfHelp() {
-	return QString::fromUtf8("帮助(&H)");
+wxString Strings::TitleOfMenuHelp() {
+	return wxString::FromUTF8("帮助(&H)");
 }
 
-QString Strings::menuTitleOfAbout() {
-	return QString::fromUtf8("关于(&A)");
+wxString Strings::TitleOfMenuItemOpenFile() {
+	return wxString::FromUTF8("打开...(&O)");
 }
 
-QString Strings::aboutApp() {
-	return QString::asprintf("%s v%s", APP_NAME, APP_VERSION);
+wxString Strings::TitleOfMenuItemQuit() {
+	return wxString::FromUTF8("退出(&Q)");
 }
 
-QString Strings::titleOfSceneTree() {
-	return QString::fromUtf8("图层");
+wxString Strings::TitleOfMenuItemAbout() {
+	return wxString::FromUTF8("关于(&A)");
 }
 
-QString Strings::titleOfSceneDataTab() {
-	return QString::fromUtf8("数据");
+wxString Strings::ConfirmToQuit() {
+	return wxString::Format(wxString::FromUTF8("确定退出%s吗？"), Strings::AppName());
 }
 
-QString Strings::titleOfSceneVisualizationTab() {
-	return QString::fromUtf8("可视化");
+wxString Strings::TitleOfSceneTree() {
+	return wxString::FromUTF8("图层");
+}
+
+wxString Strings::TitleOfDataInfo() {
+	return wxString::FromUTF8("数据");
+}
+
+wxString Strings::TitleOfVisInfo() {
+	return wxString::FromUTF8("可视化");
+}
+
+wxString Strings::NameOfStructureModel() {
+	return wxString::FromUTF8("结构模型");
+}
+wxString Strings::NameOfGridModel() {
+	return wxString::FromUTF8("网格模型");
 }

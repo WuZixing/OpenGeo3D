@@ -1,0 +1,3 @@
+[submodule "Geo3DML-CPP"]
+	path = Geo3DML-CPP
+	url = git@github.com:WuZixing/Geo3DML-CPP.git
