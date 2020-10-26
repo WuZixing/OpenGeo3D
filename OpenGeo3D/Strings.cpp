@@ -24,8 +24,12 @@ wxString Strings::TitleOfMenuHelp() {
 	return wxString::FromUTF8("帮助(&H)");
 }
 
-wxString Strings::TitleOfMenuItemOpenFile() {
-	return wxString::FromUTF8("打开...(&O)");
+wxString Strings::TitleOfMenuItemOpenGeo3DML() {
+	return wxString::FromUTF8("打开Geo3DML文件...");
+}
+
+wxString Strings::TitleOfMenuItemOpenSGeMSGrid() {
+	return wxString::FromUTF8("打开SGeMS网格数据...");
 }
 
 wxString Strings::TitleOfMenuItemQuit() {
@@ -40,8 +44,8 @@ wxString Strings::ConfirmToQuit() {
 	return wxString::Format(wxString::FromUTF8("确定退出%s吗？"), Strings::AppName());
 }
 
-wxString Strings::TitleOfSceneTree() {
-	return wxString::FromUTF8("图层");
+wxString Strings::TitleOfProjectPanel() {
+	return wxString::FromUTF8("模型");
 }
 
 wxString Strings::TitleOfDataInfo() {
@@ -52,9 +56,25 @@ wxString Strings::TitleOfVisInfo() {
 	return wxString::FromUTF8("可视化");
 }
 
+wxString Strings::NameOfDefaultG3DProject() {
+	return wxString::FromUTF8("默认Geo3DML工程");
+}
+
+wxString Strings::NameOfDefaultG3DMap() {
+	return wxString::FromUTF8("默认地质图");
+}
+
 wxString Strings::NameOfStructureModel() {
 	return wxString::FromUTF8("结构模型");
 }
 wxString Strings::NameOfGridModel() {
 	return wxString::FromUTF8("网格模型");
+}
+
+wxString Strings::TipOfOpenGeo3DML() {
+	return wxString::FromUTF8("打开Geo3DML文件(UTF-8编码)");
+}
+
+wxString Strings::WildcardOfOpenGeo3DML() {
+	return wxString::FromUTF8("Geo3DML文件(UTF-8编码)(*.xml)|*.xml");
 }

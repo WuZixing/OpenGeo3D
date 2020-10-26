@@ -13,7 +13,8 @@ public:
 	static wxString TitleOfMenuFile();
 	static wxString TitleOfMenuWindow();
 	static wxString TitleOfMenuHelp();
-	static wxString TitleOfMenuItemOpenFile();
+	static wxString TitleOfMenuItemOpenGeo3DML();
+	static wxString TitleOfMenuItemOpenSGeMSGrid();
 	static wxString TitleOfMenuItemQuit();
 	static wxString TitleOfMenuItemAbout();
 	///@}
@@ -22,11 +23,16 @@ public:
 
 	/// @name title of windows
 	///@{
-	static wxString TitleOfSceneTree();
+	static wxString TitleOfProjectPanel();
 	static wxString TitleOfDataInfo();
 	static wxString TitleOfVisInfo();
 	///@}
 
+	static wxString NameOfDefaultG3DProject();
+	static wxString NameOfDefaultG3DMap();
 	static wxString NameOfStructureModel();
 	static wxString NameOfGridModel();
+
+	static wxString TipOfOpenGeo3DML();
+	static wxString WildcardOfOpenGeo3DML();
 };

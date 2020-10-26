@@ -51,7 +51,6 @@
 #include "vtkRenderWindow.h"
 #include <vtkVersionMacros.h>
 #include <vtkRenderer.h>
-#include <vtkTransform.h>
 #include <vtkOrientationMarkerWidget.h>
 #define USE_WXGLCANVAS
 
@@ -149,7 +148,9 @@ class wxVTKRenderWindowInteractor : public wxWindow, public vtkRenderWindowInter
     vtkSetMacro(UseCaptureMouse,int);
     vtkBooleanMacro(UseCaptureMouse,int);
 
-    void SetupRenderWindow();
+    void SetupRenderWindow(vtkRenderer* renderer);
+    //vtkRenderer* GetDefaultRenderer() const;
+    void ResetAndRender();
 
 #if VTK_MAJOR_VERSION > 5 || (VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION >= 2)
   protected:
@@ -169,8 +170,6 @@ class wxVTKRenderWindowInteractor : public wxWindow, public vtkRenderWindowInter
     int RenderWhenDisabled;
     int UseCaptureMouse;
 
-    vtkSmartPointer<vtkRenderer> renderer_;
-    vtkSmartPointer<vtkTransform> transform_;
     vtkSmartPointer<vtkOrientationMarkerWidget> axesWidget_;
 
     DECLARE_EVENT_TABLE()

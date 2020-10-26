@@ -21,11 +21,17 @@ else()
 endif(MSVC)
 aux_source_directory(. CPP_SOURCES)
 add_executable(${APP_NAME} ${TARGET_PROPERTY}
+  icon.xpm
+  checked_box.xpm
+  unchecked_box.xpm
   ${CPP_SOURCES}
   Config.h
+  Events.h
   Frame.h
+  G3DTreeItemData.h
   OpenGeo3D.h
-  ScenePanel.h
+  ProjectPanel.h
+  ProjectTreeCtrl.h
   Strings.h
   wxWidgets.h
   wxVTKRenderWindowInteractor.h

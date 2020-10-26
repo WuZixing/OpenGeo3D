@@ -2,31 +2,31 @@
 #include <wx/aboutdlg.h>
 #include <wx/artprov.h>
 #include <wx/propgrid/propgrid.h>
+#include <g3dvtk/ObjectFactory.h>
+#include <g3dxml/XMLReader.h>
+#include "Events.h"
 #include "Strings.h"
+#include "icon.xpm"
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_CLOSE(Frame::OnClose)
-    EVT_MENU(wxID_OPEN, Frame::OnOpenFile)
+    EVT_MENU(Events::ID::MENU_OpenGeo3DML, Frame::OnOpenGeo3DML)
+    EVT_MENU(Events::ID::MENU_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
     EVT_MENU(wxID_EXIT, Frame::OnExit)
     EVT_MENU(wxID_ABOUT, Frame::OnAbout)
     EVT_MENU_OPEN(Frame::OnMenuOpened)
+    EVT_NOTIFY_RANGE(wxEVT_NULL, Events::ID::Notify_ResetAndRefreshRenderWindow, Events::ID::Notify_RefreshRenderWindow, Frame::OnNotify)
 wxEND_EVENT_TABLE()
 
-Frame::Frame(const wxString& title) : wxFrame(nullptr, ID_Frame, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxMAXIMIZE) {
+Frame::Frame(const wxString& title) : wxFrame(nullptr, Events::ID::Window_Frame, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxMAXIMIZE) {
+    SetIcon(wxIcon(xpm_icon));
     InitMenu();
     InitClientWindows();
     InitStatusBar();
 }
 
 Frame::~Frame() {
-    // to avoid the VTK complain of deleting an object with non-zero reference count.
-    if (renderWindow_ != NULL) {
-        wxWindow* parent = renderWindow_->GetParent();
-        if (parent != NULL) {
-            parent->RemoveChild(renderWindow_);
-        }
-        renderWindow_->Delete();
-    }
+
 }
 
 void Frame::InitMenu() {
@@ -34,9 +34,16 @@ void Frame::InitMenu() {
 
     // File(&F)
     wxMenu* menuFile = new wxMenu();
-    menuFile->Append(wxID_OPEN, Strings::TitleOfMenuItemOpenFile());
+    wxMenu* menuStructureModel = new wxMenu();
+    menuStructureModel->Append(Events::ID::MENU_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
+    wxMenu* menuGridModel = new wxMenu();
+    menuGridModel->Append(Events::ID::MENU_OpenSGeMSGrid, Strings::TitleOfMenuItemOpenSGeMSGrid());
+    menuFile->AppendSubMenu(menuStructureModel, Strings::NameOfStructureModel());
+    menuFile->AppendSubMenu(menuGridModel, Strings::NameOfGridModel());
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT, Strings::TitleOfMenuItemQuit());
+
+
     menuBar->Append(menuFile, Strings::TitleOfMenuFile());
 
     // Windows(&W)
@@ -54,46 +61,17 @@ void Frame::InitMenu() {
 void Frame::InitClientWindows() {
     auiMgr_.SetManagedWindow(this);
 
-    /*
-    treeCtrlScene_ = new SceneTree(this, FromDIP(wxSize(200, 250)));
-    auiMgr_.AddPane(treeCtrlScene_, 
-        wxAuiPaneInfo().Name(Strings::TitleOfSceneTree()).Caption(Strings::TitleOfSceneTree()).Left().Layer(0).Position(0).CloseButton(true).MaximizeButton(true));
-    
-    notebookDataProp_ = CreateDataPropNotebook();
-    //auiMgr_.AddPane(notebookDataProp_, wxAuiPaneInfo().Name("DataProp").Caption("Notebook").Left().Layer(0).Position(1).CloseButton(true).MaximizeButton(true));
-    auiMgr_.AddPane(notebookDataProp_, wxAuiPaneInfo().Left().Layer(0).Position(1).CloseButton(false).MaximizeButton(false));
-    */
+    projectPanel_ = new ProjectPanel(this, FromDIP(wxSize(200, 300)));
+    auiMgr_.AddPane(projectPanel_, wxAuiPaneInfo().Caption(Strings::TitleOfProjectPanel()).Left().CloseButton(true).MaximizeButton(true));
 
-    scenePanel_ = new ScenePanel(this, FromDIP(wxSize(200, 250)));
-    auiMgr_.AddPane(scenePanel_, wxAuiPaneInfo().Caption(Strings::TitleOfSceneTree()).Left().CloseButton(true).MaximizeButton(true));
-
-    renderWindow_ = new wxVTKRenderWindowInteractor(this, wxID_ANY);
-    renderWindow_->SetupRenderWindow();
+    renderWindow_ = vtkSmartPointer<wxVTKRenderWindowInteractor>::Take(new wxVTKRenderWindowInteractor(this, wxID_ANY));
+    renderWindow_->SetupRenderWindow(projectPanel_->GetRenderer());
     auiMgr_.AddPane(renderWindow_, wxAuiPaneInfo().CenterPane().PaneBorder(false));
     auiMgr_.Update();
 }
 
 void Frame::InitStatusBar() {
 
-}
-
-wxAuiNotebook* Frame::CreateDataPropNotebook() {
-    // create the notebook off-window to avoid flicker
-    wxSize client_size = GetClientSize();
-
-    wxAuiNotebook* ctrl = new wxAuiNotebook(this, wxID_ANY,
-        wxPoint(client_size.x, client_size.y),
-        FromDIP(wxSize(160, 200)),
-        wxAUI_NB_TOP | wxAUI_NB_CLOSE_ON_ACTIVE_TAB);
-    ctrl->Freeze();
-
-    wxBitmap page_bmp = wxArtProvider::GetBitmap(wxART_INFORMATION, wxART_OTHER, FromDIP(wxSize(16, 16)));
-
-    ctrl->AddPage(new wxPropertyGrid(this), wxT("Data"), true, page_bmp);
-    ctrl->AddPage(new wxPropertyGrid(this), wxT("Visualization"), false, page_bmp);
-
-    ctrl->Thaw();
-    return ctrl;
 }
 
 void Frame::OnClose(wxCloseEvent& event) {
@@ -131,6 +109,61 @@ void Frame::OnMenuOpened(wxMenuEvent& event) {
 
 }
 
-void Frame::OnOpenFile(wxCommandEvent& event) {
+void Frame::OnOpenGeo3DML(wxCommandEvent& event) {
+    wxString filePath = wxFileSelector(Strings::TipOfOpenGeo3DML(), wxEmptyString, wxEmptyString, wxEmptyString, Strings::WildcardOfOpenGeo3DML());
+    if (filePath.IsEmpty()) {
+        return;
+    }
+    geo3dml::Object* g3dObject = NULL;
+    g3dvtk::ObjectFactory g3dVtkFactory;
+    g3dxml::XMLReader xmlReader(&g3dVtkFactory);
+    wxBeginBusyCursor();
+    g3dObject = xmlReader.LoadXMLFile(filePath.ToUTF8().data());
+    wxEndBusyCursor();
+    if (g3dObject == NULL) {
+        wxMessageBox(wxString::FromUTF8(xmlReader.Error().c_str()), GetTitle(), wxICON_ERROR);
+    } else {
+        wxBusyCursor wait;
+        geo3dml::Model* model = dynamic_cast<geo3dml::Model*>(g3dObject);
+        if (model != NULL) {
+            projectPanel_->AppendG3DModel(model, true);
+        } else {
+            geo3dml::Project* project = dynamic_cast<geo3dml::Project*>(g3dObject);
+            if (project != NULL) {
+                project->BindFeatureClassesToLayers(&g3dVtkFactory);
+                int numOfMaps = project->GetMapCount();
+                while (project->GetModelCount() > 0) {
+                    geo3dml::Model* model = project->RemoveModelAt(0);
+                    projectPanel_->AppendG3DModel(model, numOfMaps == 0);
+                }
+                while (project->GetMapCount() > 0) {
+                    geo3dml::Map* map = project->RemoveMapAt(0);
+                    projectPanel_->AppendG3DMap(map);
+                }
+            }
+            delete g3dObject;
+        }
+        Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
+    }
+}
 
+void Frame::OnOpenSGeMSGrid(wxCommandEvent& event) {
+    
+}
+
+void Frame::OnNotify(wxNotifyEvent& notify) {
+    switch (notify.GetId()) {
+    case Events::ID::Notify_ResetAndRefreshRenderWindow: {
+        wxBusyCursor waiting;
+        renderWindow_->ResetAndRender();
+        break;
+    }
+    case Events::ID::Notify_RefreshRenderWindow: {
+        wxBusyCursor waiting;
+        renderWindow_->Render();
+        break;
+    }
+    default:
+        break;
+    }
 }
