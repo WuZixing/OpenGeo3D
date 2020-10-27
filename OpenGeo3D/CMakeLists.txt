@@ -28,10 +28,13 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   Config.h
   Events.h
   Frame.h
+  MetadataPage.h
   G3DTreeItemData.h
   OpenGeo3D.h
+  ProjectItemMetaBook.h
   ProjectPanel.h
   ProjectTreeCtrl.h
+  RenderOptionPage.h
   Strings.h
   wxWidgets.h
   wxVTKRenderWindowInteractor.h

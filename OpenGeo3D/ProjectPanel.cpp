@@ -1,30 +1,21 @@
 #include "ProjectPanel.h"
+#include "Events.h"
 #include "Strings.h"
-#include <wx/artprov.h>
-#include <wx/propgrid/propgrid.h>
-#include <g3dvtk/ObjectFactory.h>
-#include <g3dvtk/Actor.h>
+
+wxBEGIN_EVENT_TABLE(ProjectPanel, wxSplitterWindow)
+	EVT_NOTIFY(wxEVT_NULL, Events::ID::Notify_ProjectTreeItemSelected, ProjectPanel::OnChildrenNotify)
+wxEND_EVENT_TABLE()
 
 ProjectPanel::ProjectPanel(wxWindow* parent, const wxSize& size) : wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size) {
 	projectTree_ = new ProjectTreeCtrl(this, wxSize(size.GetWidth(), -1));
+	projectMetaBook_ = new ProjectItemMetaBook(this);
 	
-	dataPropNotebook_ = new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_BOTTOM | wxBORDER_NONE);
-	dataPropNotebook_->AddPage(new wxPropertyGrid(dataPropNotebook_), Strings::TitleOfDataInfo(), true);
-	dataPropNotebook_->AddPage(new wxPropertyGrid(dataPropNotebook_), Strings::TitleOfVisInfo(), false);
-	
-	this->SplitHorizontally(projectTree_, dataPropNotebook_, size.GetHeight());
+	this->SplitHorizontally(projectTree_, projectMetaBook_, size.GetHeight());
 	this->SetMinimumPaneSize(20);
-
-	g3dvtk::ObjectFactory g3dFactory;
-	g3dProject_ = g3dFactory.NewProject();
-	g3dProject_->SetID(geo3dml::Object::NewID());
-	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
 }
 
 ProjectPanel::~ProjectPanel() {
-	if (g3dProject_ != nullptr) {
-		delete g3dProject_;
-	}
+
 }
 
 vtkRenderer* ProjectPanel::GetRenderer() const {
@@ -36,44 +27,20 @@ vtkTransform* ProjectPanel::GetTransform() const {
 }
 
 void ProjectPanel::AppendG3DModel(geo3dml::Model* model, bool appendToDefaultMap) {
-	g3dProject_->AddModel(model);
-	if (!appendToDefaultMap) {
-		return;
-	}
-
-	geo3dml::Map* g3dMap = GetDefaultMap();
-	int numOfFeatureClasses = model->GetFeatureClassCount();
-	for (int i = 0; i < numOfFeatureClasses; ++i) {
-		AppendFeatureClassToMap(model->GetFeatureClassAt(i), g3dMap);
-	}
-	projectTree_->UpdateSubTreeOfMap(g3dMap);
+	projectTree_->AppendG3DModel(model, appendToDefaultMap);
 }
 
 void ProjectPanel::AppendG3DMap(geo3dml::Map* map) {
-	g3dProject_->AddMap(map);
-	projectTree_->UpdateSubTreeOfMap(map);
+	projectTree_->AppendG3DMap(map);
 }
 
-geo3dml::Map* ProjectPanel::GetDefaultMap() {
-	if (g3dProject_->GetMapCount() > 0) {
-		return g3dProject_->GetMapAt(0);
-	} else {
-		g3dvtk::ObjectFactory g3dFactory;
-		geo3dml::Map* map = g3dFactory.NewMap();
-		map->SetID(geo3dml::Object::NewID());
-		map->SetName(Strings::NameOfDefaultG3DMap().ToUTF8().data());
-		g3dProject_->AddMap(map);
-		return map;
+void ProjectPanel::OnChildrenNotify(wxNotifyEvent& event) {
+	switch (event.GetId()) {
+	case Events::ID::Notify_ProjectTreeItemSelected: {
+		projectMetaBook_->BindToItem(static_cast<geo3dml::Object*>(event.GetClientData()), G3DTreeItemData::ItemType(event.GetInt()));
+		break;
+	}
+	default:
+		break;
 	}
 }
-
-void ProjectPanel::AppendFeatureClassToMap(geo3dml::FeatureClass* g3dFC, geo3dml::Map* g3dMp) {
-	g3dvtk::ObjectFactory g3dFactory;
-	geo3dml::Layer* layer = g3dFactory.NewLayer();
-	layer->SetName(g3dFC->GetName());
-	layer->BindFeatureClass(g3dFC);
-	layer->BuildActorsFromFeatures(&g3dFactory);
-	g3dMp->AddLayer(layer);
-}
-
-

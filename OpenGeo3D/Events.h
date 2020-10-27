@@ -10,8 +10,11 @@ public:
 		MENU_OpenGeo3DML,
 		MENU_OpenSGeMSGrid,
 
+		// general notifications
 		Notify_ResetAndRefreshRenderWindow,
-		Notify_RefreshRenderWindow
+		Notify_RefreshRenderWindow,
+		// project panel notifications
+		Notify_ProjectTreeItemSelected
 	};
 
 public:

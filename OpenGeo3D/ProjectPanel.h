@@ -1,9 +1,9 @@
 #pragma once
 
 #include "wxWidgets.h"
-#include <wx/aui/auibook.h>
 #include <wx/splitter.h>
-#include <geo3dml/Project.h>
+#include "G3DTreeItemData.h"
+#include "ProjectItemMetaBook.h"
 #include "ProjectTreeCtrl.h"
 
 class ProjectPanel : public wxSplitterWindow {
@@ -18,15 +18,11 @@ public:
 	void AppendG3DMap(geo3dml::Map* map);
 
 private:
-	geo3dml::Map* GetDefaultMap();
-
-	void AppendFeatureClassToMap(geo3dml::FeatureClass* g3dFC, geo3dml::Map* g3dMap);
+	void OnChildrenNotify(wxNotifyEvent& event);
 
 private:
 	ProjectTreeCtrl* projectTree_;
-	wxAuiNotebook* dataPropNotebook_;
+	ProjectItemMetaBook* projectMetaBook_;
 
-	geo3dml::Project* g3dProject_;
-
-
+	wxDECLARE_EVENT_TABLE();
 };

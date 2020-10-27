@@ -19,8 +19,6 @@ public:
 	static wxString TitleOfMenuItemAbout();
 	///@}
 
-	static wxString ConfirmToQuit();
-
 	/// @name title of windows
 	///@{
 	static wxString TitleOfProjectPanel();
@@ -32,7 +30,27 @@ public:
 	static wxString NameOfDefaultG3DMap();
 	static wxString NameOfStructureModel();
 	static wxString NameOfGridModel();
+	static wxString NameOfClassG3DMap();
+	static wxString NameOfClassG3DLayer();
+	static wxString NameOfClassG3DActor();
 
+	/// @name utilities
+	static wxString ConfirmToQuit();
 	static wxString TipOfOpenGeo3DML();
 	static wxString WildcardOfOpenGeo3DML();
+
+	static wxString MetadataCategoryBasicInfo();
+	static wxString MetadataCategoryMBR();
+	static wxString MetadataCategoryFeatureClass();
+	static wxString MetadataCategorySchema();
+	static wxString MetadataCategoryFeature();
+	static wxString MetadataCategoryGeometry();
+	static wxString MetadataEntryId();
+	static wxString MetadataEntryName();
+	static wxString MetadataEntryDatasetClassName();
+	static wxString MetadataEntryChildrenNumber();
+	static wxString MetadataEntryMBRRangeX();
+	static wxString MetadataEntryMBRRangeY();
+	static wxString MetadataEntryMBRRangeZ();
+	
 };
