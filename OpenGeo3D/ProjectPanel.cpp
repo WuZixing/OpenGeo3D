@@ -35,6 +35,7 @@ void ProjectPanel::AppendG3DMap(geo3dml::Map* map) {
 }
 
 void ProjectPanel::OnChildrenNotify(wxNotifyEvent& event) {
+	wxBusyCursor waiting;
 	switch (event.GetId()) {
 	case Events::ID::Notify_ProjectTreeItemSelected: {
 		projectMetaBook_->BindToItem(static_cast<geo3dml::Object*>(event.GetClientData()), G3DTreeItemData::ItemType(event.GetInt()));

@@ -82,6 +82,38 @@ wxString Strings::NameOfClassG3DActor() {
 	return wxString::FromUTF8("图元/要素");
 }
 
+wxString Strings::NameOfClassG3DPoint() {
+	return wxString::FromUTF8("Point");
+}
+
+wxString Strings::NameOfClassG3DMPoint() {
+	return wxString::FromUTF8("Multiple Point");
+}
+
+wxString Strings::NameOfClassG3DAnnotation() {
+	return wxString::FromUTF8("Annotation");
+}
+
+wxString Strings::NameOfClassG3DLineString() {
+	return wxString::FromUTF8("Line String");
+}
+
+wxString Strings::NameOfClassG3DTIN() {
+	return wxString::FromUTF8("TIN");
+}
+
+wxString Strings::NameOfClassG3DUniformGrid() {
+	return wxString::FromUTF8("Uniform Grid");
+}
+
+wxString Strings::NameOfClassG3DCornerGrid() {
+	return wxString::FromUTF8("Corner Grid");
+}
+
+wxString Strings::NameOfClassUnknown() {
+	return wxString::FromUTF8("Unknown");
+}
+
 wxString Strings::TipOfOpenGeo3DML() {
 	return wxString::FromUTF8("打开Geo3DML文件(UTF-8编码)");
 }
@@ -140,4 +172,36 @@ wxString Strings::MetadataCategoryFeature() {
 
 wxString Strings::MetadataCategoryGeometry() {
 	return wxString::FromUTF8("几何对象");
+}
+
+wxString Strings::MetadataCategoryShapeProperty() {
+	return wxString::FromUTF8("属性场");
+}
+
+wxString Strings::MetadataEntryClassName() {
+	return wxString::FromUTF8("数据类型");
+}
+
+wxString Strings::MetadataEntryGeometryLODLevel() {
+	return wxString::FromUTF8("LOD");
+}
+
+wxString Strings::MetadataEntryNumberOfVertices() {
+	return wxString::FromUTF8("顶点数");
+}
+
+wxString Strings::MetadataEntryNumberOfTriangles() {
+	return wxString::FromUTF8("三角形数");
+}
+
+wxString Strings::MetadataEntryGridOrigin() {
+	return wxString::FromUTF8("网格原点");
+}
+
+wxString Strings::MetadataEntryGridCellSize() {
+	return wxString::FromUTF8("网格单元大小");
+}
+
+wxString Strings::MetadataEntryGridCellDimension() {
+	return wxString::FromUTF8("网格单元维度");
 }
