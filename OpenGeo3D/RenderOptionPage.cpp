@@ -156,10 +156,7 @@ void RenderOptionPage::BindToG3DActor(geo3dml::Actor* g3dActor) {
 	representationIndices.push_back(VTK_SURFACE);
 	wxEnumProperty* repModeProp = new wxEnumProperty(Strings::RenderEntryRepresentationMode(), EntryName_ObjectRepresentation_, representations, representationIndices, renderProp->GetRepresentation());
 	AppendIn(categoryObjectOption, repModeProp);
-	wxBoolProperty* boolProp = new wxBoolProperty(Strings::RenderEntryDrawVertex(), EntryName_ObjectDrawVertex_, renderProp->GetVertexVisibility());
-	boolProp->SetAttribute(wxPG_BOOL_USE_CHECKBOX, 1);
-	AppendIn(categoryObjectOption, boolProp);
-	boolProp = new wxBoolProperty(Strings::RenderEntryDrawWireframe(), EntryName_ObjectDrawEdge_, renderProp->GetEdgeVisibility());
+	wxBoolProperty* boolProp = new wxBoolProperty(Strings::RenderEntryDrawWireframe(), EntryName_ObjectDrawEdge_, renderProp->GetEdgeVisibility());
 	boolProp->SetAttribute(wxPG_BOOL_USE_CHECKBOX, 1);
 	AppendIn(categoryObjectOption, boolProp);
 }
@@ -183,10 +180,6 @@ void RenderOptionPage::OnRenderOptionChanged(wxPropertyGridEvent& event) {
 		Events::Notify(Events::ID::Notify_RefreshRenderWindow);
 	} else if (propName == EntryName_ObjectRepresentation_ && renderProp != nullptr) {
 		renderProp->SetRepresentation(property->GetValue().GetInteger());
-		Events::Notify(Events::ID::Notify_RefreshRenderWindow);
-	} else if (propName == EntryName_ObjectDrawVertex_ && renderProp != nullptr) {
-		long v = property->GetValue().GetInteger();
-		renderProp->SetVertexVisibility(v);
 		Events::Notify(Events::ID::Notify_RefreshRenderWindow);
 	} else if (propName == EntryName_ObjectDrawEdge_) {
 		long v = property->GetValue().GetInteger();

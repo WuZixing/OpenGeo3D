@@ -1,6 +1,7 @@
 #include "Frame.h"
 #include <wx/aboutdlg.h>
 #include <wx/artprov.h>
+#include <wx/colordlg.h> 
 #include <wx/propgrid/propgrid.h>
 #include <g3dvtk/ObjectFactory.h>
 #include <g3dxml/XMLReader.h>
@@ -16,6 +17,11 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(Events::ID::MENU_OpenGeo3DML, Frame::OnOpenGeo3DML)
     EVT_MENU(Events::ID::MENU_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
     EVT_MENU(Events::ID::Menu_FullView, Frame::OnFullView)
+    EVT_MENU(Events::ID::Menu_BackgroundColor, Frame::OnBackgroundColor)
+    EVT_MENU(Events::ID::Menu_ScaleUpZ, Frame::OnScaleUpZ)
+    EVT_MENU(Events::ID::Menu_ScaleDownZ, Frame::OnScaleDownZ)
+    EVT_MENU(Events::ID::Menu_CustomizedZScale, Frame::OnCustomizedZScale)
+    EVT_MENU(Events::ID::Menu_ResetZScale, Frame::OnResetZScale)
     EVT_NOTIFY_RANGE(wxEVT_NULL, Events::ID::Notify_ResetAndRefreshRenderWindow, Events::ID::Notify_RefreshRenderWindow, Frame::OnNotify)
 wxEND_EVENT_TABLE()
 
@@ -48,6 +54,12 @@ void Frame::InitMenu() {
     // Windows(&W)
     wxMenu* menuWnd = new wxMenu();
     menuWnd->Append(Events::ID::Menu_FullView, Strings::TitleOfMenuItemFullView());
+    menuWnd->Append(Events::ID::Menu_BackgroundColor, Strings::TitleOfMenuItemBackgroundColor());
+    menuWnd->AppendSeparator();
+    menuWnd->Append(Events::ID::Menu_ScaleUpZ, Strings::TitleOfMenuItemScaleUpZ());
+    menuWnd->Append(Events::ID::Menu_ScaleDownZ, Strings::TitleOfMenuItemScaleDownZ());
+    menuWnd->Append(Events::ID::Menu_CustomizedZScale, Strings::TitleOfMenuItemCustomizedZScale());
+    menuWnd->Append(Events::ID::Menu_ResetZScale, Strings::TitleOfMenuItemResetZScale());
     menuBar->Append(menuWnd, Strings::TitleOfMenuWindow());
 
     // Help(&H)
@@ -59,9 +71,13 @@ void Frame::InitMenu() {
 }
 
 void Frame::InitClientWindows() {
+    wxSize clientSize = GetClientSize();
+
     auiMgr_.SetManagedWindow(this);
 
-    projectPanel_ = new ProjectPanel(this, FromDIP(wxSize(200, 300)));
+    wxSize size = FromDIP(wxSize(200, -1));
+    size.SetHeight(clientSize.GetHeight());
+    projectPanel_ = new ProjectPanel(this, size);
     auiMgr_.AddPane(projectPanel_, wxAuiPaneInfo().Caption(Strings::TitleOfProjectPanel()).Left().CloseButton(true).MaximizeButton(true));
 
     renderWindow_ = vtkSmartPointer<wxVTKRenderWindowInteractor>::Take(new wxVTKRenderWindowInteractor(this, wxID_ANY));
@@ -170,4 +186,71 @@ void Frame::OnNotify(wxNotifyEvent& notify) {
 
 void Frame::OnFullView(wxCommandEvent& event) {
     Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
+}
+
+void Frame::OnBackgroundColor(wxCommandEvent& event) {
+    double r = 0, g = 0, b = 0;
+    vtkRenderer* renderer = projectPanel_->GetRenderer();
+    renderer->GetBackground(r, g, b);
+    wxColour clr((unsigned char)(wxRound(r * 255) % 256), (unsigned char)(wxRound(g * 255) % 256), (unsigned char)(wxRound(b * 255) % 256));
+    clr = wxGetColourFromUser(this, clr);
+    if (!clr.IsOk()) {
+        return;
+    }
+    wxBusyCursor waiting;
+    r = clr.Red() / 255.0f;
+    g = clr.Green() / 255.0f;
+    b = clr.Blue() / 255.0f;
+    renderer->SetBackground(r, g, b);
+    Events::Notify(Events::ID::Notify_RefreshRenderWindow);
+}
+
+void Frame::OnScaleUpZ(wxCommandEvent& event) {
+    wxBusyCursor waiting;
+    vtkTransform* t = projectPanel_->GetTransform();
+    double scales[3] = { 1.0 };
+    t->GetScale(scales);
+    scales[2] = scales[2] * 1.1;
+    t->Identity();
+    t->Scale(scales);
+    Events::Notify(Events::ID::Notify_RefreshRenderWindow);
+}
+
+void Frame::OnScaleDownZ(wxCommandEvent& event) {
+    wxBusyCursor waiting;
+    vtkTransform* t = projectPanel_->GetTransform();
+    double scales[3] = { 1.0 };
+    t->GetScale(scales);
+    scales[2] = scales[2] * 0.9;
+    t->Identity();
+    t->Scale(scales);
+    Events::Notify(Events::ID::Notify_RefreshRenderWindow);
+}
+
+void Frame::OnCustomizedZScale(wxCommandEvent& event) {
+    vtkTransform* t = projectPanel_->GetTransform();
+    double scales[3] = { 1.0 };
+    t->GetScale(scales);
+    wxString currentScale = wxString::FromDouble(scales[2], 6);
+    wxString v = wxGetTextFromUser(Strings::TipOfInputCusotimizedZScale(), GetTitle(), currentScale, this);
+    if (v.IsEmpty()) {
+        return;
+    }
+    if (v.ToDouble(&scales[2])) {
+        if (scales[2] < 0 || fabs(scales[2]) < 10e-6 || scales[2] > 1000) {
+            wxMessageBox(Strings::TipOfInvalidZScale(), wxMessageBoxCaptionStr, wxOK | wxCENTRE | wxICON_WARNING);
+            return;
+        }
+        wxBusyCursor waiting;
+        t->Identity();
+        t->Scale(scales);
+        Events::Notify(Events::ID::Notify_RefreshRenderWindow);
+    }
+}
+
+void Frame::OnResetZScale(wxCommandEvent& event) {
+    wxBusyCursor waiting;
+    vtkTransform* t = projectPanel_->GetTransform();
+    t->Identity();
+    Events::Notify(Events::ID::Notify_RefreshRenderWindow);
 }

@@ -28,6 +28,5 @@ private:
 	const wxString EntryName_ObjectColor_ = wxS("object_color");
 	const wxString EntryName_ObjectTransparency_ = wxS("object_transparency");
 	const wxString EntryName_ObjectRepresentation_ = wxS("object_representation");
-	const wxString EntryName_ObjectDrawVertex_ = wxS("object_draw_vertex");
 	const wxString EntryName_ObjectDrawEdge_ = wxS("object_draw_edge");
 };

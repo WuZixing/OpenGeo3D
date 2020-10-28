@@ -18,13 +18,18 @@ public:
 	static wxString TitleOfMenuItemQuit();
 	static wxString TitleOfMenuItemAbout();
 	static wxString TitleOfMenuItemFullView();
+	static wxString TitleOfMenuItemBackgroundColor();
+	static wxString TitleOfMenuItemScaleUpZ();
+	static wxString TitleOfMenuItemScaleDownZ();
+	static wxString TitleOfMenuItemCustomizedZScale();
+	static wxString TitleOfMenuItemResetZScale();
 	///@}
 
 	/// @name title of windows
 	///@{
 	static wxString TitleOfProjectPanel();
-	static wxString TitleOfDataInfo();
-	static wxString TitleOfVisInfo();
+	static wxString TitleOfMetadata();
+	static wxString TitleOfRenderOption();
 	///@}
 
 	static wxString NameOfDefaultG3DProject();
@@ -46,10 +51,11 @@ public:
 	static wxString NameOfRenderRepresentationModeWireframe();
 	static wxString NameOfRenderRepresentationModeSurface();
 	
-	/// @name utilities
 	static wxString ConfirmToQuit();
 	static wxString TipOfOpenGeo3DML();
 	static wxString WildcardOfOpenGeo3DML();
+	static wxString TipOfInputCusotimizedZScale();
+	static wxString TipOfInvalidZScale();
 
 	static wxString MetadataCategoryBasicInfo();
 	static wxString MetadataCategoryMBR();
@@ -78,6 +84,5 @@ public:
 	static wxString RenderEntryColor();
 	static wxString RenderEntryTransparency();
 	static wxString RenderEntryRepresentationMode();
-	static wxString RenderEntryDrawVertex();
 	static wxString RenderEntryDrawWireframe();
 };

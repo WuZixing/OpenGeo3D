@@ -4,8 +4,8 @@
 ProjectItemMetaBook::ProjectItemMetaBook(wxWindow* parent) : wxAuiNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_BOTTOM | wxBORDER_NONE) {
 	metadataPage_ = new MetadataPage(this);
 	renderOptionPage_ = new RenderOptionPage(this);
-	AddPage(metadataPage_, Strings::TitleOfDataInfo(), true);
-	AddPage(renderOptionPage_, Strings::TitleOfVisInfo(), false);
+	AddPage(metadataPage_, Strings::TitleOfMetadata(), true);
+	AddPage(renderOptionPage_, Strings::TitleOfRenderOption(), false);
 }
 
 ProjectItemMetaBook::~ProjectItemMetaBook() {

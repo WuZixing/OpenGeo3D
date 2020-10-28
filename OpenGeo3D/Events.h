@@ -10,6 +10,11 @@ public:
 		MENU_OpenGeo3DML,
 		MENU_OpenSGeMSGrid,
 		Menu_FullView,
+		Menu_BackgroundColor,
+		Menu_ScaleUpZ,
+		Menu_ScaleDownZ,
+		Menu_CustomizedZScale,
+		Menu_ResetZScale,
 
 		// general notifications
 		Notify_ResetAndRefreshRenderWindow,

@@ -18,6 +18,11 @@ private:
 	void OnOpenGeo3DML(wxCommandEvent& event);
 	void OnOpenSGeMSGrid(wxCommandEvent& event);
 	void OnFullView(wxCommandEvent& event);
+	void OnBackgroundColor(wxCommandEvent& event);
+	void OnScaleUpZ(wxCommandEvent& event);
+	void OnScaleDownZ(wxCommandEvent& event);
+	void OnCustomizedZScale(wxCommandEvent& event);
+	void OnResetZScale(wxCommandEvent& event);
 	void OnNotify(wxNotifyEvent& notify);
 
 private:

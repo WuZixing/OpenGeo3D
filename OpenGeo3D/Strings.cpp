@@ -41,7 +41,27 @@ wxString Strings::TitleOfMenuItemAbout() {
 }
 
 wxString Strings::TitleOfMenuItemFullView() {
-	return wxString::FromUTF8("全景");
+	return wxString::FromUTF8("全景(&R)\tCtrl-R");
+}
+
+wxString Strings::TitleOfMenuItemBackgroundColor() {
+	return wxString::FromUTF8("背景颜色(&B)\tCtrl-B");
+}
+
+wxString Strings::TitleOfMenuItemScaleUpZ() {
+	return wxString::FromUTF8("Z轴拉伸(&U)\tCtrl-U");
+}
+
+wxString Strings::TitleOfMenuItemScaleDownZ() {
+	return wxString::FromUTF8("Z轴压缩(&D)\tCtrl-D");
+}
+
+wxString Strings::TitleOfMenuItemCustomizedZScale() {
+	return wxString::FromUTF8("自定义Z轴缩放...");
+}
+
+wxString Strings::TitleOfMenuItemResetZScale() {
+	return wxString::FromUTF8("取消Z轴缩放");
 }
 
 wxString Strings::ConfirmToQuit() {
@@ -52,11 +72,11 @@ wxString Strings::TitleOfProjectPanel() {
 	return wxString::FromUTF8("模型");
 }
 
-wxString Strings::TitleOfDataInfo() {
+wxString Strings::TitleOfMetadata() {
 	return wxString::FromUTF8("数据");
 }
 
-wxString Strings::TitleOfVisInfo() {
+wxString Strings::TitleOfRenderOption() {
 	return wxString::FromUTF8("可视化");
 }
 
@@ -136,6 +156,14 @@ wxString Strings::TipOfOpenGeo3DML() {
 
 wxString Strings::WildcardOfOpenGeo3DML() {
 	return wxString::FromUTF8("Geo3DML文件(UTF-8编码)(*.xml)|*.xml");
+}
+
+wxString Strings::TipOfInputCusotimizedZScale() {
+	return wxString::FromUTF8("请输入Z轴缩放系数（大于0，且小于1000）：");
+}
+
+wxString Strings::TipOfInvalidZScale() {
+	return wxString::FromUTF8("Z轴缩放系数无效。有效值是大于0并且小于1000的整数或小数。");
 }
 
 wxString Strings::MetadataCategoryBasicInfo() {
@@ -242,9 +270,6 @@ wxString Strings::RenderEntryRepresentationMode() {
 	return wxString::FromUTF8("绘制方式");
 }
 
-wxString Strings::RenderEntryDrawVertex() {
-	return wxString::FromUTF8("绘制顶点");
-}
 wxString Strings::RenderEntryDrawWireframe() {
 	return wxString::FromUTF8("绘制线框");
 }
