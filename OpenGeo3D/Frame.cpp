@@ -9,12 +9,13 @@
 #include "icon.xpm"
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
+    EVT_MENU_OPEN(Frame::OnMenuOpened)
     EVT_CLOSE(Frame::OnClose)
-    EVT_MENU(Events::ID::MENU_OpenGeo3DML, Frame::OnOpenGeo3DML)
-    EVT_MENU(Events::ID::MENU_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
     EVT_MENU(wxID_EXIT, Frame::OnExit)
     EVT_MENU(wxID_ABOUT, Frame::OnAbout)
-    EVT_MENU_OPEN(Frame::OnMenuOpened)
+    EVT_MENU(Events::ID::MENU_OpenGeo3DML, Frame::OnOpenGeo3DML)
+    EVT_MENU(Events::ID::MENU_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
+    EVT_MENU(Events::ID::Menu_FullView, Frame::OnFullView)
     EVT_NOTIFY_RANGE(wxEVT_NULL, Events::ID::Notify_ResetAndRefreshRenderWindow, Events::ID::Notify_RefreshRenderWindow, Frame::OnNotify)
 wxEND_EVENT_TABLE()
 
@@ -42,12 +43,11 @@ void Frame::InitMenu() {
     menuFile->AppendSubMenu(menuGridModel, Strings::NameOfGridModel());
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT, Strings::TitleOfMenuItemQuit());
-
-
     menuBar->Append(menuFile, Strings::TitleOfMenuFile());
 
     // Windows(&W)
     wxMenu* menuWnd = new wxMenu();
+    menuWnd->Append(Events::ID::Menu_FullView, Strings::TitleOfMenuItemFullView());
     menuBar->Append(menuWnd, Strings::TitleOfMenuWindow());
 
     // Help(&H)
@@ -166,4 +166,8 @@ void Frame::OnNotify(wxNotifyEvent& notify) {
     default:
         break;
     }
+}
+
+void Frame::OnFullView(wxCommandEvent& event) {
+    Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
 }

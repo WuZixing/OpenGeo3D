@@ -77,8 +77,8 @@ void MetadataPage::BindToG3DLayer(geo3dml::Layer* g3dLayer) {
 	} else {
 		strId = wxString::FromUTF8(g3dLayer->GetBindingFeatureClassID());
 	}
-	AppendIn(categoryFC, new wxStringProperty(Strings::MetadataEntryId(), wxT("feature_class_id"), strId))->ChangeFlag(wxPG_PROP_READONLY, true);
-	AppendIn(categoryFC, new wxStringProperty(Strings::MetadataEntryName(), wxT("feature_class_name"), strName))->Enable(false);
+	AppendIn(categoryFC, new wxStringProperty(Strings::MetadataEntryId(), wxS("feature_class_id"), strId))->ChangeFlag(wxPG_PROP_READONLY, true);
+	AppendIn(categoryFC, new wxStringProperty(Strings::MetadataEntryName(), wxS("feature_class_name"), strName))->Enable(false);
 	wxPGProperty* categorySchema = AppendIn(categoryFC, new wxPropertyCategory(Strings::MetadataCategorySchema()));
 	for (int i = 0; i < g3dFeatureClass->GetFieldCount(); ++i) {
 		const geo3dml::Field& field = g3dFeatureClass->GetFieldAt(i);
@@ -99,9 +99,9 @@ void MetadataPage::BindToG3DActor(geo3dml::Actor* g3dActor) {
 
 void MetadataPage::SetBasicInfo(const wxString& datasetCategory, const wxString& datasetId, unsigned int numberOfChildren) {
 	wxPGProperty* category = Append(new wxPropertyCategory(Strings::MetadataCategoryBasicInfo()));
-	AppendIn(category, new wxStringProperty(Strings::MetadataEntryDatasetClassName(), wxT("dataset_class"), datasetCategory))->Enable(false);
-	AppendIn(category, new wxUIntProperty(Strings::MetadataEntryChildrenNumber(), wxT("children_number"), numberOfChildren))->Enable(false);
-	AppendIn(category, new wxStringProperty(Strings::MetadataEntryId(), wxT("dataset_id"), datasetId))->ChangeFlag(wxPG_PROP_READONLY, true);
+	AppendIn(category, new wxStringProperty(Strings::MetadataEntryDatasetClassName(), wxS("dataset_class"), datasetCategory))->Enable(false);
+	AppendIn(category, new wxUIntProperty(Strings::MetadataEntryChildrenNumber(), wxS("children_number"), numberOfChildren))->Enable(false);
+	AppendIn(category, new wxStringProperty(Strings::MetadataEntryId(), wxS("dataset_id"), datasetId))->ChangeFlag(wxPG_PROP_READONLY, true);
 }
 
 void MetadataPage::SetMBRProperty(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
@@ -116,9 +116,9 @@ void MetadataPage::SetMBRProperty(double minX, double minY, double minZ, double 
 	if (minZ <= maxZ) {
 		zRange = wxString::Format("[%.6f, %.6f]", minZ, maxZ);
 	}
-	AppendIn(category, new wxStringProperty(Strings::MetadataEntryMBRRangeX(), wxT("mbr_x_range"), xRange))->ChangeFlag(wxPG_PROP_READONLY, true);
-	AppendIn(category, new wxStringProperty(Strings::MetadataEntryMBRRangeY(), wxT("mbr_y_range"), yRange))->ChangeFlag(wxPG_PROP_READONLY, true);
-	AppendIn(category, new wxStringProperty(Strings::MetadataEntryMBRRangeZ(), wxT("mbr_z_range"), zRange))->ChangeFlag(wxPG_PROP_READONLY, true);
+	AppendIn(category, new wxStringProperty(Strings::MetadataEntryMBRRangeX(), wxS("mbr_x_range"), xRange))->ChangeFlag(wxPG_PROP_READONLY, true);
+	AppendIn(category, new wxStringProperty(Strings::MetadataEntryMBRRangeY(), wxS("mbr_y_range"), yRange))->ChangeFlag(wxPG_PROP_READONLY, true);
+	AppendIn(category, new wxStringProperty(Strings::MetadataEntryMBRRangeZ(), wxS("mbr_z_range"), zRange))->ChangeFlag(wxPG_PROP_READONLY, true);
 }
 
 void MetadataPage::SetFeatureProperty(geo3dml::Feature* g3dFeature) {
@@ -126,8 +126,8 @@ void MetadataPage::SetFeatureProperty(geo3dml::Feature* g3dFeature) {
 	if (g3dFeature == nullptr) {
 		return;
 	}
-	AppendIn(categoryFeature, new wxStringProperty(Strings::MetadataEntryId(), wxT("feature_id"), wxString::FromUTF8(g3dFeature->GetID())))->ChangeFlag(wxPG_PROP_READONLY, true);
-	AppendIn(categoryFeature, new wxStringProperty(Strings::MetadataEntryName(), wxT("feature_name"), wxString::FromUTF8(g3dFeature->GetName())))->Enable(false);
+	AppendIn(categoryFeature, new wxStringProperty(Strings::MetadataEntryId(), wxS("feature_id"), wxString::FromUTF8(g3dFeature->GetID())))->ChangeFlag(wxPG_PROP_READONLY, true);
+	AppendIn(categoryFeature, new wxStringProperty(Strings::MetadataEntryName(), wxS("feature_name"), wxString::FromUTF8(g3dFeature->GetName())))->Enable(false);
 	// fields
 	std::vector<std::string>&& fields = g3dFeature->GetFieldNames();
 	for (std::string fieldName : fields) {
@@ -210,36 +210,36 @@ void MetadataPage::SetGeometryProperty(geo3dml::Geometry* g3dGeometry) {
 		}
 	}
 
-	AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryId(), wxT("geometry_id"), wxString::FromUTF8(g3dGeometry->GetID())))->ChangeFlag(wxPG_PROP_READONLY, true);
-	AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryName(), wxT("geometry_name"), wxString::FromUTF8(g3dGeometry->GetName())))->Enable(false);
-	AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryGeometryLODLevel(), wxT("geometry_lod"), g3dGeometry->GetLODLevel()))->Enable(false);
-	AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryClassName(), wxT("geometry_class_name"), geoClassName))->Enable(false);
+	AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryId(), wxS("geometry_id"), wxString::FromUTF8(g3dGeometry->GetID())))->ChangeFlag(wxPG_PROP_READONLY, true);
+	AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryName(), wxS("geometry_name"), wxString::FromUTF8(g3dGeometry->GetName())))->Enable(false);
+	AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryGeometryLODLevel(), wxS("geometry_lod"), g3dGeometry->GetLODLevel()))->Enable(false);
+	AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryClassName(), wxS("geometry_class_name"), geoClassName))->Enable(false);
 	if (tin != nullptr) {
-		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfVertices(), wxT("geometry_tin_vertcies"), tin->GetVertexCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
-		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfTriangles(), wxT("geometry_tin_triangles"), tin->GetTriangleCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfVertices(), wxS("geometry_tin_vertcies"), tin->GetVertexCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfTriangles(), wxS("geometry_tin_triangles"), tin->GetTriangleCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
 	} else if (uniformGrid != nullptr) {
 		double x = 0, y = 0, z = 0;
 		uniformGrid->GetOrigin(x, y, z);
 		wxString str = wxString::Format("(%.6f, %.6f, %.6f)", x, y, z);
-		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridOrigin(), wxT("geometry_grid_origin"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridOrigin(), wxS("geometry_grid_origin"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
 		uniformGrid->GetSteps(x, y, z);
 		str = wxString::Format("(%.6f, %.6f, %.6f)", x, y, z);
-		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridCellSize(), wxT("geometry_grid_cell_size"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridCellSize(), wxS("geometry_grid_cell_size"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
 		int i = 0, j = 0, k = 0;
 		uniformGrid->GetDimensions(i, j, k);
 		str = wxString::Format("(%d, %d, %d)", i, j, k);
-		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridCellDimension(), wxT("geometry_grid_cell_dimesion"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridCellDimension(), wxS("geometry_grid_cell_dimesion"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
 	} else if (cornerGrid != nullptr) {
 		int i = 0, j = 0, k = 0;
 		uniformGrid->GetDimensions(i, j, k);
 		wxString str = wxString::Format("(%d, %d, %d)", i, j, k);
-		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridCellDimension(), wxT("geometry_grid_cell_dimesion"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridCellDimension(), wxS("geometry_grid_cell_dimesion"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
 	} else if (lineString != nullptr) {
-		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfVertices(), wxT("geometry_line_vertcies"), lineString->GetVertexCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfVertices(), wxS("geometry_line_vertcies"), lineString->GetVertexCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
 	} else if (annotation != nullptr) {
-		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfVertices(), wxT("geometry_annotation_vertcies"), annotation->GetPointCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfVertices(), wxS("geometry_annotation_vertcies"), annotation->GetPointCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
 	} else if (mPoint != nullptr) {
-		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfVertices(), wxT("geometry_mpoint_vertcies"), mPoint->GetPointCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
+		AppendIn(categoryGeometry, new wxIntProperty(Strings::MetadataEntryNumberOfVertices(), wxS("geometry_mpoint_vertcies"), mPoint->GetPointCount()))->ChangeFlag(wxPG_PROP_READONLY, true);
 	}
 	SetShapePropertyOfGeometry(categoryGeometry, g3dGeometry->GetProperty(geo3dml::ShapeProperty::SamplingTarget::Vertex));
 	SetShapePropertyOfGeometry(categoryGeometry, g3dGeometry->GetProperty(geo3dml::ShapeProperty::SamplingTarget::Edge));
@@ -253,9 +253,9 @@ void MetadataPage::SetShapePropertyOfGeometry(wxPGProperty* parentCategory, geo3
 	}
 	wxString targetComponent = wxString::FromUTF8(geo3dml::ShapeProperty::SamplingTargetToName(shapeProperty->TargetComponent()));
 	wxPGProperty* category = AppendIn(parentCategory, new wxPropertyCategory(targetComponent + Strings::MetadataCategoryShapeProperty()));
-	AppendIn(category, new wxStringProperty(Strings::MetadataEntryName(), targetComponent + wxT("_name"), wxString::FromUTF8(shapeProperty->Name())))->ChangeFlag(wxPG_PROP_READONLY, true);
-	AppendIn(category, new wxStringProperty(Strings::MetadataEntryId(), targetComponent + wxT("_id"), wxString::FromUTF8(shapeProperty->GetID())))->ChangeFlag(wxPG_PROP_READONLY, true);
-	wxPGProperty* subCategory = AppendIn(category, new wxPropertyCategory(targetComponent + wxT("_") + Strings::MetadataCategorySchema()));
+	AppendIn(category, new wxStringProperty(Strings::MetadataEntryName(), targetComponent + wxS("_name"), wxString::FromUTF8(shapeProperty->Name())))->ChangeFlag(wxPG_PROP_READONLY, true);
+	AppendIn(category, new wxStringProperty(Strings::MetadataEntryId(), targetComponent + wxS("_id"), wxString::FromUTF8(shapeProperty->GetID())))->ChangeFlag(wxPG_PROP_READONLY, true);
+	wxPGProperty* subCategory = AppendIn(category, new wxPropertyCategory(targetComponent + wxS("_") + Strings::MetadataCategorySchema()));
 	for (int i = 0; i < shapeProperty->GetFieldCount(); ++i) {
 		const geo3dml::Field& field = shapeProperty->GetFieldAt(i);
 		SetFieldProperty(subCategory, field, i, targetComponent);
@@ -264,12 +264,12 @@ void MetadataPage::SetShapePropertyOfGeometry(wxPGProperty* parentCategory, geo3
 }
 
 void MetadataPage::SetFieldProperty(wxPGProperty* parentCategory, const geo3dml::Field& field, int fieldIndex, const wxString& namePrefix) {
-	wxPGProperty* propField = AppendIn(parentCategory, new wxStringProperty(wxString::Format("%d", fieldIndex + 1), namePrefix + wxT("_") + wxString::Format("field_%d", fieldIndex), wxString::FromUTF8(field.Name())));
+	wxPGProperty* propField = AppendIn(parentCategory, new wxStringProperty(wxString::Format("%d", fieldIndex + 1), namePrefix + wxS("_") + wxString::Format("field_%d", fieldIndex), wxString::FromUTF8(field.Name())));
 	propField->Enable(false);
-	AppendIn(propField, new wxStringProperty(wxT("Label"), wxPG_LABEL, wxString::FromUTF8(field.Label())))->Enable(false);
-	AppendIn(propField, new wxStringProperty(wxT("DataType"), wxPG_LABEL, wxString::FromUTF8(geo3dml::Field::ValueTypeToName(field.DataType()))))->Enable(false);
-	AppendIn(propField, new wxStringProperty(wxT("UOM"), wxPG_LABEL, wxString::FromUTF8(field.Uom())))->Enable(false);
-	AppendIn(propField, new wxStringProperty(wxT("Definition"), wxPG_LABEL, wxString::FromUTF8(field.Definition())))->Enable(false);
-	AppendIn(propField, new wxStringProperty(wxT("Description"), wxPG_LABEL, wxString::FromUTF8(field.Description())))->Enable(false);
+	AppendIn(propField, new wxStringProperty(wxS("Label"), wxPG_LABEL, wxString::FromUTF8(field.Label())))->Enable(false);
+	AppendIn(propField, new wxStringProperty(wxS("DataType"), wxPG_LABEL, wxString::FromUTF8(geo3dml::Field::ValueTypeToName(field.DataType()))))->Enable(false);
+	AppendIn(propField, new wxStringProperty(wxS("UOM"), wxPG_LABEL, wxString::FromUTF8(field.Uom())))->Enable(false);
+	AppendIn(propField, new wxStringProperty(wxS("Definition"), wxPG_LABEL, wxString::FromUTF8(field.Definition())))->Enable(false);
+	AppendIn(propField, new wxStringProperty(wxS("Description"), wxPG_LABEL, wxString::FromUTF8(field.Description())))->Enable(false);
 	propField->SetExpanded(false);
 }

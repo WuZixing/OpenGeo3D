@@ -17,6 +17,7 @@ public:
 	static wxString TitleOfMenuItemOpenSGeMSGrid();
 	static wxString TitleOfMenuItemQuit();
 	static wxString TitleOfMenuItemAbout();
+	static wxString TitleOfMenuItemFullView();
 	///@}
 
 	/// @name title of windows
@@ -41,6 +42,9 @@ public:
 	static wxString NameOfClassG3DUniformGrid();
 	static wxString NameOfClassG3DCornerGrid();
 	static wxString NameOfClassUnknown();
+	static wxString NameOfRenderRepresentationModePoint();
+	static wxString NameOfRenderRepresentationModeWireframe();
+	static wxString NameOfRenderRepresentationModeSurface();
 	
 	/// @name utilities
 	static wxString ConfirmToQuit();
@@ -68,4 +72,12 @@ public:
 	static wxString MetadataEntryGridOrigin();
 	static wxString MetadataEntryGridCellSize();
 	static wxString MetadataEntryGridCellDimension();
+
+	static wxString RenderCategoryObjectOption();
+	static wxString RenderCategoryShapePropertyOption();
+	static wxString RenderEntryColor();
+	static wxString RenderEntryTransparency();
+	static wxString RenderEntryRepresentationMode();
+	static wxString RenderEntryDrawVertex();
+	static wxString RenderEntryDrawWireframe();
 };

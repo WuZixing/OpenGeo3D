@@ -40,6 +40,10 @@ wxString Strings::TitleOfMenuItemAbout() {
 	return wxString::FromUTF8("关于(&A)");
 }
 
+wxString Strings::TitleOfMenuItemFullView() {
+	return wxString::FromUTF8("全景");
+}
+
 wxString Strings::ConfirmToQuit() {
 	return wxString::Format(wxString::FromUTF8("确定退出%s吗？"), Strings::AppName());
 }
@@ -112,6 +116,18 @@ wxString Strings::NameOfClassG3DCornerGrid() {
 
 wxString Strings::NameOfClassUnknown() {
 	return wxString::FromUTF8("Unknown");
+}
+
+wxString Strings::NameOfRenderRepresentationModePoint() {
+	return wxString::FromUTF8("顶点");
+}
+
+wxString Strings::NameOfRenderRepresentationModeWireframe() {
+	return wxString::FromUTF8("线框");
+}
+
+wxString Strings::NameOfRenderRepresentationModeSurface() {
+	return wxString::FromUTF8("面");
 }
 
 wxString Strings::TipOfOpenGeo3DML() {
@@ -204,4 +220,31 @@ wxString Strings::MetadataEntryGridCellSize() {
 
 wxString Strings::MetadataEntryGridCellDimension() {
 	return wxString::FromUTF8("网格单元维度");
+}
+
+wxString Strings::RenderCategoryObjectOption() {
+	return wxString::FromUTF8("绘制参数");
+}
+
+wxString Strings::RenderCategoryShapePropertyOption() {
+	return wxString::FromUTF8("属性场绘制参数");
+}
+
+wxString Strings::RenderEntryColor() {
+	return wxString::FromUTF8("颜色");
+}
+
+wxString Strings::RenderEntryTransparency() {
+	return wxString::FromUTF8("透明度");
+}
+
+wxString Strings::RenderEntryRepresentationMode() {
+	return wxString::FromUTF8("绘制方式");
+}
+
+wxString Strings::RenderEntryDrawVertex() {
+	return wxString::FromUTF8("绘制顶点");
+}
+wxString Strings::RenderEntryDrawWireframe() {
+	return wxString::FromUTF8("绘制线框");
 }

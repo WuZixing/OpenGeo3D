@@ -9,6 +9,7 @@ public:
 
 		MENU_OpenGeo3DML,
 		MENU_OpenSGeMSGrid,
+		Menu_FullView,
 
 		// general notifications
 		Notify_ResetAndRefreshRenderWindow,

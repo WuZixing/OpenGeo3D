@@ -17,6 +17,7 @@ private:
 	void OnMenuOpened(wxMenuEvent& event);
 	void OnOpenGeo3DML(wxCommandEvent& event);
 	void OnOpenSGeMSGrid(wxCommandEvent& event);
+	void OnFullView(wxCommandEvent& event);
 	void OnNotify(wxNotifyEvent& notify);
 
 private:
