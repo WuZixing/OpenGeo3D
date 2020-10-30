@@ -26,6 +26,8 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   unchecked_box.xpm
   ${CPP_SOURCES}
   Config.h
+  DlgOpenSimpleDrillLog.h
+  DrillLogFile.h
   Events.h
   Frame.h
   MetadataPage.h
@@ -35,6 +37,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ProjectPanel.h
   ProjectTreeCtrl.h
   RenderOptionPage.h
+  SizerOfSimpleDrillLogFiles.h
   Strings.h
   wxWidgets.h
   wxVTKRenderWindowInteractor.h

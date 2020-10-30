@@ -7,8 +7,9 @@ public:
 	enum ID {
 		Window_Frame = wxID_HIGHEST + 1,
 
-		MENU_OpenGeo3DML,
-		MENU_OpenSGeMSGrid,
+		Menu_OpenGeo3DML,
+		Menu_OpenSimpleDrillLog,
+		Menu_OpenSGeMSGrid,
 		Menu_FullView,
 		Menu_BackgroundColor,
 		Menu_ScaleUpZ,

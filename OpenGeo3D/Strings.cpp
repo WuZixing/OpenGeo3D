@@ -28,6 +28,10 @@ wxString Strings::TitleOfMenuItemOpenGeo3DML() {
 	return wxString::FromUTF8("打开Geo3DML文件...");
 }
 
+wxString Strings::TitleOfMenuItemOpenSimpleDrillLog() {
+	return wxString::FromUTF8("打开简单钻孔记录...");
+}
+
 wxString Strings::TitleOfMenuItemOpenSGeMSGrid() {
 	return wxString::FromUTF8("打开SGeMS网格数据...");
 }
@@ -78,6 +82,10 @@ wxString Strings::TitleOfMetadata() {
 
 wxString Strings::TitleOfRenderOption() {
 	return wxString::FromUTF8("可视化");
+}
+
+wxString Strings::TitleOfSizerOfSimpleDrillLog() {
+	return  wxString::FromUTF8("钻孔数据");
 }
 
 wxString Strings::NameOfDefaultG3DProject() {
@@ -150,11 +158,23 @@ wxString Strings::NameOfRenderRepresentationModeSurface() {
 	return wxString::FromUTF8("面");
 }
 
+wxString Strings::NameOfDrillModel() {
+	return wxString::FromUTF8("钻孔");
+}
+
+wxString Strings::NameOfDrillFeatureClass() {
+	return wxString::FromUTF8("钻孔");
+}
+
+wxString Strings::NameOfDrillPositionFeature() {
+	return wxString::FromUTF8("钻孔位置");
+}
+
 wxString Strings::TipOfOpenGeo3DML() {
 	return wxString::FromUTF8("打开Geo3DML文件(UTF-8编码)");
 }
 
-wxString Strings::WildcardOfOpenGeo3DML() {
+wxString Strings::WildcardOfGeo3DMLFile() {
 	return wxString::FromUTF8("Geo3DML文件(UTF-8编码)(*.xml)|*.xml");
 }
 
@@ -164,6 +184,82 @@ wxString Strings::TipOfInputCusotimizedZScale() {
 
 wxString Strings::TipOfInvalidZScale() {
 	return wxString::FromUTF8("Z轴缩放系数无效。有效值是大于0并且小于1000的整数或小数。");
+}
+
+wxString Strings::TipOfOpenDrillPositionFile() {
+	return wxString::FromUTF8("打开钻孔位置文件");
+}
+
+wxString Strings::WildcardOfDrillPositionFile() {
+	return wxString::FromUTF8("钻孔位置文件(*.csv; *.prn)|*.csv;*.prn");
+}
+
+wxString Strings::TipOfOpenDrillLogFile() {
+	return wxString::FromUTF8("打开钻孔测试数据");
+}
+
+wxString Strings::WildcardOfDrillLogFile() {
+	return wxString::FromUTF8("钻孔测试数据(*.csv; *.prn)|*.csv;*.prn");
+}
+
+wxString Strings::ConfirmToEmptyFileList() {
+	return wxString::FromUTF8("确认清空文件列表吗？");
+}
+
+wxString Strings::TipOfOpenFileFailed(const wxString& filePath) {
+	return wxString::Format(wxString::FromUTF8("打开文件%s失败。"), filePath);
+}
+
+wxString Strings::TipOfInvalidDrillPositionData() {
+	return wxString::FromUTF8("钻孔位置数据无效。");
+}
+
+wxString Strings::TipOfInvalidDrillLogData() {
+	return wxString::FromUTF8("钻孔测试数据无效。");
+}
+
+wxString Strings::LabelOfOpen() {
+	return wxString::FromUTF8("打开...");
+}
+
+wxString Strings::LabelOfAppend() {
+	return wxString::FromUTF8("添加...");
+}
+
+wxString Strings::LabelOfClear() {
+	return wxString::FromUTF8("清除");
+}
+
+wxString Strings::LabelOfNo() {
+	return wxString::FromUTF8("#");
+}
+
+wxString Strings::LabelOfFilePath() {
+	return wxString::FromUTF8("文件路径");
+}
+
+wxString Strings::LabelOfField() {
+	return wxString::FromUTF8("属性字段");
+}
+
+wxString Strings::LabelOfFieldValueType() {
+	return wxString::FromUTF8("数据类型");
+}
+
+wxString Strings::LabelOfDrillPositionFilePath() {
+	return wxString::FromUTF8("钻孔位置");
+}
+
+wxString Strings::LabelOfDrillNo() {
+	return wxString::FromUTF8("孔号");
+}
+
+wxString Strings::LabelOfDrillDepth() {
+	return wxString::FromUTF8("孔深");
+}
+
+wxString Strings::LabelOfDrillLog() {
+	return wxString::FromUTF8("测试记录");
 }
 
 wxString Strings::MetadataCategoryBasicInfo() {

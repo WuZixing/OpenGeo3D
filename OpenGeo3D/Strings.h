@@ -14,6 +14,7 @@ public:
 	static wxString TitleOfMenuWindow();
 	static wxString TitleOfMenuHelp();
 	static wxString TitleOfMenuItemOpenGeo3DML();
+	static wxString TitleOfMenuItemOpenSimpleDrillLog();
 	static wxString TitleOfMenuItemOpenSGeMSGrid();
 	static wxString TitleOfMenuItemQuit();
 	static wxString TitleOfMenuItemAbout();
@@ -25,11 +26,12 @@ public:
 	static wxString TitleOfMenuItemResetZScale();
 	///@}
 
-	/// @name title of windows
+	/// @name title of windows/dialogs
 	///@{
 	static wxString TitleOfProjectPanel();
 	static wxString TitleOfMetadata();
 	static wxString TitleOfRenderOption();
+	static wxString TitleOfSizerOfSimpleDrillLog();
 	///@}
 
 	static wxString NameOfDefaultG3DProject();
@@ -50,13 +52,39 @@ public:
 	static wxString NameOfRenderRepresentationModePoint();
 	static wxString NameOfRenderRepresentationModeWireframe();
 	static wxString NameOfRenderRepresentationModeSurface();
+
+	static wxString NameOfDrillModel();
+	static wxString NameOfDrillFeatureClass();
+	static wxString NameOfDrillPositionFeature();
 	
 	static wxString ConfirmToQuit();
 	static wxString TipOfOpenGeo3DML();
-	static wxString WildcardOfOpenGeo3DML();
+	static wxString WildcardOfGeo3DMLFile();
 	static wxString TipOfInputCusotimizedZScale();
 	static wxString TipOfInvalidZScale();
+	static wxString TipOfOpenDrillPositionFile();
+	static wxString WildcardOfDrillPositionFile();
+	static wxString TipOfOpenDrillLogFile();
+	static wxString WildcardOfDrillLogFile();
+	static wxString ConfirmToEmptyFileList();
+	static wxString TipOfOpenFileFailed(const wxString& filePath);
+	static wxString TipOfInvalidDrillPositionData();
+	static wxString TipOfInvalidDrillLogData();
 
+	static wxString LabelOfOpen();
+	static wxString LabelOfAppend();
+	static wxString LabelOfClear();
+	static wxString LabelOfNo();
+	static wxString LabelOfFilePath();
+	static wxString LabelOfField();
+	static wxString LabelOfFieldValueType();
+	static wxString LabelOfDrillPositionFilePath();
+	static wxString LabelOfDrillNo();
+	static wxString LabelOfDrillDepth();
+	static wxString LabelOfDrillLog();
+
+	/// @name metadata
+	///@{
 	static wxString MetadataCategoryBasicInfo();
 	static wxString MetadataCategoryMBR();
 	static wxString MetadataCategoryFeatureClass();
@@ -78,11 +106,15 @@ public:
 	static wxString MetadataEntryGridOrigin();
 	static wxString MetadataEntryGridCellSize();
 	static wxString MetadataEntryGridCellDimension();
+	///@}
 
+	/// @name render options
+	///@{
 	static wxString RenderCategoryObjectOption();
 	static wxString RenderCategoryShapePropertyOption();
 	static wxString RenderEntryColor();
 	static wxString RenderEntryTransparency();
 	static wxString RenderEntryRepresentationMode();
 	static wxString RenderEntryDrawWireframe();
+	///@}
 };

@@ -5,17 +5,19 @@
 #include <wx/propgrid/propgrid.h>
 #include <g3dvtk/ObjectFactory.h>
 #include <g3dxml/XMLReader.h>
+#include "icon.xpm"
+#include "DlgOpenSimpleDrillLog.h"
 #include "Events.h"
 #include "Strings.h"
-#include "icon.xpm"
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU_OPEN(Frame::OnMenuOpened)
     EVT_CLOSE(Frame::OnClose)
     EVT_MENU(wxID_EXIT, Frame::OnExit)
     EVT_MENU(wxID_ABOUT, Frame::OnAbout)
-    EVT_MENU(Events::ID::MENU_OpenGeo3DML, Frame::OnOpenGeo3DML)
-    EVT_MENU(Events::ID::MENU_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
+    EVT_MENU(Events::ID::Menu_OpenGeo3DML, Frame::OnOpenGeo3DML)
+    EVT_MENU(Events::ID::Menu_OpenSimpleDrillLog, Frame::OnOpenSimpleDrillLog)
+    EVT_MENU(Events::ID::Menu_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
     EVT_MENU(Events::ID::Menu_FullView, Frame::OnFullView)
     EVT_MENU(Events::ID::Menu_BackgroundColor, Frame::OnBackgroundColor)
     EVT_MENU(Events::ID::Menu_ScaleUpZ, Frame::OnScaleUpZ)
@@ -42,9 +44,10 @@ void Frame::InitMenu() {
     // File(&F)
     wxMenu* menuFile = new wxMenu();
     wxMenu* menuStructureModel = new wxMenu();
-    menuStructureModel->Append(Events::ID::MENU_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
+    menuStructureModel->Append(Events::ID::Menu_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
+    menuStructureModel->Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
     wxMenu* menuGridModel = new wxMenu();
-    menuGridModel->Append(Events::ID::MENU_OpenSGeMSGrid, Strings::TitleOfMenuItemOpenSGeMSGrid());
+    menuGridModel->Append(Events::ID::Menu_OpenSGeMSGrid, Strings::TitleOfMenuItemOpenSGeMSGrid());
     menuFile->AppendSubMenu(menuStructureModel, Strings::NameOfStructureModel());
     menuFile->AppendSubMenu(menuGridModel, Strings::NameOfGridModel());
     menuFile->AppendSeparator();
@@ -111,13 +114,13 @@ void Frame::OnAbout(wxCommandEvent& event) {
     aboutInfo.SetName(Strings::AppName());
     aboutInfo.SetVersion(Strings::AppVersion());
     aboutInfo.SetDescription(Strings::AppDescription());
-    wxString copyRightString("(C)2020");
+    wxString copyRightString(wxS("(C)2020"));
     wxDateTime dt = wxDateTime::Now();
     if (dt.GetYear() > 2020) {
         copyRightString = wxString::Format("%s-%s", copyRightString, dt.Format("%Y"));
     }
     aboutInfo.SetCopyright(copyRightString);
-    aboutInfo.SetWebSite("https://github.com/WuZixing/OpenGeo3D");
+    aboutInfo.SetWebSite(wxS("https://github.com/WuZixing/OpenGeo3D"));
     wxAboutBox(aboutInfo);
 }
 
@@ -126,7 +129,7 @@ void Frame::OnMenuOpened(wxMenuEvent& event) {
 }
 
 void Frame::OnOpenGeo3DML(wxCommandEvent& event) {
-    wxString filePath = wxFileSelector(Strings::TipOfOpenGeo3DML(), wxEmptyString, wxEmptyString, wxEmptyString, Strings::WildcardOfOpenGeo3DML());
+    wxString filePath = wxFileSelector(Strings::TipOfOpenGeo3DML(), wxEmptyString, wxEmptyString, wxEmptyString, Strings::WildcardOfGeo3DMLFile());
     if (filePath.IsEmpty()) {
         return;
     }
@@ -159,6 +162,20 @@ void Frame::OnOpenGeo3DML(wxCommandEvent& event) {
             }
             delete g3dObject;
         }
+        Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
+    }
+}
+
+void Frame::OnOpenSimpleDrillLog(wxCommandEvent& event) {
+    DlgOpenSimpleDrillLog dlg(this);
+    dlg.CentreOnScreen();
+    if (dlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    wxBusyCursor waiting;
+    geo3dml::Model* g3dModel = dlg.LoadAsG3DModel();
+    if (g3dModel != nullptr) {
+        projectPanel_->AppendG3DModel(g3dModel, true);
         Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
     }
 }

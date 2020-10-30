@@ -16,6 +16,7 @@ private:
 	void OnAbout(wxCommandEvent& event);
 	void OnMenuOpened(wxMenuEvent& event);
 	void OnOpenGeo3DML(wxCommandEvent& event);
+	void OnOpenSimpleDrillLog(wxCommandEvent& event);
 	void OnOpenSGeMSGrid(wxCommandEvent& event);
 	void OnFullView(wxCommandEvent& event);
 	void OnBackgroundColor(wxCommandEvent& event);
