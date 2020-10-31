@@ -2,11 +2,12 @@
 
 #include "wxWidgets.h"
 #include <wx/treectrl.h>
-#include <geo3dml/Project.h>
-#include <g3dgrid/GridCollection.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkTransform.h>
+#include <geo3dml/Project.h>
+#include <g3dgrid/GridCollection.h>
+#include "G3DTreeItemData.h"
 
 class ProjectTreeCtrl : public wxTreeCtrl {
 public:
@@ -23,6 +24,8 @@ public:
 private:
 	void OnStateImageClicked(wxTreeEvent& event);
 	void OnItemSelected(wxTreeEvent& event);
+	void OnItemMenu(wxTreeEvent& event);
+	void OnEditVoxelGrid(wxCommandEvent& event);
 
 private:;
 	geo3dml::Map* GetDefaultMap();
@@ -32,6 +35,11 @@ private:;
 	void AppendFeatureClassToMap(geo3dml::FeatureClass* g3dFC, geo3dml::Map* g3dMap);
 	void UpdateSubTreeOfGrid(g3dgrid::Grid* g3dGrid);
 	void CheckItem(wxTreeItemId item, int checkState);
+
+	void ShowMenuOnStructureModelItem(G3DTreeItemData* itemData, const wxPoint& pos);
+	void ShowMenuOnGridModelItem(G3DTreeItemData* itemData, const wxPoint& pos);
+	void ShowMenuOnActorItem(G3DTreeItemData* itemData, const wxPoint& pos);
+	void ShowMenuOnVoxelGridItem(G3DTreeItemData* itemData, const wxPoint& pos);
 
 private:
 	const int ItemState_Unchecked_, ItemState_Checked_;

@@ -76,6 +76,10 @@ wxString Strings::TitleOfMenuItemProjectPanel() {
 	return wxString::FromUTF8("模型列表");
 }
 
+wxString Strings::TitleOfMenuItemEditVoxelGrid() {
+	return wxString::FromUTF8("查看/配置规则网格...");
+}
+
 wxString Strings::ConfirmToQuit() {
 	return wxString::Format(wxString::FromUTF8("确定退出%s吗？"), Strings::AppName());
 }

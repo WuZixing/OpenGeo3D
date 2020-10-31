@@ -2,7 +2,6 @@
 #include <g3dvtk/Actor.h>
 #include <g3dvtk/ObjectFactory.h>
 #include "Events.h"
-#include "G3DTreeItemData.h"
 #include "Strings.h"
 #include "checked_box.xpm"
 #include "unchecked_box.xpm"
@@ -41,6 +40,8 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 
 	Bind(wxEVT_TREE_STATE_IMAGE_CLICK, &ProjectTreeCtrl::OnStateImageClicked, this);
 	Bind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
+	Bind(wxEVT_TREE_ITEM_MENU, &ProjectTreeCtrl::OnItemMenu, this);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &ProjectTreeCtrl::OnEditVoxelGrid, this, Events::ID::Menu_EditVoxelGrid, Events::ID::Menu_EditVoxelGrid);
 }
 
 ProjectTreeCtrl::~ProjectTreeCtrl() {
@@ -224,4 +225,54 @@ void ProjectTreeCtrl::UpdateSubTreeOfGrid(g3dgrid::Grid* g3dGrid) {
 	}
 	wxTreeItemId gridItem = FindOrInsertVoxelGridItem(voxelGrid);
 	RefreshItem(gridItem);
+}
+
+void ProjectTreeCtrl::OnItemMenu(wxTreeEvent& event) {
+	wxTreeItemId itemId = event.GetItem();
+	SelectItem(itemId);
+	G3DTreeItemData* gItem = static_cast<G3DTreeItemData*>(GetItemData(itemId));
+	switch (gItem->GetItemType()) {
+	case G3DTreeItemData::ItemType::G3D_StructureModel:
+		ShowMenuOnStructureModelItem(gItem, event.GetPoint());
+		break;
+	case G3DTreeItemData::ItemType::G3D_GridModel:
+		ShowMenuOnGridModelItem(gItem, event.GetPoint());
+		break;
+	case G3DTreeItemData::ItemType::G3D_VoxelGrid:
+		ShowMenuOnVoxelGridItem(gItem, event.GetPoint());
+		break;
+	case G3DTreeItemData::ItemType::G3D_Actor:
+		ShowMenuOnActorItem(gItem, event.GetPoint());
+		break;
+	default:
+		return;
+	}
+	event.Skip();
+}
+
+void ProjectTreeCtrl::ShowMenuOnStructureModelItem(G3DTreeItemData* itemData, const wxPoint& pos) {
+	wxMenu menu(GetItemText(itemData->GetId()));
+	menu.Append(Events::ID::Menu_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
+	menu.Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
+	PopupMenu(&menu, pos);
+}
+
+void ProjectTreeCtrl::ShowMenuOnGridModelItem(G3DTreeItemData* itemData, const wxPoint& pos) {
+	wxMenu menu(GetItemText(itemData->GetId()));
+	menu.Append(Events::ID::Menu_NewGridModel, Strings::TitleOfMenuItemNewGridModel());
+	PopupMenu(&menu, pos);
+}
+
+void ProjectTreeCtrl::ShowMenuOnActorItem(G3DTreeItemData* itemData, const wxPoint& pos) {
+
+}
+
+void ProjectTreeCtrl::ShowMenuOnVoxelGridItem(G3DTreeItemData* itemData, const wxPoint& pos) {
+	wxMenu menu(GetItemText(itemData->GetId()));
+	menu.Append(Events::ID::Menu_EditVoxelGrid, Strings::TitleOfMenuItemEditVoxelGrid());
+	PopupMenu(&menu, pos);
+}
+
+void ProjectTreeCtrl::OnEditVoxelGrid(wxCommandEvent& event) {
+	wxMessageBox(Strings::TitleOfMenuItemEditVoxelGrid());
 }

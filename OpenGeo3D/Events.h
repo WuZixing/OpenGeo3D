@@ -18,6 +18,7 @@ public:
 		Menu_CustomizedZScale,
 		Menu_ResetZScale,
 		Menu_ProjectPanel,
+		Menu_EditVoxelGrid,
 
 		// general notifications
 		Notify_ResetAndRefreshRenderWindow,

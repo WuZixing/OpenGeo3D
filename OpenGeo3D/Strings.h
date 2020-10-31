@@ -26,6 +26,7 @@ public:
 	static wxString TitleOfMenuItemResetZScale();
 	static wxString TitleOfMenuItemNewGridModel();
 	static wxString TitleOfMenuItemProjectPanel();
+	static wxString TitleOfMenuItemEditVoxelGrid();
 	///@}
 
 	/// @name title of windows/dialogs
