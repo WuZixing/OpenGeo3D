@@ -68,6 +68,14 @@ wxString Strings::TitleOfMenuItemResetZScale() {
 	return wxString::FromUTF8("取消Z轴缩放");
 }
 
+wxString Strings::TitleOfMenuItemNewGridModel() {
+	return wxString::FromUTF8("新建网格模型...");
+}
+
+wxString Strings::TitleOfMenuItemProjectPanel() {
+	return wxString::FromUTF8("模型列表");
+}
+
 wxString Strings::ConfirmToQuit() {
 	return wxString::Format(wxString::FromUTF8("确定退出%s吗？"), Strings::AppName());
 }
@@ -93,7 +101,7 @@ wxString Strings::NameOfDefaultG3DProject() {
 }
 
 wxString Strings::NameOfDefaultG3DMap() {
-	return wxString::FromUTF8("默认地质图");
+	return wxString::FromUTF8("默认场景");
 }
 
 wxString Strings::NameOfStructureModel() {
@@ -158,6 +166,10 @@ wxString Strings::NameOfRenderRepresentationModeSurface() {
 	return wxString::FromUTF8("面");
 }
 
+wxString Strings::NameOfVoxelGrid() {
+	return wxString::FromUTF8("规则网格");
+}
+
 wxString Strings::NameOfDrillModel() {
 	return wxString::FromUTF8("钻孔");
 }
@@ -218,6 +230,18 @@ wxString Strings::TipOfInvalidDrillLogData() {
 	return wxString::FromUTF8("钻孔测试数据无效。");
 }
 
+wxString Strings::TipOfInvalidName() {
+	return wxString::FromUTF8("名字无效。");
+}
+
+wxString Strings::TipOfInvalidSRS() {
+	return wxString::FromUTF8("坐标系信息无效。");
+}
+
+wxString Strings::TipOfInvalidGridOrigin() {
+	return wxString::FromUTF8("网格原点坐标无效。");
+}
+
 wxString Strings::LabelOfOpen() {
 	return wxString::FromUTF8("打开...");
 }
@@ -228,6 +252,30 @@ wxString Strings::LabelOfAppend() {
 
 wxString Strings::LabelOfClear() {
 	return wxString::FromUTF8("清除");
+}
+
+wxString Strings::LabelOfName() {
+	return wxString::FromUTF8("名字");
+}
+
+wxString Strings::LabelOfDescription() {
+	return wxString::FromUTF8("说明");
+}
+
+wxString Strings::LabelOfSRS() {
+	return wxString::FromUTF8("坐标系");
+}
+
+wxString Strings::LabelOfX() {
+	return wxString::FromUTF8("X");
+}
+
+wxString Strings::LabelOfY() {
+	return wxString::FromUTF8("Y");
+}
+
+wxString Strings::LabelOfZ() {
+	return wxString::FromUTF8("Z");
 }
 
 wxString Strings::LabelOfNo() {
@@ -262,6 +310,14 @@ wxString Strings::LabelOfDrillLog() {
 	return wxString::FromUTF8("测试记录");
 }
 
+wxString Strings::LabelOfGridOrigin() {
+	return wxString::FromUTF8("网格原点");
+}
+
+wxString Strings::LabelOfGridCellSize() {
+	return wxString::FromUTF8("网格单元大小");
+}
+
 wxString Strings::MetadataCategoryBasicInfo() {
 	return wxString::FromUTF8("基本信息");
 }
@@ -276,6 +332,14 @@ wxString Strings::MetadataEntryId() {
 
 wxString Strings::MetadataEntryName() {
 	return wxString::FromUTF8("名字");
+}
+
+wxString Strings::MetadataEntryDescription() {
+	return wxString::FromUTF8("说明");
+}
+
+wxString Strings::MetadataEntrySRS() {
+	return wxString::FromUTF8("坐标系");
 }
 
 wxString Strings::MetadataEntryChildrenNumber() {
@@ -316,6 +380,10 @@ wxString Strings::MetadataCategoryGeometry() {
 
 wxString Strings::MetadataCategoryShapeProperty() {
 	return wxString::FromUTF8("属性场");
+}
+
+wxString Strings::MetadataCategoryVoxelGrid() {
+	return wxString::FromUTF8("规则网格");
 }
 
 wxString Strings::MetadataEntryClassName() {

@@ -2,6 +2,7 @@
 
 #include "wxWidgets.h"
 #include <wx/propgrid/propgrid.h>
+#include <g3dgrid/GridCollection.h>
 #include <geo3dml/Project.h>
 #include "G3DTreeItemData.h"
 
@@ -17,6 +18,8 @@ private:
 	void BindToG3DMap(geo3dml::Map* g3dMap);
 	void BindToG3DLayer(geo3dml::Layer* g3dLayer);
 	void BindToG3DActor(geo3dml::Actor* g3dActor);
+	void BindToG3DGridCollection(g3dgrid::GridCollection* g3dGrids);
+	void BindToG3DVoxelGrid(g3dgrid::VoxelGrid* g3dVoxelGrid);
 
 	void SetBasicInfo(const wxString& datasetCategory, const wxString& datasetId, unsigned int numberOfChildren);
 	void SetMBRProperty(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);

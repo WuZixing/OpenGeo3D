@@ -13,6 +13,7 @@ find_package(VTK 9.0 REQUIRED)
 include_directories(${GEO3DML_INCLUDE_DIRS})
 include_directories(${G3DXML_INCLUDE_DIRS})
 include_directories(${G3DVTK_INCLUDE_DIRS})
+include_directories(${G3DGRID_INCLUDE_DIRS})
 
 if(MSVC)
   set(TARGET_PROPERTY "WIN32")
@@ -26,6 +27,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   unchecked_box.xpm
   ${CPP_SOURCES}
   Config.h
+  DlgNewGridModel.h
   DlgOpenSimpleDrillLog.h
   DrillLogFile.h
   Events.h
@@ -44,6 +46,6 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
 )
 
 target_link_libraries(${APP_NAME} 
-  PRIVATE ${wxWidgets_LIBRARIES} ${VTK_LIBRARIES} ${GEO3DML_LIBRARIES} ${G3DXML_LIBRARIES} ${G3DVTK_LIBRARIES}
+  PRIVATE ${wxWidgets_LIBRARIES} ${VTK_LIBRARIES} ${GEO3DML_LIBRARIES} ${G3DXML_LIBRARIES} ${G3DVTK_LIBRARIES} ${G3DGRID_LIBRARIES}
 )
 vtk_module_autoinit(TARGETS ${APP_NAME} MODULES ${VTK_LIBRARIES})

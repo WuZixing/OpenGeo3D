@@ -9,6 +9,7 @@ public:
 
 		Menu_OpenGeo3DML,
 		Menu_OpenSimpleDrillLog,
+		Menu_NewGridModel,
 		Menu_OpenSGeMSGrid,
 		Menu_FullView,
 		Menu_BackgroundColor,
@@ -16,6 +17,7 @@ public:
 		Menu_ScaleDownZ,
 		Menu_CustomizedZScale,
 		Menu_ResetZScale,
+		Menu_ProjectPanel,
 
 		// general notifications
 		Notify_ResetAndRefreshRenderWindow,

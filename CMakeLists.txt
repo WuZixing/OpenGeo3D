@@ -10,4 +10,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 add_subdirectory(Geo3DML-CPP)
+add_subdirectory(GridModel)
 add_subdirectory(OpenGeo3D)

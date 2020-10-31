@@ -45,3 +45,7 @@ void ProjectPanel::OnChildrenNotify(wxNotifyEvent& event) {
 		break;
 	}
 }
+
+void ProjectPanel::AppendG3DGrid(g3dgrid::Grid* grid) {
+	projectTree_->AppendG3DGrid(grid);
+}

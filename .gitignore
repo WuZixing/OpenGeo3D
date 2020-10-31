@@ -2,6 +2,7 @@
 !.gitignore
 !.gitmodules
 !Geo3DML-CPP/
+!GridModel/
 !OpenGeo3D/
 !CMakeLists.txt
 !LICENSE

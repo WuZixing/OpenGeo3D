@@ -12,7 +12,8 @@ public:
 		G3D_GridModel,
 		G3D_Map,
 		G3D_Layer,
-		G3D_Actor
+		G3D_Actor,
+		G3D_VoxelGrid
 	};
 
 public:

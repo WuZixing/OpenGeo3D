@@ -24,6 +24,8 @@ public:
 	static wxString TitleOfMenuItemScaleDownZ();
 	static wxString TitleOfMenuItemCustomizedZScale();
 	static wxString TitleOfMenuItemResetZScale();
+	static wxString TitleOfMenuItemNewGridModel();
+	static wxString TitleOfMenuItemProjectPanel();
 	///@}
 
 	/// @name title of windows/dialogs
@@ -52,6 +54,7 @@ public:
 	static wxString NameOfRenderRepresentationModePoint();
 	static wxString NameOfRenderRepresentationModeWireframe();
 	static wxString NameOfRenderRepresentationModeSurface();
+	static wxString NameOfVoxelGrid();
 
 	static wxString NameOfDrillModel();
 	static wxString NameOfDrillFeatureClass();
@@ -70,10 +73,19 @@ public:
 	static wxString TipOfOpenFileFailed(const wxString& filePath);
 	static wxString TipOfInvalidDrillPositionData();
 	static wxString TipOfInvalidDrillLogData();
+	static wxString TipOfInvalidName();
+	static wxString TipOfInvalidSRS();
+	static wxString TipOfInvalidGridOrigin();
 
 	static wxString LabelOfOpen();
 	static wxString LabelOfAppend();
 	static wxString LabelOfClear();
+	static wxString LabelOfName();
+	static wxString LabelOfDescription();
+	static wxString LabelOfSRS();
+	static wxString LabelOfX();
+	static wxString LabelOfY();
+	static wxString LabelOfZ();
 	static wxString LabelOfNo();
 	static wxString LabelOfFilePath();
 	static wxString LabelOfField();
@@ -82,6 +94,8 @@ public:
 	static wxString LabelOfDrillNo();
 	static wxString LabelOfDrillDepth();
 	static wxString LabelOfDrillLog();
+	static wxString LabelOfGridOrigin();
+	static wxString LabelOfGridCellSize();
 
 	/// @name metadata
 	///@{
@@ -92,8 +106,11 @@ public:
 	static wxString MetadataCategoryFeature();
 	static wxString MetadataCategoryGeometry();
 	static wxString MetadataCategoryShapeProperty();
+	static wxString MetadataCategoryVoxelGrid();
 	static wxString MetadataEntryId();
 	static wxString MetadataEntryName();
+	static wxString MetadataEntryDescription();
+	static wxString MetadataEntrySRS();
 	static wxString MetadataEntryDatasetClassName();
 	static wxString MetadataEntryChildrenNumber();
 	static wxString MetadataEntryMBRRangeX();

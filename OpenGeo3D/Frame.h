@@ -17,6 +17,7 @@ private:
 	void OnMenuOpened(wxMenuEvent& event);
 	void OnOpenGeo3DML(wxCommandEvent& event);
 	void OnOpenSimpleDrillLog(wxCommandEvent& event);
+	void OnNewGridModel(wxCommandEvent& event);
 	void OnOpenSGeMSGrid(wxCommandEvent& event);
 	void OnFullView(wxCommandEvent& event);
 	void OnBackgroundColor(wxCommandEvent& event);
@@ -24,6 +25,7 @@ private:
 	void OnScaleDownZ(wxCommandEvent& event);
 	void OnCustomizedZScale(wxCommandEvent& event);
 	void OnResetZScale(wxCommandEvent& event);
+	void OnProjectPanel(wxCommandEvent& event);
 	void OnNotify(wxNotifyEvent& notify);
 
 private:

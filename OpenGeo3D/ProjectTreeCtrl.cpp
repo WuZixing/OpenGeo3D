@@ -15,6 +15,9 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 	g3dProject_.reset(g3dFactory.NewProject());
 	g3dProject_->SetID(geo3dml::Object::NewID());
 	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
+	g3dGrids_ = std::make_unique<g3dgrid::GridCollection>();
+	g3dGrids_->SetID(geo3dml::Object::NewID());
+	g3dGrids_->SetName(Strings::NameOfGridModel().ToUTF8().data());
 
 	wxIcon icons[2];
 	icons[ItemState_Checked_] = wxIcon(xpm_checked_box);
@@ -28,9 +31,9 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 	rootStructureModel_ = AppendItem(rootItem, Strings::NameOfStructureModel());
 	SetItemData(rootStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
 	SetItemState(rootStructureModel_, ItemState_Checked_);
-	rootOfGridMode_ = AppendItem(rootItem, Strings::NameOfGridModel());
-	SetItemData(rootOfGridMode_, new G3DTreeItemData(nullptr, G3DTreeItemData::ItemType::G3D_GridModel));
-	SetItemState(rootOfGridMode_, ItemState_Checked_);
+	rootOfGridModel_ = AppendItem(rootItem, Strings::NameOfGridModel());
+	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dGrids_.get(), G3DTreeItemData::ItemType::G3D_GridModel));
+	SetItemState(rootOfGridModel_, ItemState_Checked_);
 
 	renderer_ = vtkSmartPointer<vtkRenderer>::New();
 	transform_ = vtkSmartPointer<vtkTransform>::New();
@@ -41,7 +44,7 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 }
 
 ProjectTreeCtrl::~ProjectTreeCtrl() {
-
+	
 }
 
 void ProjectTreeCtrl::UpdateSubTreeOfMap(geo3dml::Map* g3dMap) {
@@ -149,6 +152,11 @@ void ProjectTreeCtrl::AppendG3DMap(geo3dml::Map* map) {
 	UpdateSubTreeOfMap(map);
 }
 
+void ProjectTreeCtrl::AppendG3DGrid(g3dgrid::Grid* grid) {
+	g3dGrids_->AddGrid(grid);
+	UpdateSubTreeOfGrid(grid);
+}
+
 geo3dml::Map* ProjectTreeCtrl::GetDefaultMap() {
 	if (g3dProject_->GetMapCount() > 0) {
 		return g3dProject_->GetMapAt(0);
@@ -187,4 +195,33 @@ void ProjectTreeCtrl::OnItemSelected(wxTreeEvent& event) {
 		evt.SetInt(G3DTreeItemData::ItemType::Unknown);
 	}
 	wxPostEvent(GetParent(), evt);
+}
+
+wxTreeItemId ProjectTreeCtrl::FindOrInsertVoxelGridItem(g3dgrid::VoxelGrid* g3dVoxelGrid) {
+	wxTreeItemIdValue cookie = nullptr;
+	wxTreeItemId gridItem = GetFirstChild(rootOfGridModel_, cookie);
+	while (gridItem.IsOk()) {
+		G3DTreeItemData* itemData = dynamic_cast<G3DTreeItemData*>(GetItemData(gridItem));
+		if (itemData != nullptr && itemData->GetItemType() == G3DTreeItemData::ItemType::G3D_VoxelGrid) {
+			g3dgrid::VoxelGrid* gridInItem = static_cast<g3dgrid::VoxelGrid*>(itemData->GetG3DObject());
+			if (gridInItem == g3dVoxelGrid) {
+				return gridItem;
+			}
+		}
+		gridItem = GetNextChild(rootOfGridModel_, cookie);
+	}
+	gridItem = AppendItem(rootOfGridModel_, wxString::FromUTF8(g3dVoxelGrid->GetName()));
+	SetItemData(gridItem, new G3DTreeItemData(g3dVoxelGrid, G3DTreeItemData::ItemType::G3D_VoxelGrid));
+	SetItemState(gridItem, ItemState_Checked_);
+	RefreshItem(rootOfGridModel_);
+	return gridItem;
+}
+
+void ProjectTreeCtrl::UpdateSubTreeOfGrid(g3dgrid::Grid* g3dGrid) {
+	g3dgrid::VoxelGrid* voxelGrid = dynamic_cast<g3dgrid::VoxelGrid*>(g3dGrid);
+	if (voxelGrid == nullptr) {
+		return;
+	}
+	wxTreeItemId gridItem = FindOrInsertVoxelGridItem(voxelGrid);
+	RefreshItem(gridItem);
 }

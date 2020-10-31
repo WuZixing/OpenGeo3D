@@ -25,8 +25,6 @@ void MetadataPage::BindToItem(geo3dml::Object* g3dObject, G3DTreeItemData::ItemT
 		BindToStructureModels(g3dProject);
 		break;
 	}
-	case G3DTreeItemData::ItemType::G3D_GridModel:
-		break;
 	case G3DTreeItemData::ItemType::G3D_Map: {
 		geo3dml::Map* g3dMap = static_cast<geo3dml::Map*>(g3dObject);
 		BindToG3DMap(g3dMap);
@@ -40,6 +38,16 @@ void MetadataPage::BindToItem(geo3dml::Object* g3dObject, G3DTreeItemData::ItemT
 	case G3DTreeItemData::ItemType::G3D_Actor: {
 		geo3dml::Actor* g3dActor = static_cast<geo3dml::Actor*>(g3dObject);
 		BindToG3DActor(g3dActor);
+		break;
+	}
+	case G3DTreeItemData::ItemType::G3D_GridModel: {
+		g3dgrid::GridCollection* grids = static_cast<g3dgrid::GridCollection*>(g3dObject);
+		BindToG3DGridCollection(grids);
+		break;
+	}
+	case G3DTreeItemData::ItemType::G3D_VoxelGrid: {
+		g3dgrid::VoxelGrid* g3dGrid = static_cast<g3dgrid::VoxelGrid*>(g3dObject);
+		BindToG3DVoxelGrid(g3dGrid);
 		break;
 	}
 	default:
@@ -95,6 +103,28 @@ void MetadataPage::BindToG3DActor(geo3dml::Actor* g3dActor) {
 	SetFeatureProperty(g3dActor->GetBindingFeature());
 	// geometry
 	SetGeometryProperty(g3dActor->GetBindingGeometry());
+}
+
+void MetadataPage::BindToG3DGridCollection(g3dgrid::GridCollection* g3dGrids) {
+	SetBasicInfo(Strings::NameOfGridModel(), wxString::FromUTF8(g3dGrids->GetID()), g3dGrids->GetGridCount());
+	double minX = 0, maxX = -1, minY = 0, maxY = -1, minZ = 0, maxZ = -1;
+	g3dGrids->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
+	SetMBRProperty(minX, minY, minZ, maxX, maxY, maxZ);
+}
+
+void MetadataPage::BindToG3DVoxelGrid(g3dgrid::VoxelGrid* g3dVoxelGrid) {
+	SetBasicInfo(Strings::NameOfVoxelGrid(), wxString::FromUTF8(g3dVoxelGrid->GetID()), g3dVoxelGrid->GetLodCount());
+	double minX = 0, maxX = -1, minY = 0, maxY = -1, minZ = 0, maxZ = -1;
+	g3dVoxelGrid->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
+	SetMBRProperty(minX, minY, minZ, maxX, maxY, maxZ);
+	// voxel grid
+	wxPGProperty* categoryVG = Append(new wxPropertyCategory(Strings::MetadataCategoryVoxelGrid()));
+	AppendIn(categoryVG, new wxStringProperty(Strings::MetadataEntryDescription(), wxS("voxel_grid_description"), wxString::FromUTF8(g3dVoxelGrid->GetDescription())))->Enable(false);
+	AppendIn(categoryVG, new wxStringProperty(Strings::MetadataEntrySRS(), wxS("voxel_grid_srs"), wxString::FromUTF8(g3dVoxelGrid->GetSRS())))->Enable(false);
+	geo3dml::Point3D pt = g3dVoxelGrid->GetOrigin();
+	wxString str = wxString::Format("(%.6f, %.6f, %.6f)", pt.x, pt.y, pt.z);
+	AppendIn(categoryVG, new wxStringProperty(Strings::MetadataEntryGridOrigin(), wxS("voxel_grid_origin"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
+	// LOD
 }
 
 void MetadataPage::SetBasicInfo(const wxString& datasetCategory, const wxString& datasetId, unsigned int numberOfChildren) {

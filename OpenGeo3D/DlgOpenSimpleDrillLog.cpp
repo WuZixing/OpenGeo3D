@@ -10,8 +10,8 @@ DlgOpenSimpleDrillLog::DlgOpenSimpleDrillLog(wxWindow* parent) : wxDialog(parent
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DlgOpenSimpleDrillLog::OnButtonOK, this, wxID_OK);
 
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(sizerOfDrillFiles_, wxSizerFlags(1).Expand().Border(wxALL, 4));
-	mainSizer->Add(btnSizer, wxSizerFlags(0).Expand().Border(wxALL, 4));
+	mainSizer->Add(sizerOfDrillFiles_, wxSizerFlags(1).Expand().Border(wxALL, 10));
+	mainSizer->Add(btnSizer, wxSizerFlags(0).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 10));
 
 	SetSizerAndFit(mainSizer);
 }

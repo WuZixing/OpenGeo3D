@@ -6,6 +6,7 @@
 #include <g3dvtk/ObjectFactory.h>
 #include <g3dxml/XMLReader.h>
 #include "icon.xpm"
+#include "DlgNewGridModel.h"
 #include "DlgOpenSimpleDrillLog.h"
 #include "Events.h"
 #include "Strings.h"
@@ -17,6 +18,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(wxID_ABOUT, Frame::OnAbout)
     EVT_MENU(Events::ID::Menu_OpenGeo3DML, Frame::OnOpenGeo3DML)
     EVT_MENU(Events::ID::Menu_OpenSimpleDrillLog, Frame::OnOpenSimpleDrillLog)
+    EVT_MENU(Events::ID::Menu_NewGridModel, Frame::OnNewGridModel)
     EVT_MENU(Events::ID::Menu_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
     EVT_MENU(Events::ID::Menu_FullView, Frame::OnFullView)
     EVT_MENU(Events::ID::Menu_BackgroundColor, Frame::OnBackgroundColor)
@@ -24,6 +26,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(Events::ID::Menu_ScaleDownZ, Frame::OnScaleDownZ)
     EVT_MENU(Events::ID::Menu_CustomizedZScale, Frame::OnCustomizedZScale)
     EVT_MENU(Events::ID::Menu_ResetZScale, Frame::OnResetZScale)
+    EVT_MENU(Events::ID::Menu_ProjectPanel, Frame::OnProjectPanel)
     EVT_NOTIFY_RANGE(wxEVT_NULL, Events::ID::Notify_ResetAndRefreshRenderWindow, Events::ID::Notify_RefreshRenderWindow, Frame::OnNotify)
 wxEND_EVENT_TABLE()
 
@@ -47,6 +50,7 @@ void Frame::InitMenu() {
     menuStructureModel->Append(Events::ID::Menu_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
     menuStructureModel->Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
     wxMenu* menuGridModel = new wxMenu();
+    menuGridModel->Append(Events::ID::Menu_NewGridModel, Strings::TitleOfMenuItemNewGridModel());
     menuGridModel->Append(Events::ID::Menu_OpenSGeMSGrid, Strings::TitleOfMenuItemOpenSGeMSGrid());
     menuFile->AppendSubMenu(menuStructureModel, Strings::NameOfStructureModel());
     menuFile->AppendSubMenu(menuGridModel, Strings::NameOfGridModel());
@@ -63,6 +67,8 @@ void Frame::InitMenu() {
     menuWnd->Append(Events::ID::Menu_ScaleDownZ, Strings::TitleOfMenuItemScaleDownZ());
     menuWnd->Append(Events::ID::Menu_CustomizedZScale, Strings::TitleOfMenuItemCustomizedZScale());
     menuWnd->Append(Events::ID::Menu_ResetZScale, Strings::TitleOfMenuItemResetZScale());
+    menuWnd->AppendSeparator();
+    menuWnd->AppendCheckItem(Events::ID::Menu_ProjectPanel, Strings::TitleOfMenuItemProjectPanel());
     menuBar->Append(menuWnd, Strings::TitleOfMenuWindow());
 
     // Help(&H)
@@ -125,7 +131,15 @@ void Frame::OnAbout(wxCommandEvent& event) {
 }
 
 void Frame::OnMenuOpened(wxMenuEvent& event) {
-
+    wxMenu* evtMenu = event.GetMenu();
+    if (evtMenu == nullptr) {
+        return;
+    }
+    wxMenuItem* itemProjectPanel = evtMenu->FindItem(Events::ID::Menu_ProjectPanel);
+    if (itemProjectPanel != nullptr) {
+        wxAuiPaneInfo& pane = auiMgr_.GetPane(projectPanel_);
+        itemProjectPanel->Check(pane.IsShown());
+    }
 }
 
 void Frame::OnOpenGeo3DML(wxCommandEvent& event) {
@@ -176,6 +190,20 @@ void Frame::OnOpenSimpleDrillLog(wxCommandEvent& event) {
     geo3dml::Model* g3dModel = dlg.LoadAsG3DModel();
     if (g3dModel != nullptr) {
         projectPanel_->AppendG3DModel(g3dModel, true);
+        Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
+    }
+}
+
+void Frame::OnNewGridModel(wxCommandEvent& event) {
+    DlgNewGridModel dlg(this);
+    dlg.CenterOnScreen();
+    if (dlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    wxBusyCursor waiting;
+    g3dgrid::Grid* grid = dlg.MakeGrid();
+    if (grid != nullptr) {
+        projectPanel_->AppendG3DGrid(grid);
         Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
     }
 }
@@ -270,4 +298,11 @@ void Frame::OnResetZScale(wxCommandEvent& event) {
     vtkTransform* t = projectPanel_->GetTransform();
     t->Identity();
     Events::Notify(Events::ID::Notify_RefreshRenderWindow);
+}
+
+void Frame::OnProjectPanel(wxCommandEvent& event) {
+    wxBusyCursor waiting;
+    wxAuiPaneInfo& pane = auiMgr_.GetPane(projectPanel_);
+    pane.Show(!pane.IsShown());
+    auiMgr_.Update();
 }
