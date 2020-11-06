@@ -1,8 +1,9 @@
 #pragma once
 
+#include <map>
 #include <geo3dml/Geo3DML.h>
 #include <geo3dml/Point.h>
-#include "Lod.h"
+#include "LOD.h"
 
 namespace g3dgrid {
 
@@ -28,19 +29,22 @@ namespace g3dgrid {
 		VoxelGrid& SetDescription(const std::string& description);
 		VoxelGrid& SetSRS(const std::string& srs);
 		VoxelGrid& SetOrigin(const geo3dml::Point3D& origin);
+		VoxelGrid& SetLOD(const LOD& lod);
+		VoxelGrid& DeleteLOD(int level);
 
 		std::string GetName() const;
 		std::string GetDescription() const;
 		std::string GetSRS() const;
 		geo3dml::Point3D GetOrigin() const;
 
-		int GetLodCount() const;
-		Lod GetLodAt(int i) const;
+		int GetLODCount() const;
+		LOD* GetLOD(int level) const;
 
 		virtual bool GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) override;
 
 	private:
 		std::string name_, description_, srs_;
 		geo3dml::Point3D origin_;
+		std::map<int, LOD*> lods_;
 	};
 }

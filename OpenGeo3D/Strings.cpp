@@ -80,6 +80,14 @@ wxString Strings::TitleOfMenuItemEditVoxelGrid() {
 	return wxString::FromUTF8("查看/配置规则网格...");
 }
 
+wxString Strings::TitleOfMenuItemDeleteGridLOD() {
+	return wxString::FromUTF8("删除LOD");
+}
+
+wxString Strings::TitleOfMenuItemAppendGridLOD() {
+	return wxString::FromUTF8("增加LOD");
+}
+
 wxString Strings::ConfirmToQuit() {
 	return wxString::Format(wxString::FromUTF8("确定退出%s吗？"), Strings::AppName());
 }
@@ -246,6 +254,18 @@ wxString Strings::TipOfInvalidGridOrigin() {
 	return wxString::FromUTF8("网格原点坐标无效。");
 }
 
+wxString Strings::ConfirmToDeleteGridLOD(int level) {
+	return wxString::Format(wxString::FromUTF8("确认删除 LOD-%d 吗？"), level);
+}
+
+wxString Strings::TipOfGridLODAndCellScale() {
+	return wxString::FromUTF8("0级网格最粗，层级越高网格越精细。\r\n“网格大小系数（X/Y/Z）”是指前一层级网格的大小相对于当前级网格的系数。");
+}
+
+wxString Strings::TipOfInvalidGridCellSize() {
+	return wxString::FromUTF8("网格单元的大小无效。");
+}
+
 wxString Strings::LabelOfOpen() {
 	return wxString::FromUTF8("打开...");
 }
@@ -256,6 +276,10 @@ wxString Strings::LabelOfAppend() {
 
 wxString Strings::LabelOfClear() {
 	return wxString::FromUTF8("清除");
+}
+
+wxString Strings::LabelOfID() {
+	return wxString::FromUTF8("ID");
 }
 
 wxString Strings::LabelOfName() {
@@ -320,6 +344,46 @@ wxString Strings::LabelOfGridOrigin() {
 
 wxString Strings::LabelOfGridCellSize() {
 	return wxString::FromUTF8("网格单元大小");
+}
+
+wxString Strings::LabelOfGridCellScale() {
+	return wxString::FromUTF8("网格单元大小系数");
+}
+
+wxString Strings::LabelOfGridLOD() {
+	return wxString::FromUTF8("LOD");
+}
+
+wxString Strings::LabelOfCellSizeX() {
+	return wxString::FromUTF8("网格大小：X");
+}
+
+wxString Strings::LabelOfCellSizeY() {
+	return wxString::FromUTF8("网格大小：Y");
+}
+
+wxString Strings::LabelOfCellSizeZ() {
+	return wxString::FromUTF8("网格大小：Z");
+}
+
+wxString Strings::LabelOfCellScaleX() {
+	return wxString::FromUTF8("网格大小系数：X");
+}
+
+wxString Strings::LabelOfCellScaleY() {
+	return wxString::FromUTF8("网格大小系数：Y");
+}
+
+wxString Strings::LabelOfCellScaleZ() {
+	return wxString::FromUTF8("网格大小系数：Z");
+}
+
+wxString Strings::LabelOfCellCount() {
+	return wxString::FromUTF8("网格数");
+}
+
+wxString Strings::LabelOfSchema() {
+	return Strings::MetadataCategorySchema();
 }
 
 wxString Strings::MetadataCategoryBasicInfo() {

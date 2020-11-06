@@ -27,6 +27,8 @@ public:
 	static wxString TitleOfMenuItemNewGridModel();
 	static wxString TitleOfMenuItemProjectPanel();
 	static wxString TitleOfMenuItemEditVoxelGrid();
+	static wxString TitleOfMenuItemDeleteGridLOD();
+	static wxString TitleOfMenuItemAppendGridLOD();
 	///@}
 
 	/// @name title of windows/dialogs
@@ -77,10 +79,14 @@ public:
 	static wxString TipOfInvalidName();
 	static wxString TipOfInvalidSRS();
 	static wxString TipOfInvalidGridOrigin();
+	static wxString ConfirmToDeleteGridLOD(int level);
+	static wxString TipOfGridLODAndCellScale();
+	static wxString TipOfInvalidGridCellSize();
 
 	static wxString LabelOfOpen();
 	static wxString LabelOfAppend();
 	static wxString LabelOfClear();
+	static wxString LabelOfID();
 	static wxString LabelOfName();
 	static wxString LabelOfDescription();
 	static wxString LabelOfSRS();
@@ -97,6 +103,16 @@ public:
 	static wxString LabelOfDrillLog();
 	static wxString LabelOfGridOrigin();
 	static wxString LabelOfGridCellSize();
+	static wxString LabelOfGridCellScale();
+	static wxString LabelOfGridLOD();
+	static wxString LabelOfCellSizeX();
+	static wxString LabelOfCellSizeY();
+	static wxString LabelOfCellSizeZ();
+	static wxString LabelOfCellScaleX();
+	static wxString LabelOfCellScaleY();
+	static wxString LabelOfCellScaleZ();
+	static wxString LabelOfCellCount();
+	static wxString LabelOfSchema();
 
 	/// @name metadata
 	///@{

@@ -176,6 +176,7 @@ void Frame::OnOpenGeo3DML(wxCommandEvent& event) {
             }
             delete g3dObject;
         }
+        projectPanel_->ExpandStructureModelTree();
         Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
     }
 }
@@ -190,6 +191,7 @@ void Frame::OnOpenSimpleDrillLog(wxCommandEvent& event) {
     geo3dml::Model* g3dModel = dlg.LoadAsG3DModel();
     if (g3dModel != nullptr) {
         projectPanel_->AppendG3DModel(g3dModel, true);
+        projectPanel_->ExpandStructureModelTree();
         Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
     }
 }
@@ -204,6 +206,7 @@ void Frame::OnNewGridModel(wxCommandEvent& event) {
     g3dgrid::Grid* grid = dlg.MakeGrid();
     if (grid != nullptr) {
         projectPanel_->AppendG3DGrid(grid);
+        projectPanel_->ExpandGridModelNodeTree();
         Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
     }
 }

@@ -34,6 +34,14 @@ void ProjectPanel::AppendG3DMap(geo3dml::Map* map) {
 	projectTree_->AppendG3DMap(map);
 }
 
+void ProjectPanel::ExpandStructureModelTree() {
+	projectTree_->ExpandStructureModelTree();
+}
+
+void ProjectPanel::ExpandGridModelNodeTree() {
+	projectTree_->ExpandGridModelNodeTree();
+}
+
 void ProjectPanel::OnChildrenNotify(wxNotifyEvent& event) {
 	wxBusyCursor waiting;
 	switch (event.GetId()) {

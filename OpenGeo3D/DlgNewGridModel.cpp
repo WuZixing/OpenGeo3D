@@ -3,13 +3,13 @@
 
 DlgNewGridModel::DlgNewGridModel(wxWindow* parent) : wxDialog(parent, wxID_ANY, Strings::TitleOfMenuItemNewGridModel()) {
 	wxFlexGridSizer* sizer = new wxFlexGridSizer(4, 4, wxSize(2, 4));
-	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfName()));
+	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfName()), wxSizerFlags().Right());
 	ctrlName_ = new wxTextCtrl(this, wxID_ANY);
 	sizer->Add(ctrlName_);
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfDescription()), wxSizerFlags().Right());
 	ctrlDescription_ = new wxTextCtrl(this, wxID_ANY);
 	sizer->Add(ctrlDescription_);
-	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfSRS()));
+	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfSRS()), wxSizerFlags().Right());
 	ctrlSRS_ = new wxTextCtrl(this, wxID_ANY);
 	sizer->Add(ctrlSRS_);
 
@@ -19,10 +19,10 @@ DlgNewGridModel::DlgNewGridModel(wxWindow* parent) : wxDialog(parent, wxID_ANY, 
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfX()), wxSizerFlags().CenterHorizontal());
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfY()), wxSizerFlags().CenterHorizontal());
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfZ()), wxSizerFlags().CenterHorizontal());
+	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfGridOrigin()), wxSizerFlags().Right());
 	ctrlX_ = new wxTextCtrl(this, wxID_ANY);
 	ctrlY_ = new wxTextCtrl(this, wxID_ANY);
 	ctrlZ_ = new wxTextCtrl(this, wxID_ANY);
-	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfGridOrigin()));
 	sizer->Add(ctrlX_);
 	sizer->Add(ctrlY_);
 	sizer->Add(ctrlZ_);

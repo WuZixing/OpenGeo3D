@@ -1,10 +1,11 @@
 #include "ProjectTreeCtrl.h"
 #include <g3dvtk/Actor.h>
 #include <g3dvtk/ObjectFactory.h>
-#include "Events.h"
-#include "Strings.h"
 #include "checked_box.xpm"
 #include "unchecked_box.xpm"
+#include "DlgEditVoxelGrid.h"
+#include "Events.h"
+#include "Strings.h"
 
 ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) : 
 	wxTreeCtrl(parent, wxID_ANY, wxDefaultPosition, size, wxTR_DEFAULT_STYLE | wxNO_BORDER | wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT), 
@@ -158,6 +159,14 @@ void ProjectTreeCtrl::AppendG3DGrid(g3dgrid::Grid* grid) {
 	UpdateSubTreeOfGrid(grid);
 }
 
+void ProjectTreeCtrl::ExpandStructureModelTree() {
+	Expand(rootStructureModel_);
+}
+
+void ProjectTreeCtrl::ExpandGridModelNodeTree() {
+	Expand(rootOfGridModel_);
+}
+
 geo3dml::Map* ProjectTreeCtrl::GetDefaultMap() {
 	if (g3dProject_->GetMapCount() > 0) {
 		return g3dProject_->GetMapAt(0);
@@ -274,5 +283,16 @@ void ProjectTreeCtrl::ShowMenuOnVoxelGridItem(G3DTreeItemData* itemData, const w
 }
 
 void ProjectTreeCtrl::OnEditVoxelGrid(wxCommandEvent& event) {
-	wxMessageBox(Strings::TitleOfMenuItemEditVoxelGrid());
+	wxTreeItemId item = GetSelection();
+	if (!item.IsOk()) {
+		return;
+	}
+	G3DTreeItemData* itemData = static_cast<G3DTreeItemData*>(GetItemData(item));
+	if (itemData->GetItemType() != G3DTreeItemData::ItemType::G3D_VoxelGrid) {
+		return;
+	}
+	g3dgrid::VoxelGrid* voxelGrid = static_cast<g3dgrid::VoxelGrid*>(itemData->GetG3DObject());
+	DlgEditVoxelGrid dlg(this, voxelGrid);
+	dlg.CenterOnScreen();
+	dlg.ShowModal();
 }

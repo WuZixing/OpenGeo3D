@@ -7,7 +7,10 @@ VoxelGrid::VoxelGrid() {
 }
 
 VoxelGrid::~VoxelGrid() {
-
+	for (auto itor = lods_.end(); itor != lods_.end(); ++itor) {
+		delete itor->second;
+	}
+	lods_.clear();
 }
 
 VoxelGrid& VoxelGrid::SetName(const std::string& name) {
@@ -30,6 +33,26 @@ VoxelGrid& VoxelGrid::SetOrigin(const geo3dml::Point3D& origin) {
 	return *this;
 }
 
+VoxelGrid& VoxelGrid::SetLOD(const LOD& lod) {
+	int level = lod.GetLevel();
+	auto itor = lods_.find(level);
+	if (itor == lods_.cend()) {
+		lods_[level] = new LOD(lod);
+	} else {
+		delete itor->second;
+		itor->second = new LOD(lod);
+	}
+	return *this;
+}
+
+VoxelGrid& VoxelGrid::DeleteLOD(int level) {
+	auto itor = lods_.find(level);
+	if (itor != lods_.end()) {
+		delete itor->second;
+		lods_.erase(itor);
+	}
+}
+
 std::string VoxelGrid::GetName()  const {
 	return name_;
 }
@@ -46,12 +69,17 @@ geo3dml::Point3D VoxelGrid::GetOrigin()  const {
 	return origin_;
 }
 
-int VoxelGrid::GetLodCount()  const {
-	return 0;
+int VoxelGrid::GetLODCount()  const {
+	return static_cast<int>(lods_.size());
 }
 
-Lod VoxelGrid::GetLodAt(int i) const {
-	return Lod(-1);
+LOD* VoxelGrid::GetLOD(int level) const {
+	auto itor = lods_.find(level);
+	if (itor != lods_.cend()) {
+		return itor->second;
+	} else {
+		return nullptr;
+	}
 }
 
 bool VoxelGrid::GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) {

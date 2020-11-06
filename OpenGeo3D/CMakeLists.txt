@@ -27,13 +27,17 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   unchecked_box.xpm
   ${CPP_SOURCES}
   Config.h
+  DlgEditVoxelGrid.h
+  DlgNewGridLOD.h
   DlgNewGridModel.h
   DlgOpenSimpleDrillLog.h
   DrillLogFile.h
   Events.h
   Frame.h
-  MetadataPage.h
   G3DTreeItemData.h
+  GridLODViewListCtrl.h
+  GridSchemaViewListCtrl.h
+  MetadataPage.h
   OpenGeo3D.h
   ProjectItemMetaBook.h
   ProjectPanel.h

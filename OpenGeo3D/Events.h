@@ -19,6 +19,8 @@ public:
 		Menu_ResetZScale,
 		Menu_ProjectPanel,
 		Menu_EditVoxelGrid,
+		Menu_DeleteGridLOD,
+		Menu_AppendGridLOD,
 
 		// general notifications
 		Notify_ResetAndRefreshRenderWindow,

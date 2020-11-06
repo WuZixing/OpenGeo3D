@@ -18,6 +18,9 @@ public:
 	void AppendG3DMap(geo3dml::Map* map);
 	void AppendG3DGrid(g3dgrid::Grid* grid);
 
+	void ExpandStructureModelTree();
+	void ExpandGridModelNodeTree();
+
 private:
 	void OnChildrenNotify(wxNotifyEvent& event);
 
