@@ -8,6 +8,9 @@
 	- [网格模型分析](#网格模型分析)
 	- [三维地质模型的可视化](#三维地质模型的可视化)
 + [编译和运行](#编译和运行)
+	- [编译和运行环境](#编译和运行环境)
+	- [依赖项](#依赖项)
+	- [编译](#编译)
 
 
 ## 简介
@@ -64,15 +67,19 @@
 本项目使用的第三方库有：
 
 + [wxWidgets](https://wxwidgets.org/)
+
 	用户界面。建议版本：v3.1.4或更新版本。
 
 + [VTK](https://vtk.org/)
+
 	数据可视化。建议版本：v9.0或更新版本。
 
 + [Geo3DML-CPP](https://github.com/WuZixing/Geo3DML-CPP)
+
 	读写Geo3DML数据。建议版本：master分支最新版本。
 
 + [harshn05/wxvtk-UpdatedOnJan23_2018](https://github.com/harshn05/wxvtk-UpdatedOnJan23_2018)
+
 	数据可视化。版本：master分支最新版本。
 
 编译**OpenGeo3D**之前，请先准备好**wxWidgets**和**VTK**开发包（包括头文件和库文件）。可参照各项目的文档自行编译，或直接安装预编译的开发包。
@@ -85,9 +92,10 @@
 
 ```shell
 # 下载代码
-git clone https://github.com/WuZixing/OpenGeo3D
+git clone https://github.com/WuZixing/OpenGeo3D.git
 
 # 更新子模块
+cd OpenGeo3D
 git submodule update --init --recursive
 ```
 
