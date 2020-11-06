@@ -35,8 +35,8 @@ DlgEditVoxelGrid::DlgEditVoxelGrid(wxWindow* parent, g3dgrid::VoxelGrid* voxelGr
 	sizer->Add(ctrlZ_);
 
 	wxNotebook* notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(500, 250)), wxNB_DEFAULT | wxNB_NOPAGETHEME);
-	notebook->AddPage(new GridLODViewListCtrl(notebook), Strings::LabelOfGridLOD());
-	notebook->AddPage(new GridSchemaViewListCtrl(notebook), Strings::LabelOfSchema());
+	notebook->AddPage(new GridLODViewListCtrl(notebook, voxelGrid_), Strings::LabelOfGridLOD());
+	notebook->AddPage(new GridSchemaViewListCtrl(notebook, voxelGrid_), Strings::LabelOfSchema());
 
 	wxSizer* btnSizer = wxDialog::CreateSeparatedButtonSizer(wxOK | wxCANCEL);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DlgEditVoxelGrid::OnButtonOK, this, wxID_OK);

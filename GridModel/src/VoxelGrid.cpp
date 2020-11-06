@@ -51,6 +51,7 @@ VoxelGrid& VoxelGrid::DeleteLOD(int level) {
 		delete itor->second;
 		lods_.erase(itor);
 	}
+	return *this;
 }
 
 std::string VoxelGrid::GetName()  const {
@@ -71,6 +72,23 @@ geo3dml::Point3D VoxelGrid::GetOrigin()  const {
 
 int VoxelGrid::GetLODCount()  const {
 	return static_cast<int>(lods_.size());
+}
+
+int VoxelGrid::GetMaxLOD() const {
+	auto itor = lods_.cbegin();
+	if (itor == lods_.cend()) {
+		return -1;
+	} else {
+		int maxLevel = itor->first;
+		++itor;
+		while (itor != lods_.cend()) {
+			if (maxLevel < itor->first) {
+				maxLevel = itor->first;
+			}
+			++itor;
+		}
+		return maxLevel;
+	}
 }
 
 LOD* VoxelGrid::GetLOD(int level) const {

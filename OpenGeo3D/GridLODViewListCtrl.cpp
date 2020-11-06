@@ -4,14 +4,22 @@
 #include "Strings.h"
 
 GridLODViewListCtrl::GridLODViewListCtrl(wxWindow* parent, g3dgrid::VoxelGrid* voxelGrid) : wxDataViewListCtrl(parent, wxID_ANY), voxelGrid_(voxelGrid){
-	AppendTextColumn(Strings::LabelOfGridLOD(), wxDATAVIEW_CELL_INERT, 40);
-	AppendTextColumn(Strings::LabelOfCellSizeX(), wxDATAVIEW_CELL_INERT, 60);
-	AppendTextColumn(Strings::LabelOfCellSizeY(), wxDATAVIEW_CELL_INERT, 60);
-	AppendTextColumn(Strings::LabelOfCellSizeZ(), wxDATAVIEW_CELL_INERT, 60);
-	AppendTextColumn(Strings::LabelOfCellScaleX(), wxDATAVIEW_CELL_INERT, 60);
-	AppendTextColumn(Strings::LabelOfCellScaleY(), wxDATAVIEW_CELL_INERT, 60);
-	AppendTextColumn(Strings::LabelOfCellScaleZ(), wxDATAVIEW_CELL_INERT, 60);
+	AppendTextColumn(Strings::LabelOfGridLOD(), wxDATAVIEW_CELL_INERT, 35);
+	AppendTextColumn(Strings::LabelOfCellSizeX(), wxDATAVIEW_CELL_INERT, 70);
+	AppendTextColumn(Strings::LabelOfCellSizeY(), wxDATAVIEW_CELL_INERT, 70);
+	AppendTextColumn(Strings::LabelOfCellSizeZ(), wxDATAVIEW_CELL_INERT, 70);
+	AppendTextColumn(Strings::LabelOfCellScaleX(), wxDATAVIEW_CELL_INERT, 70);
+	AppendTextColumn(Strings::LabelOfCellScaleY(), wxDATAVIEW_CELL_INERT, 70);
+	AppendTextColumn(Strings::LabelOfCellScaleZ(), wxDATAVIEW_CELL_INERT, 70);
 	AppendTextColumn(Strings::LabelOfCellCount(), wxDATAVIEW_CELL_INERT, 60);
+
+	int maxLevel = voxelGrid_->GetMaxLOD();
+	for (int level = 0; level <= maxLevel; ++level) {
+		g3dgrid::LOD* lod = voxelGrid_->GetLOD(level);
+		if (lod != nullptr) {
+			AppendLODItem(*lod);
+		}
+	}
 
 	Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &GridLODViewListCtrl::OnItemContextMenu, this);
 	Bind(wxEVT_MENU, &GridLODViewListCtrl::OnAppendLOD, this, Events::ID::Menu_AppendGridLOD, Events::ID::Menu_AppendGridLOD);
@@ -104,6 +112,6 @@ void GridLODViewListCtrl::AppendLODItem(const g3dgrid::LOD& lod) {
 	itemValue.push_back(wxString::Format("%d", scaleX));
 	itemValue.push_back(wxString::Format("%d", scaleY));
 	itemValue.push_back(wxString::Format("%d", scaleZ));
-	itemValue.push_back(wxString::Format("%zd", 0));
+	itemValue.push_back(wxString::Format("%d", 0));
 	AppendItem(itemValue);
 }

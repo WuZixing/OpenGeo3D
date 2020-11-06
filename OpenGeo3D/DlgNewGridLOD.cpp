@@ -61,9 +61,9 @@ void DlgNewGridLOD::SetParentLevelCellSize(double x, double y, double z) {
 	parentSizeZ_ = z;
 	int scaleX, scaleY, scaleZ;
 	GetCellScale(scaleX, scaleY, scaleZ);
-	ctrlScaleX_->SetValue(wxString::FromDouble(x / scaleX, 6));
-	ctrlScaleY_->SetValue(wxString::FromDouble(y / scaleY, 6));
-	ctrlScaleX_->SetValue(wxString::FromDouble(z / scaleZ, 6));
+	ctrlSizeX_->SetValue(wxString::FromDouble(x / scaleX, 6));
+	ctrlSizeY_->SetValue(wxString::FromDouble(y / scaleY, 6));
+	ctrlSizeZ_->SetValue(wxString::FromDouble(z / scaleZ, 6));
 }
 
 void DlgNewGridLOD::OnSetScaleX(wxSpinEvent& evt) {
@@ -92,10 +92,10 @@ bool DlgNewGridLOD::GetCellSize(double& x, double& y, double& z) const {
 	if (!ctrlSizeX_->GetValue().ToCDouble(&x)) {
 		return false;
 	}
-	if (!ctrlSizeX_->GetValue().ToCDouble(&y)) {
+	if (!ctrlSizeY_->GetValue().ToCDouble(&y)) {
 		return false;
 	}
-	if (!ctrlSizeX_->GetValue().ToCDouble(&z)) {
+	if (!ctrlSizeZ_->GetValue().ToCDouble(&z)) {
 		return false;
 	}
 	return true;

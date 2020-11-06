@@ -38,6 +38,7 @@ namespace g3dgrid {
 		geo3dml::Point3D GetOrigin() const;
 
 		int GetLODCount() const;
+		int GetMaxLOD() const;
 		LOD* GetLOD(int level) const;
 
 		virtual bool GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) override;

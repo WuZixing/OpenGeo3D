@@ -113,7 +113,7 @@ void MetadataPage::BindToG3DGridCollection(g3dgrid::GridCollection* g3dGrids) {
 }
 
 void MetadataPage::BindToG3DVoxelGrid(g3dgrid::VoxelGrid* g3dVoxelGrid) {
-	SetBasicInfo(Strings::NameOfVoxelGrid(), wxString::FromUTF8(g3dVoxelGrid->GetID()), g3dVoxelGrid->GetLodCount());
+	SetBasicInfo(Strings::NameOfVoxelGrid(), wxString::FromUTF8(g3dVoxelGrid->GetID()), g3dVoxelGrid->GetLODCount());
 	double minX = 0, maxX = -1, minY = 0, maxY = -1, minZ = 0, maxZ = -1;
 	g3dVoxelGrid->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
 	SetMBRProperty(minX, minY, minZ, maxX, maxY, maxZ);
