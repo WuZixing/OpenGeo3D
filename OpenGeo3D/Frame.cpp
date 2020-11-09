@@ -5,6 +5,7 @@
 #include <wx/propgrid/propgrid.h>
 #include <g3dvtk/ObjectFactory.h>
 #include <g3dxml/XMLReader.h>
+#include <g3dxml/XMLWriter.h>
 #include "icon.xpm"
 #include "DlgNewGridModel.h"
 #include "DlgOpenSimpleDrillLog.h"
@@ -19,7 +20,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(Events::ID::Menu_OpenGeo3DML, Frame::OnOpenGeo3DML)
     EVT_MENU(Events::ID::Menu_OpenSimpleDrillLog, Frame::OnOpenSimpleDrillLog)
     EVT_MENU(Events::ID::Menu_CloseStructureModels, Frame::OnCloseStructureModels)
-    EVT_MENU(Events::ID::Menu_NewGridModel, Frame::OnNewGridModel)
+    // EVT_MENU(Events::ID::Menu_NewGridModel, Frame::OnNewGridModel)
     EVT_MENU(Events::ID::Menu_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
     EVT_MENU(Events::ID::Menu_CloseGridModels, Frame::OnCloseGridModels)
     EVT_MENU(Events::ID::Menu_CloseAllModels, Frame::OnCloseAllModels)
@@ -30,6 +31,8 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(Events::ID::Menu_CustomizedZScale, Frame::OnCustomizedZScale)
     EVT_MENU(Events::ID::Menu_ResetZScale, Frame::OnResetZScale)
     EVT_MENU(Events::ID::Menu_ProjectPanel, Frame::OnProjectPanel)
+    EVT_MENU(Events::ID::Menu_SaveToGeo3DML, Frame::OnSaveToGeo3DML)
+    EVT_MENU(Events::ID::Menu_SaveToVoxelGrid, Frame::OnSaveToVoxelGrid)
     EVT_NOTIFY_RANGE(wxEVT_NULL, Events::ID::Notify_ResetAndRefreshRenderWindow, Events::ID::Notify_RefreshRenderWindow, Frame::OnNotify)
 wxEND_EVENT_TABLE()
 
@@ -53,11 +56,13 @@ void Frame::InitMenu() {
     menuStructureModel->Append(Events::ID::Menu_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
     menuStructureModel->Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
     menuStructureModel->AppendSeparator();
+    menuStructureModel->Append(Events::ID::Menu_SaveToGeo3DML, Strings::TitleOfMenuItemSaveToGeo3DML());
     menuStructureModel->Append(Events::ID::Menu_CloseStructureModels, Strings::TitleOfMenuItemCloseStructureModels());
     wxMenu* menuGridModel = new wxMenu();
-    menuGridModel->Append(Events::ID::Menu_NewGridModel, Strings::TitleOfMenuItemNewGridModel());
-    menuGridModel->Append(Events::ID::Menu_OpenSGeMSGrid, Strings::TitleOfMenuItemOpenSGeMSGrid());
+    //menuGridModel->Append(Events::ID::Menu_NewGridModel, Strings::TitleOfMenuItemNewGridModel());
+    //menuGridModel->Append(Events::ID::Menu_OpenSGeMSGrid, Strings::TitleOfMenuItemOpenSGeMSGrid());
     menuGridModel->AppendSeparator();
+    menuGridModel->Append(Events::ID::Menu_SaveToVoxelGrid, Strings::TitleOfMenuItemSaveToVoxelGrid());
     menuGridModel->Append(Events::ID::Menu_CloseGridModels, Strings::TitleOfMenuItemCloseGridModels());
     menuFile->AppendSubMenu(menuStructureModel, Strings::NameOfStructureModel());
     menuFile->AppendSubMenu(menuGridModel, Strings::NameOfGridModel());
@@ -189,6 +194,28 @@ void Frame::OnOpenGeo3DML(wxCommandEvent& event) {
     }
 }
 
+void Frame::OnSaveToGeo3DML(wxCommandEvent& event) {
+    geo3dml::Project* g3dProject = projectPanel_->GetG3DProject();
+    wxString projName = wxString::FromUTF8(g3dProject->GetName());
+    int indexDefaultExtension = 1;
+    wxString filePath = wxFileSelectorEx(Strings::TitleOfMenuItemSaveToGeo3DML(), wxEmptyString, projName, &indexDefaultExtension, Strings::WildcardOfGeo3DMLFileWithVersion(), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (filePath.IsEmpty()) {
+        return;
+    }
+    wxBeginBusyCursor();
+    wxFileName fileName(filePath);
+    projName = fileName.GetName();
+    g3dProject->SetName(projName.ToUTF8().data());
+    g3dxml::XMLWriter projectWriter;
+    bool isOK = projectWriter.Write(g3dProject, filePath.ToUTF8().data(), indexDefaultExtension == 0 ? g3dxml::SchemaVersion::Schema_1_x : g3dxml::SchemaVersion::Schema_1_0);
+    wxEndBusyCursor();
+    if (isOK) {
+        wxMessageBox(Strings::TipOfSucceedInSavingToGeo3DMLFile(projName), GetTitle(), wxOK | wxICON_INFORMATION | wxCENTER);
+    } else {
+        wxMessageBox(Strings::TipOfErrorInSavingToGeo3DMLFile(projName, wxString::FromUTF8(projectWriter.Error())), GetTitle(), wxOK | wxICON_ERROR | wxCENTER);
+    }
+}
+
 void Frame::OnOpenSimpleDrillLog(wxCommandEvent& event) {
     DlgOpenSimpleDrillLog dlg(this);
     dlg.CentreOnScreen();
@@ -221,6 +248,10 @@ void Frame::OnNewGridModel(wxCommandEvent& event) {
 
 void Frame::OnOpenSGeMSGrid(wxCommandEvent& event) {
     
+}
+
+void Frame::OnSaveToVoxelGrid(wxCommandEvent& event) {
+
 }
 
 void Frame::OnNotify(wxNotifyEvent& notify) {

@@ -100,6 +100,14 @@ wxString Strings::TitleOfMenuItemCloseGridModels() {
 	return wxString::FromUTF8("关闭网格模型");
 }
 
+wxString Strings::TitleOfMenuItemSaveToGeo3DML() {
+	return wxString::FromUTF8("保存为Geo3DML文件...");
+}
+
+wxString Strings::TitleOfMenuItemSaveToVoxelGrid() {
+	return wxString::FromUTF8("保存规则网格数据...");
+}
+
 wxString Strings::ConfirmToCloseAllModels() {
 	return wxString::FromUTF8("确定关闭所有模型吗？未保存的数据将会丢失。");
 }
@@ -113,7 +121,7 @@ wxString Strings::ConfirmToCloseGridModels() {
 }
 
 wxString Strings::ConfirmToQuit() {
-	return wxString::Format(wxString::FromUTF8("确定退出%s吗？"), Strings::AppName());
+	return wxString::Format(wxString::FromUTF8("确定退出%s吗？未保存的数据将会丢失。"), Strings::AppName());
 }
 
 wxString Strings::TitleOfProjectPanel() {
@@ -226,6 +234,10 @@ wxString Strings::WildcardOfGeo3DMLFile() {
 	return wxString::FromUTF8("Geo3DML文件(UTF-8编码)(*.xml)|*.xml");
 }
 
+wxString Strings::WildcardOfGeo3DMLFileWithVersion() {
+	return wxString::FromUTF8("Geo3DML(v1.x)文件(*.xml)|*.xml|Geo3DML(v1.0)文件(*.xml)|*.xml");
+}
+
 wxString Strings::TipOfInputCusotimizedZScale() {
 	return wxString::FromUTF8("请输入Z轴缩放系数（大于0，且小于1000）：");
 }
@@ -288,6 +300,22 @@ wxString Strings::TipOfGridLODAndCellScale() {
 
 wxString Strings::TipOfInvalidGridCellSize() {
 	return wxString::FromUTF8("网格单元的大小无效。");
+}
+
+wxString Strings::TipOfSucceedInSavingToGeo3DMLFile(const wxString& modelName) {
+	return wxString::Format(wxString::FromUTF8("导出模型“%s”到Geo3DML文件成功。"), modelName);
+}
+
+wxString Strings::TipOfErrorInSavingToGeo3DMLFile(const wxString& modelName, const wxString& error) {
+	return wxString::Format(wxString::FromUTF8("导出模型“%s”到Geo3DML文件出错：%s"), modelName, error);
+}
+
+wxString Strings::TipOfSucceedInSavingToVoxelGridFile(const wxString& modelName) {
+	return wxString::Format(wxString::FromUTF8("导出模型“%s”到规则网格模型文件成功。"), modelName);
+}
+
+wxString Strings::TipOfErrorInSavingToVoxelGridFile(const wxString& modelName, const wxString& error) {
+	return wxString::Format(wxString::FromUTF8("导出模型“%s”到规则网格模型文件出错：%s"), modelName, error);
 }
 
 wxString Strings::LabelOfOpen() {

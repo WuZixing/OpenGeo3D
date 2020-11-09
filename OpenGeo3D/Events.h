@@ -24,6 +24,8 @@ public:
 		Menu_CloseAllModels,
 		Menu_CloseStructureModels,
 		Menu_CloseGridModels,
+		Menu_SaveToGeo3DML,
+		Menu_SaveToVoxelGrid,
 
 		// general notifications
 		Notify_ResetAndRefreshRenderWindow,

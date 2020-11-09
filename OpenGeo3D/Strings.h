@@ -32,9 +32,8 @@ public:
 	static wxString TitleOfMenuItemCloseAllModels();
 	static wxString TitleOfMenuItemCloseStructureModels();
 	static wxString TitleOfMenuItemCloseGridModels();
-	static wxString ConfirmToCloseAllModels();
-	static wxString ConfirmToCloseStructureModels();
-	static wxString ConfirmToCloseGridModels();
+	static wxString TitleOfMenuItemSaveToGeo3DML();
+	static wxString TitleOfMenuItemSaveToVoxelGrid();
 	///@}
 
 	/// @name title of windows/dialogs
@@ -72,6 +71,7 @@ public:
 	static wxString ConfirmToQuit();
 	static wxString TipOfOpenGeo3DML();
 	static wxString WildcardOfGeo3DMLFile();
+	static wxString WildcardOfGeo3DMLFileWithVersion();
 	static wxString TipOfInputCusotimizedZScale();
 	static wxString TipOfInvalidZScale();
 	static wxString TipOfOpenDrillPositionFile();
@@ -88,6 +88,13 @@ public:
 	static wxString ConfirmToDeleteGridLOD(int level);
 	static wxString TipOfGridLODAndCellScale();
 	static wxString TipOfInvalidGridCellSize();
+	static wxString ConfirmToCloseAllModels();
+	static wxString ConfirmToCloseStructureModels();
+	static wxString ConfirmToCloseGridModels();
+	static wxString TipOfSucceedInSavingToGeo3DMLFile(const wxString& modelName);
+	static wxString TipOfErrorInSavingToGeo3DMLFile(const wxString& modelName, const wxString& error);
+	static wxString TipOfSucceedInSavingToVoxelGridFile(const wxString& modelName);
+	static wxString TipOfErrorInSavingToVoxelGridFile(const wxString& modelName, const wxString& error);
 
 	static wxString LabelOfOpen();
 	static wxString LabelOfAppend();

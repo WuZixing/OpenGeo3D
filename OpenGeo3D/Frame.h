@@ -30,6 +30,8 @@ private:
 	void OnCloseAllModels(wxCommandEvent& event);
 	void OnCloseStructureModels(wxCommandEvent& event);
 	void OnCloseGridModels(wxCommandEvent& event);
+	void OnSaveToGeo3DML(wxCommandEvent& event);
+	void OnSaveToVoxelGrid(wxCommandEvent& event);
 
 private:
 	void InitMenu();

@@ -16,6 +16,7 @@ public:
 
 	vtkRenderer* GetRenderer() const { return renderer_; }
 	vtkTransform* GetTransform() const { return transform_; }
+	geo3dml::Project* GetG3DProject() const { return g3dProject_.get(); };
 
 	void AppendG3DModel(geo3dml::Model* model, bool appendToDefaultMap);
 	void AppendG3DMap(geo3dml::Map* map);

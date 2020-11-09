@@ -263,12 +263,17 @@ void ProjectTreeCtrl::ShowMenuOnStructureModelItem(G3DTreeItemData* itemData, co
 	wxMenu menu(GetItemText(itemData->GetId()));
 	menu.Append(Events::ID::Menu_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
 	menu.Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
+	menu.AppendSeparator();
+	menu.Append(Events::ID::Menu_SaveToGeo3DML, Strings::TitleOfMenuItemSaveToGeo3DML());
+	menu.Append(Events::ID::Menu_CloseStructureModels, Strings::TitleOfMenuItemCloseStructureModels());
 	PopupMenu(&menu, pos);
 }
 
 void ProjectTreeCtrl::ShowMenuOnGridModelItem(G3DTreeItemData* itemData, const wxPoint& pos) {
 	wxMenu menu(GetItemText(itemData->GetId()));
 	menu.Append(Events::ID::Menu_NewGridModel, Strings::TitleOfMenuItemNewGridModel());
+	menu.AppendSeparator();
+	menu.Append(Events::ID::Menu_CloseGridModels, Strings::TitleOfMenuItemCloseGridModels());
 	PopupMenu(&menu, pos);
 }
 
@@ -279,6 +284,8 @@ void ProjectTreeCtrl::ShowMenuOnActorItem(G3DTreeItemData* itemData, const wxPoi
 void ProjectTreeCtrl::ShowMenuOnVoxelGridItem(G3DTreeItemData* itemData, const wxPoint& pos) {
 	wxMenu menu(GetItemText(itemData->GetId()));
 	menu.Append(Events::ID::Menu_EditVoxelGrid, Strings::TitleOfMenuItemEditVoxelGrid());
+	menu.AppendSeparator();
+	menu.Append(Events::ID::Menu_SaveToVoxelGrid, Strings::TitleOfMenuItemSaveToVoxelGrid());
 	PopupMenu(&menu, pos);
 }
 

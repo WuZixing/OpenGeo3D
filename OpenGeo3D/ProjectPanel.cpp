@@ -26,6 +26,10 @@ vtkTransform* ProjectPanel::GetTransform() const {
 	return projectTree_->GetTransform();
 }
 
+geo3dml::Project* ProjectPanel::GetG3DProject() const {
+	return projectTree_->GetG3DProject();
+}
+
 void ProjectPanel::AppendG3DModel(geo3dml::Model* model, bool appendToDefaultMap) {
 	projectTree_->AppendG3DModel(model, appendToDefaultMap);
 }
