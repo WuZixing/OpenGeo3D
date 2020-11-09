@@ -180,13 +180,13 @@ geo3dml::Map* ProjectTreeCtrl::GetDefaultMap() {
 	}
 }
 
-void ProjectTreeCtrl::AppendFeatureClassToMap(geo3dml::FeatureClass* g3dFC, geo3dml::Map* g3dMp) {
+void ProjectTreeCtrl::AppendFeatureClassToMap(geo3dml::FeatureClass* g3dFC, geo3dml::Map* g3dMap) {
 	g3dvtk::ObjectFactory g3dFactory;
 	geo3dml::Layer* layer = g3dFactory.NewLayer();
 	layer->SetName(g3dFC->GetName());
 	layer->BindFeatureClass(g3dFC);
 	layer->BuildActorsFromFeatures(&g3dFactory);
-	g3dMp->AddLayer(layer);
+	g3dMap->AddLayer(layer);
 }
 
 void ProjectTreeCtrl::OnItemSelected(wxTreeEvent& event) {
@@ -295,4 +295,86 @@ void ProjectTreeCtrl::OnEditVoxelGrid(wxCommandEvent& event) {
 	DlgEditVoxelGrid dlg(this, voxelGrid);
 	dlg.CenterOnScreen();
 	dlg.ShowModal();
+}
+
+void ProjectTreeCtrl::CloseAllModels() {
+	// block event handler and remove nodes
+	Unbind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
+	RemoveChildrenFromScene(rootStructureModel_);
+	DeleteChildren(rootStructureModel_);
+	RemoveChildrenFromScene(rootOfGridModel_);
+	DeleteChildren(rootOfGridModel_);
+	// reset structure models
+	g3dvtk::ObjectFactory g3dFactory;
+	g3dProject_.reset(g3dFactory.NewProject());
+	g3dProject_->SetID(geo3dml::Object::NewID());
+	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
+	wxTreeItemData* oldData = GetItemData(rootStructureModel_);
+	SetItemData(rootStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
+	delete oldData;
+	g3dGrids_ = std::make_unique<g3dgrid::GridCollection>();
+	g3dGrids_->SetID(geo3dml::Object::NewID());
+	g3dGrids_->SetName(Strings::NameOfGridModel().ToUTF8().data());
+	oldData = GetItemData(rootOfGridModel_);
+	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dGrids_.get(), G3DTreeItemData::ItemType::G3D_GridModel));
+	delete oldData;
+	// force to trigger the selection changed event to make sure the dashboard know the obsolete tree item.
+	wxTreeEvent evtSelection(wxEVT_TREE_SEL_CHANGED, this, GetSelection());
+	OnItemSelected(evtSelection);
+	// restore event handler
+	Bind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
+}
+
+void ProjectTreeCtrl::CloseStructureModels() {
+	// block event handler and remove nodes
+	Unbind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
+	RemoveChildrenFromScene(rootStructureModel_);
+	DeleteChildren(rootStructureModel_);
+	// reset structure models
+	g3dvtk::ObjectFactory g3dFactory;
+	g3dProject_.reset(g3dFactory.NewProject());
+	g3dProject_->SetID(geo3dml::Object::NewID());
+	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
+	wxTreeItemData* oldData = GetItemData(rootStructureModel_);
+	SetItemData(rootStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
+	delete oldData;
+	// force to trigger the selection changed event to make sure the dashboard know the obsolete tree item.
+	wxTreeEvent evtSelection(wxEVT_TREE_SEL_CHANGED, this, GetSelection());
+	OnItemSelected(evtSelection);
+	// restore event handler
+	Bind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
+}
+
+void ProjectTreeCtrl::CloseGridModels() {
+	// block event handler and remove nodes
+	Unbind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
+	RemoveChildrenFromScene(rootOfGridModel_);
+	DeleteChildren(rootOfGridModel_);
+	// reset grid models
+	g3dvtk::ObjectFactory g3dFactory;
+	g3dGrids_ = std::make_unique<g3dgrid::GridCollection>();
+	g3dGrids_->SetID(geo3dml::Object::NewID());
+	g3dGrids_->SetName(Strings::NameOfGridModel().ToUTF8().data());
+	wxTreeItemData* oldData = GetItemData(rootOfGridModel_);
+	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dGrids_.get(), G3DTreeItemData::ItemType::G3D_GridModel));
+	delete oldData;
+	// force to trigger the selection changed event to make sure the dashboard know the obsolete tree item.
+	wxTreeEvent evtSelection(wxEVT_TREE_SEL_CHANGED, this, GetSelection());
+	OnItemSelected(evtSelection);
+	// restore event handler
+	Bind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
+}
+
+void ProjectTreeCtrl::RemoveChildrenFromScene(const wxTreeItemId& item) {
+	wxTreeItemIdValue cookie = nullptr;
+	wxTreeItemId child = GetFirstChild(item, cookie);
+	while (child.IsOk()) {
+		G3DTreeItemData* itemData = dynamic_cast<G3DTreeItemData*>(GetItemData(child));
+		if (itemData != nullptr && itemData->GetItemType() == G3DTreeItemData::ItemType::G3D_Actor) {
+			g3dvtk::Actor* g3dActor = static_cast<g3dvtk::Actor*>(itemData->GetG3DObject());
+			renderer_->RemoveActor(g3dActor->GetVTKProp());
+		}
+		RemoveChildrenFromScene(child);
+		child = GetNextChild(item, cookie);
+	}
 }

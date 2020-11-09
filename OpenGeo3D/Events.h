@@ -21,6 +21,9 @@ public:
 		Menu_EditVoxelGrid,
 		Menu_DeleteGridLOD,
 		Menu_AppendGridLOD,
+		Menu_CloseAllModels,
+		Menu_CloseStructureModels,
+		Menu_CloseGridModels,
 
 		// general notifications
 		Notify_ResetAndRefreshRenderWindow,

@@ -29,6 +29,12 @@ public:
 	static wxString TitleOfMenuItemEditVoxelGrid();
 	static wxString TitleOfMenuItemDeleteGridLOD();
 	static wxString TitleOfMenuItemAppendGridLOD();
+	static wxString TitleOfMenuItemCloseAllModels();
+	static wxString TitleOfMenuItemCloseStructureModels();
+	static wxString TitleOfMenuItemCloseGridModels();
+	static wxString ConfirmToCloseAllModels();
+	static wxString ConfirmToCloseStructureModels();
+	static wxString ConfirmToCloseGridModels();
 	///@}
 
 	/// @name title of windows/dialogs

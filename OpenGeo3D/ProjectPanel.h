@@ -21,6 +21,10 @@ public:
 	void ExpandStructureModelTree();
 	void ExpandGridModelNodeTree();
 
+	void CloseAllModels();
+	void CloseStructureModels();
+	void CloseGridModels();
+
 private:
 	void OnChildrenNotify(wxNotifyEvent& event);
 

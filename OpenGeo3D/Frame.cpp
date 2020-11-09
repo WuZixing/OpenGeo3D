@@ -18,8 +18,11 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(wxID_ABOUT, Frame::OnAbout)
     EVT_MENU(Events::ID::Menu_OpenGeo3DML, Frame::OnOpenGeo3DML)
     EVT_MENU(Events::ID::Menu_OpenSimpleDrillLog, Frame::OnOpenSimpleDrillLog)
+    EVT_MENU(Events::ID::Menu_CloseStructureModels, Frame::OnCloseStructureModels)
     EVT_MENU(Events::ID::Menu_NewGridModel, Frame::OnNewGridModel)
     EVT_MENU(Events::ID::Menu_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
+    EVT_MENU(Events::ID::Menu_CloseGridModels, Frame::OnCloseGridModels)
+    EVT_MENU(Events::ID::Menu_CloseAllModels, Frame::OnCloseAllModels)
     EVT_MENU(Events::ID::Menu_FullView, Frame::OnFullView)
     EVT_MENU(Events::ID::Menu_BackgroundColor, Frame::OnBackgroundColor)
     EVT_MENU(Events::ID::Menu_ScaleUpZ, Frame::OnScaleUpZ)
@@ -49,11 +52,16 @@ void Frame::InitMenu() {
     wxMenu* menuStructureModel = new wxMenu();
     menuStructureModel->Append(Events::ID::Menu_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
     menuStructureModel->Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
+    menuStructureModel->AppendSeparator();
+    menuStructureModel->Append(Events::ID::Menu_CloseStructureModels, Strings::TitleOfMenuItemCloseStructureModels());
     wxMenu* menuGridModel = new wxMenu();
     menuGridModel->Append(Events::ID::Menu_NewGridModel, Strings::TitleOfMenuItemNewGridModel());
     menuGridModel->Append(Events::ID::Menu_OpenSGeMSGrid, Strings::TitleOfMenuItemOpenSGeMSGrid());
+    menuGridModel->AppendSeparator();
+    menuGridModel->Append(Events::ID::Menu_CloseGridModels, Strings::TitleOfMenuItemCloseGridModels());
     menuFile->AppendSubMenu(menuStructureModel, Strings::NameOfStructureModel());
     menuFile->AppendSubMenu(menuGridModel, Strings::NameOfGridModel());
+    menuFile->Append(Events::ID::Menu_CloseAllModels, Strings::TitleOfMenuItemCloseAllModels());
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT, Strings::TitleOfMenuItemQuit());
     menuBar->Append(menuFile, Strings::TitleOfMenuFile());
@@ -308,4 +316,34 @@ void Frame::OnProjectPanel(wxCommandEvent& event) {
     wxAuiPaneInfo& pane = auiMgr_.GetPane(projectPanel_);
     pane.Show(!pane.IsShown());
     auiMgr_.Update();
+}
+
+void Frame::OnCloseAllModels(wxCommandEvent& event) {
+    int c = wxMessageBox(Strings::ConfirmToCloseAllModels(), GetTitle(), wxYES_NO | wxICON_EXCLAMATION);
+    if (c != wxYES) {
+        return;
+    }
+    wxBusyCursor waiting;
+    projectPanel_->CloseAllModels();
+    Events::Notify(Events::ID::Notify_RefreshRenderWindow);
+}
+
+void Frame::OnCloseStructureModels(wxCommandEvent& event) {
+    int c = wxMessageBox(Strings::ConfirmToCloseStructureModels(), GetTitle(), wxYES_NO | wxICON_EXCLAMATION);
+    if (c != wxYES) {
+        return;
+    }
+    wxBusyCursor waiting;
+    projectPanel_->CloseStructureModels();
+    Events::Notify(Events::ID::Notify_RefreshRenderWindow);
+}
+
+void Frame::OnCloseGridModels(wxCommandEvent& event) {
+    int c = wxMessageBox(Strings::ConfirmToCloseGridModels(), GetTitle(), wxYES_NO | wxICON_EXCLAMATION);
+    if (c != wxYES) {
+        return;
+    }
+    wxBusyCursor waiting;
+    projectPanel_->CloseGridModels();
+    Events::Notify(Events::ID::Notify_RefreshRenderWindow);
 }

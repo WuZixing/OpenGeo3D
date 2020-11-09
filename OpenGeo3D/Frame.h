@@ -27,6 +27,9 @@ private:
 	void OnResetZScale(wxCommandEvent& event);
 	void OnProjectPanel(wxCommandEvent& event);
 	void OnNotify(wxNotifyEvent& notify);
+	void OnCloseAllModels(wxCommandEvent& event);
+	void OnCloseStructureModels(wxCommandEvent& event);
+	void OnCloseGridModels(wxCommandEvent& event);
 
 private:
 	void InitMenu();

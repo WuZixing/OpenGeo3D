@@ -57,3 +57,15 @@ void ProjectPanel::OnChildrenNotify(wxNotifyEvent& event) {
 void ProjectPanel::AppendG3DGrid(g3dgrid::Grid* grid) {
 	projectTree_->AppendG3DGrid(grid);
 }
+
+void ProjectPanel::CloseAllModels() {
+	projectTree_->CloseAllModels();
+}
+
+void ProjectPanel::CloseStructureModels() {
+	projectTree_->CloseStructureModels();
+}
+
+void ProjectPanel::CloseGridModels() {
+	projectTree_->CloseGridModels();
+}

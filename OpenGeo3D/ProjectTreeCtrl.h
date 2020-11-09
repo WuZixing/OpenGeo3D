@@ -24,6 +24,10 @@ public:
 	void ExpandStructureModelTree();
 	void ExpandGridModelNodeTree();
 
+	void CloseAllModels();
+	void CloseStructureModels();
+	void CloseGridModels();
+
 private:
 	void OnStateImageClicked(wxTreeEvent& event);
 	void OnItemSelected(wxTreeEvent& event);
@@ -43,6 +47,8 @@ private:;
 	void ShowMenuOnGridModelItem(G3DTreeItemData* itemData, const wxPoint& pos);
 	void ShowMenuOnActorItem(G3DTreeItemData* itemData, const wxPoint& pos);
 	void ShowMenuOnVoxelGridItem(G3DTreeItemData* itemData, const wxPoint& pos);
+
+	void RemoveChildrenFromScene(const wxTreeItemId& item);
 
 private:
 	const int ItemState_Unchecked_, ItemState_Checked_;
