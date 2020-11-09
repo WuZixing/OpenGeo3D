@@ -17,7 +17,6 @@ private:
 	void OnMenuOpened(wxMenuEvent& event);
 	void OnOpenGeo3DML(wxCommandEvent& event);
 	void OnOpenSimpleDrillLog(wxCommandEvent& event);
-	void OnNewGridModel(wxCommandEvent& event);
 	void OnOpenSGeMSGrid(wxCommandEvent& event);
 	void OnFullView(wxCommandEvent& event);
 	void OnBackgroundColor(wxCommandEvent& event);
@@ -28,10 +27,11 @@ private:
 	void OnProjectPanel(wxCommandEvent& event);
 	void OnNotify(wxNotifyEvent& notify);
 	void OnCloseAllModels(wxCommandEvent& event);
-	void OnCloseStructureModels(wxCommandEvent& event);
-	void OnCloseGridModels(wxCommandEvent& event);
+	void OnCloseStructureModel(wxCommandEvent& event);
+	void OnCloseVoxelGridModel(wxCommandEvent& event);
 	void OnSaveToGeo3DML(wxCommandEvent& event);
 	void OnSaveToVoxelGrid(wxCommandEvent& event);
+	void OnEditVoxelGrid(wxCommandEvent& event);
 
 private:
 	void InitMenu();

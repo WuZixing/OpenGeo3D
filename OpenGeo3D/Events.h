@@ -9,7 +9,6 @@ public:
 
 		Menu_OpenGeo3DML,
 		Menu_OpenSimpleDrillLog,
-		Menu_NewGridModel,
 		Menu_OpenSGeMSGrid,
 		Menu_FullView,
 		Menu_BackgroundColor,
@@ -22,8 +21,8 @@ public:
 		Menu_DeleteGridLOD,
 		Menu_AppendGridLOD,
 		Menu_CloseAllModels,
-		Menu_CloseStructureModels,
-		Menu_CloseGridModels,
+		Menu_CloseStructureModel,
+		Menu_CloseVoxelGridModel,
 		Menu_SaveToGeo3DML,
 		Menu_SaveToVoxelGrid,
 

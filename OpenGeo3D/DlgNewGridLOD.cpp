@@ -43,6 +43,7 @@ DlgNewGridLOD::DlgNewGridLOD(wxWindow* parent, int level) : wxDialog(parent, wxI
 	ctrlScaleZ_->Bind(wxEVT_SPINCTRL, &DlgNewGridLOD::OnSetScaleZ, this);
 	
 	wxSizer* btnSizer = wxDialog::CreateSeparatedButtonSizer(wxOK | wxCANCEL);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DlgNewGridLOD::OnButtonOK, this, wxID_OK);
 
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(sizer, wxSizerFlags(1).Expand().Border(wxALL, 10));
@@ -99,4 +100,14 @@ bool DlgNewGridLOD::GetCellSize(double& x, double& y, double& z) const {
 		return false;
 	}
 	return true;
+}
+
+void DlgNewGridLOD::OnButtonOK(wxCommandEvent& event) {
+	double sizeX, sizeY, sizeZ;
+	if (!GetCellSize(sizeX, sizeY, sizeZ) || sizeX <= ZERO_ERROR || sizeY <= ZERO_ERROR || sizeZ <= ZERO_ERROR) {
+		wxMessageBox(Strings::TipOfInvalidGridCellSize(), Strings::AppName(), wxICON_ERROR);
+		return;
+	}
+
+	EndModal(wxID_OK);
 }

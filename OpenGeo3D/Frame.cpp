@@ -7,6 +7,7 @@
 #include <g3dxml/XMLReader.h>
 #include <g3dxml/XMLWriter.h>
 #include "icon.xpm"
+#include "DlgEditVoxelGrid.h"
 #include "DlgNewGridModel.h"
 #include "DlgOpenSimpleDrillLog.h"
 #include "Events.h"
@@ -19,10 +20,9 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(wxID_ABOUT, Frame::OnAbout)
     EVT_MENU(Events::ID::Menu_OpenGeo3DML, Frame::OnOpenGeo3DML)
     EVT_MENU(Events::ID::Menu_OpenSimpleDrillLog, Frame::OnOpenSimpleDrillLog)
-    EVT_MENU(Events::ID::Menu_CloseStructureModels, Frame::OnCloseStructureModels)
-    // EVT_MENU(Events::ID::Menu_NewGridModel, Frame::OnNewGridModel)
+    EVT_MENU(Events::ID::Menu_CloseStructureModel, Frame::OnCloseStructureModel)
     EVT_MENU(Events::ID::Menu_OpenSGeMSGrid, Frame::OnOpenSGeMSGrid)
-    EVT_MENU(Events::ID::Menu_CloseGridModels, Frame::OnCloseGridModels)
+    EVT_MENU(Events::ID::Menu_CloseVoxelGridModel, Frame::OnCloseVoxelGridModel)
     EVT_MENU(Events::ID::Menu_CloseAllModels, Frame::OnCloseAllModels)
     EVT_MENU(Events::ID::Menu_FullView, Frame::OnFullView)
     EVT_MENU(Events::ID::Menu_BackgroundColor, Frame::OnBackgroundColor)
@@ -33,6 +33,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(Events::ID::Menu_ProjectPanel, Frame::OnProjectPanel)
     EVT_MENU(Events::ID::Menu_SaveToGeo3DML, Frame::OnSaveToGeo3DML)
     EVT_MENU(Events::ID::Menu_SaveToVoxelGrid, Frame::OnSaveToVoxelGrid)
+    EVT_MENU(Events::ID::Menu_EditVoxelGrid, Frame::OnEditVoxelGrid)
     EVT_NOTIFY_RANGE(wxEVT_NULL, Events::ID::Notify_ResetAndRefreshRenderWindow, Events::ID::Notify_RefreshRenderWindow, Frame::OnNotify)
 wxEND_EVENT_TABLE()
 
@@ -57,13 +58,12 @@ void Frame::InitMenu() {
     menuStructureModel->Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
     menuStructureModel->AppendSeparator();
     menuStructureModel->Append(Events::ID::Menu_SaveToGeo3DML, Strings::TitleOfMenuItemSaveToGeo3DML());
-    menuStructureModel->Append(Events::ID::Menu_CloseStructureModels, Strings::TitleOfMenuItemCloseStructureModels());
+    menuStructureModel->Append(Events::ID::Menu_CloseStructureModel, Strings::TitleOfMenuItemCloseStructureModel());
     wxMenu* menuGridModel = new wxMenu();
-    //menuGridModel->Append(Events::ID::Menu_NewGridModel, Strings::TitleOfMenuItemNewGridModel());
-    //menuGridModel->Append(Events::ID::Menu_OpenSGeMSGrid, Strings::TitleOfMenuItemOpenSGeMSGrid());
+    menuGridModel->Append(Events::ID::Menu_EditVoxelGrid, Strings::TitleOfMenuItemEditVoxelGrid());
     menuGridModel->AppendSeparator();
     menuGridModel->Append(Events::ID::Menu_SaveToVoxelGrid, Strings::TitleOfMenuItemSaveToVoxelGrid());
-    menuGridModel->Append(Events::ID::Menu_CloseGridModels, Strings::TitleOfMenuItemCloseGridModels());
+    menuGridModel->Append(Events::ID::Menu_CloseVoxelGridModel, Strings::TitleOfMenuItemCloseVoxelGridModel());
     menuFile->AppendSubMenu(menuStructureModel, Strings::NameOfStructureModel());
     menuFile->AppendSubMenu(menuGridModel, Strings::NameOfGridModel());
     menuFile->Append(Events::ID::Menu_CloseAllModels, Strings::TitleOfMenuItemCloseAllModels());
@@ -231,27 +231,23 @@ void Frame::OnOpenSimpleDrillLog(wxCommandEvent& event) {
     }
 }
 
-void Frame::OnNewGridModel(wxCommandEvent& event) {
-    DlgNewGridModel dlg(this);
-    dlg.CenterOnScreen();
-    if (dlg.ShowModal() != wxID_OK) {
-        return;
-    }
-    wxBusyCursor waiting;
-    g3dgrid::Grid* grid = dlg.MakeGrid();
-    if (grid != nullptr) {
-        projectPanel_->AppendG3DGrid(grid);
-        projectPanel_->ExpandGridModelNodeTree();
-        Events::Notify(Events::ID::Notify_ResetAndRefreshRenderWindow);
-    }
-}
-
 void Frame::OnOpenSGeMSGrid(wxCommandEvent& event) {
     
 }
 
 void Frame::OnSaveToVoxelGrid(wxCommandEvent& event) {
 
+}
+
+void Frame::OnEditVoxelGrid(wxCommandEvent& event) {
+    DlgEditVoxelGrid dlg(this, projectPanel_->GetG3DVoxelGrid());
+    dlg.CenterOnScreen();
+    if (dlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    wxBusyCursor waiting;
+    projectPanel_->UpdateVoxelGridModel();
+    projectPanel_->ExpandGridModelNodeTree();
 }
 
 void Frame::OnNotify(wxNotifyEvent& notify) {
@@ -359,22 +355,22 @@ void Frame::OnCloseAllModels(wxCommandEvent& event) {
     Events::Notify(Events::ID::Notify_RefreshRenderWindow);
 }
 
-void Frame::OnCloseStructureModels(wxCommandEvent& event) {
-    int c = wxMessageBox(Strings::ConfirmToCloseStructureModels(), GetTitle(), wxYES_NO | wxICON_EXCLAMATION);
+void Frame::OnCloseStructureModel(wxCommandEvent& event) {
+    int c = wxMessageBox(Strings::ConfirmToCloseStructureModel(), GetTitle(), wxYES_NO | wxICON_EXCLAMATION);
     if (c != wxYES) {
         return;
     }
     wxBusyCursor waiting;
-    projectPanel_->CloseStructureModels();
+    projectPanel_->CloseStructureModel();
     Events::Notify(Events::ID::Notify_RefreshRenderWindow);
 }
 
-void Frame::OnCloseGridModels(wxCommandEvent& event) {
-    int c = wxMessageBox(Strings::ConfirmToCloseGridModels(), GetTitle(), wxYES_NO | wxICON_EXCLAMATION);
+void Frame::OnCloseVoxelGridModel(wxCommandEvent& event) {
+    int c = wxMessageBox(Strings::ConfirmToCloseVoxelGridModel(), GetTitle(), wxYES_NO | wxICON_EXCLAMATION);
     if (c != wxYES) {
         return;
     }
     wxBusyCursor waiting;
-    projectPanel_->CloseGridModels();
+    projectPanel_->CloseVoxelGridModel();
     Events::Notify(Events::ID::Notify_RefreshRenderWindow);
 }

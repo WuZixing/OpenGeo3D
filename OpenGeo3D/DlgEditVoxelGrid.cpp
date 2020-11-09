@@ -54,5 +54,42 @@ DlgEditVoxelGrid::~DlgEditVoxelGrid() {
 }
 
 void DlgEditVoxelGrid::OnButtonOK(wxCommandEvent& event) {
+	wxString name = ctrlName_->GetValue();
+	if (name.IsEmpty()) {
+		wxMessageBox(Strings::TipOfInvalidName(), Strings::AppName(), wxICON_ERROR);
+		ctrlName_->SetFocus();
+		return;
+	}
+	wxString srsName = ctrlSRS_->GetValue();
+	if (srsName.IsEmpty()) {
+		wxMessageBox(Strings::TipOfInvalidSRS(), Strings::AppName(), wxICON_ERROR);
+		ctrlSRS_->SetFocus();
+		return;
+	}
+	double x = 0, y = 0, z = 0;
+	wxString str = ctrlX_->GetValue();
+	if (str.IsEmpty() || !str.ToCDouble(&x)) {
+		wxMessageBox(Strings::TipOfInvalidGridOrigin(), Strings::AppName(), wxICON_ERROR);
+		ctrlX_->SetFocus();
+		return;
+	}
+	str = ctrlY_->GetValue();
+	if (str.IsEmpty() || !str.ToCDouble(&y)) {
+		wxMessageBox(Strings::TipOfInvalidGridOrigin(), Strings::AppName(), wxICON_ERROR);
+		ctrlY_->SetFocus();
+		return;
+	}
+	str = ctrlZ_->GetValue();
+	if (str.IsEmpty() || !str.ToCDouble(&z)) {
+		wxMessageBox(Strings::TipOfInvalidGridOrigin(), Strings::AppName(), wxICON_ERROR);
+		ctrlZ_->SetFocus();
+		return;
+	}
 
+	voxelGrid_->SetName(name.ToUTF8().data());
+	voxelGrid_->SetSRS(srsName.ToUTF8().data());
+	voxelGrid_->SetDescription(ctrlDescription_->GetValue().ToUTF8().data());
+	voxelGrid_->SetOrigin(geo3dml::Point3D(x, y, z));
+
+	EndModal(wxID_OK);
 }

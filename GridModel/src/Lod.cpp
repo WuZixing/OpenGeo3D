@@ -7,8 +7,32 @@ LOD::LOD(int level) : level_(level) {
 	cellSizeX_ = 0, cellSizeY_ = 0, cellSizeZ_ = 0;
 }
 
+LOD::LOD(const LOD& lod) {
+	SetID(((LOD*)(&lod))->GetID());
+	cellScaleX_ = lod.cellScaleX_;
+	cellScaleY_ = lod.cellScaleY_;
+	cellScaleZ_ = lod.cellScaleZ_;
+	cellSizeX_ = lod.cellSizeX_;
+	cellSizeY_ = lod.cellSizeY_;
+	cellSizeZ_ = lod.cellSizeZ_;
+}
+
 LOD::~LOD() {
 
+}
+
+LOD& LOD::operator=(const LOD& lod) {
+	if (this == &lod) {
+		return *this;
+	}
+	SetID(((LOD*)(&lod))->GetID());
+	cellScaleX_ = lod.cellScaleX_;
+	cellScaleY_ = lod.cellScaleY_;
+	cellScaleZ_ = lod.cellScaleZ_;
+	cellSizeX_ = lod.cellSizeX_;
+	cellSizeY_ = lod.cellSizeY_;
+	cellSizeZ_ = lod.cellSizeZ_;
+	return *this;
 }
 
 int LOD::GetLevel() const {

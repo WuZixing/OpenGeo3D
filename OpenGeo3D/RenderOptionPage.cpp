@@ -47,8 +47,6 @@ void RenderOptionPage::BindToItem(geo3dml::Object* g3dObject, G3DTreeItemData::I
 		BindToStructureModels(g3dProject);
 		break;
 	}
-	case G3DTreeItemData::ItemType::G3D_GridModel:
-		break;
 	case G3DTreeItemData::ItemType::G3D_Map: {
 		geo3dml::Map* g3dMap = static_cast<geo3dml::Map*>(g3dObject);
 		BindToG3DMap(g3dMap);

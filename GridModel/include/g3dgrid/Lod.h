@@ -1,11 +1,15 @@
 #pragma once
 
+#include <geo3dml/Geo3DML.h>
+
 namespace g3dgrid {
 
-	class LOD {
+	class LOD : public geo3dml::Object {
 	public:
 		LOD(int level);
+		LOD(const LOD& lod);
 		virtual ~LOD();
+		LOD& operator=(const LOD& lod);
 
 		LOD& SetCellSize(double x, double y, double z);
 		LOD& SetCellScale(int x, int y, int z);

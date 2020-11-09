@@ -7,7 +7,7 @@ VoxelGrid::VoxelGrid() {
 }
 
 VoxelGrid::~VoxelGrid() {
-	for (auto itor = lods_.end(); itor != lods_.end(); ++itor) {
+	for (auto itor = lods_.begin(); itor != lods_.end(); ++itor) {
 		delete itor->second;
 	}
 	lods_.clear();

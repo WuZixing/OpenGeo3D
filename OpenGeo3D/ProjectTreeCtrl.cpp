@@ -3,7 +3,6 @@
 #include <g3dvtk/ObjectFactory.h>
 #include "checked_box.xpm"
 #include "unchecked_box.xpm"
-#include "DlgEditVoxelGrid.h"
 #include "Events.h"
 #include "Strings.h"
 
@@ -15,9 +14,10 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 	g3dProject_.reset(g3dFactory.NewProject());
 	g3dProject_->SetID(geo3dml::Object::NewID());
 	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
-	g3dGrids_ = std::make_unique<g3dgrid::GridCollection>();
-	g3dGrids_->SetID(geo3dml::Object::NewID());
-	g3dGrids_->SetName(Strings::NameOfGridModel().ToUTF8().data());
+	g3dVoxelGrid_ = std::make_unique<g3dgrid::VoxelGrid>();
+	g3dVoxelGrid_->SetID(geo3dml::Object::NewID());
+	g3dVoxelGrid_->SetName(Strings::NameOfGridModel().ToUTF8().data());
+	g3dVoxelGrid_->SetSRS("CGCS2000");
 
 	wxIcon icons[2];
 	icons[ItemState_Checked_] = wxIcon(xpm_checked_box);
@@ -28,11 +28,11 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 	AssignStateImageList(states);
 
 	wxTreeItemId rootItem = AddRoot(wxEmptyString, 0);
-	rootStructureModel_ = AppendItem(rootItem, Strings::NameOfStructureModel());
-	SetItemData(rootStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
-	SetItemState(rootStructureModel_, ItemState_Checked_);
+	rootOfStructureModel_ = AppendItem(rootItem, Strings::NameOfStructureModel());
+	SetItemData(rootOfStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
+	SetItemState(rootOfStructureModel_, ItemState_Checked_);
 	rootOfGridModel_ = AppendItem(rootItem, Strings::NameOfGridModel());
-	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dGrids_.get(), G3DTreeItemData::ItemType::G3D_GridModel));
+	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dVoxelGrid_.get(), G3DTreeItemData::ItemType::G3D_VoxelGrid));
 	SetItemState(rootOfGridModel_, ItemState_Checked_);
 
 	renderer_ = vtkSmartPointer<vtkRenderer>::New();
@@ -42,7 +42,6 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 	Bind(wxEVT_TREE_STATE_IMAGE_CLICK, &ProjectTreeCtrl::OnStateImageClicked, this);
 	Bind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
 	Bind(wxEVT_TREE_ITEM_MENU, &ProjectTreeCtrl::OnItemMenu, this);
-	Bind(wxEVT_COMMAND_MENU_SELECTED, &ProjectTreeCtrl::OnEditVoxelGrid, this, Events::ID::Menu_EditVoxelGrid, Events::ID::Menu_EditVoxelGrid);
 }
 
 ProjectTreeCtrl::~ProjectTreeCtrl() {
@@ -89,7 +88,7 @@ void ProjectTreeCtrl::UpdateSubTreeOfMap(geo3dml::Map* g3dMap) {
 
 wxTreeItemId ProjectTreeCtrl::FindOrInsertMapItem(geo3dml::Map* g3dMap) {
 	wxTreeItemIdValue cookie = nullptr;
-	wxTreeItemId mapItem = GetFirstChild(rootStructureModel_, cookie);
+	wxTreeItemId mapItem = GetFirstChild(rootOfStructureModel_, cookie);
 	while (mapItem.IsOk()) {
 		G3DTreeItemData* itemData = dynamic_cast<G3DTreeItemData*>(GetItemData(mapItem));
 		if (itemData != nullptr && itemData->GetItemType() == G3DTreeItemData::ItemType::G3D_Map) {
@@ -98,12 +97,12 @@ wxTreeItemId ProjectTreeCtrl::FindOrInsertMapItem(geo3dml::Map* g3dMap) {
 				return mapItem;
 			}
 		}
-		mapItem = GetNextChild(rootStructureModel_, cookie);
+		mapItem = GetNextChild(rootOfStructureModel_, cookie);
 	}
-	mapItem = AppendItem(rootStructureModel_, wxString::FromUTF8(g3dMap->GetName()));
+	mapItem = AppendItem(rootOfStructureModel_, wxString::FromUTF8(g3dMap->GetName()));
 	SetItemData(mapItem, new G3DTreeItemData(g3dMap, G3DTreeItemData::ItemType::G3D_Map));
 	SetItemState(mapItem, ItemState_Checked_);
-	RefreshItem(rootStructureModel_);
+	RefreshItem(rootOfStructureModel_);
 	return mapItem;
 }
 
@@ -154,13 +153,48 @@ void ProjectTreeCtrl::AppendG3DMap(geo3dml::Map* map) {
 	UpdateSubTreeOfMap(map);
 }
 
-void ProjectTreeCtrl::AppendG3DGrid(g3dgrid::Grid* grid) {
-	g3dGrids_->AddGrid(grid);
-	UpdateSubTreeOfGrid(grid);
+void ProjectTreeCtrl::UpdateVoxelGridModel() {
+	SetItemText(rootOfGridModel_, wxString::FromUTF8(g3dVoxelGrid_->GetName()));
+	int maxLOD = g3dVoxelGrid_->GetMaxLOD();
+	for (int level = 0; level <= maxLOD; ++level) {
+		g3dgrid::LOD* lod = g3dVoxelGrid_->GetLOD(level);
+		wxTreeItemIdValue cookieOfLOD = nullptr;
+		wxTreeItemId lodItem = GetFirstChild(rootOfGridModel_, cookieOfLOD);
+		while (lodItem.IsOk()) {
+			G3DTreeItemData* itemData = dynamic_cast<G3DTreeItemData*>(GetItemData(lodItem));
+			if (itemData != nullptr && itemData->GetItemType() == G3DTreeItemData::ItemType::G3D_GridLOD) {
+				g3dgrid::LOD* lodInItem = static_cast<g3dgrid::LOD*>(itemData->GetG3DObject());
+				if (lodInItem == lod) {
+					break;
+				}
+			}
+			lodItem = GetNextChild(rootOfGridModel_, cookieOfLOD);
+		}
+		if (lodItem.IsOk()) {
+			continue;
+		}
+		lodItem = AppendItem(rootOfGridModel_, wxString::Format(wxS("LOD - %d"), level));
+		SetItemData(lodItem, new G3DTreeItemData(lod, G3DTreeItemData::ItemType::G3D_GridLOD));
+		SetItemState(lodItem, ItemState_Checked_);
+		/*
+		int numberOfActors = layer->GetActorCount();
+		for (int m = 0; m < numberOfActors; ++m) {
+			g3dvtk::Actor* g3dActor = dynamic_cast<g3dvtk::Actor*>(layer->GetActorAt(m));
+			if (g3dActor != nullptr) {
+				g3dActor->SetUserTransform(transform_);
+				renderer_->AddActor(g3dActor->GetVTKProp());
+				wxTreeItemId actorItem = AppendItem(layerItem, wxString::FromUTF8(g3dActor->GetName()));
+				SetItemData(actorItem, new G3DTreeItemData(g3dActor, G3DTreeItemData::ItemType::G3D_Actor));
+				SetItemState(actorItem, g3dActor->IsVisible() ? ItemState_Checked_ : ItemState_Unchecked_);
+			}
+		}
+		*/
+	}
+	RefreshItem(rootOfGridModel_);
 }
 
 void ProjectTreeCtrl::ExpandStructureModelTree() {
-	Expand(rootStructureModel_);
+	Expand(rootOfStructureModel_);
 }
 
 void ProjectTreeCtrl::ExpandGridModelNodeTree() {
@@ -227,25 +261,14 @@ wxTreeItemId ProjectTreeCtrl::FindOrInsertVoxelGridItem(g3dgrid::VoxelGrid* g3dV
 	return gridItem;
 }
 
-void ProjectTreeCtrl::UpdateSubTreeOfGrid(g3dgrid::Grid* g3dGrid) {
-	g3dgrid::VoxelGrid* voxelGrid = dynamic_cast<g3dgrid::VoxelGrid*>(g3dGrid);
-	if (voxelGrid == nullptr) {
-		return;
-	}
-	wxTreeItemId gridItem = FindOrInsertVoxelGridItem(voxelGrid);
-	RefreshItem(gridItem);
-}
-
 void ProjectTreeCtrl::OnItemMenu(wxTreeEvent& event) {
+	event.Skip();
 	wxTreeItemId itemId = event.GetItem();
 	SelectItem(itemId);
 	G3DTreeItemData* gItem = static_cast<G3DTreeItemData*>(GetItemData(itemId));
 	switch (gItem->GetItemType()) {
 	case G3DTreeItemData::ItemType::G3D_StructureModel:
 		ShowMenuOnStructureModelItem(gItem, event.GetPoint());
-		break;
-	case G3DTreeItemData::ItemType::G3D_GridModel:
-		ShowMenuOnGridModelItem(gItem, event.GetPoint());
 		break;
 	case G3DTreeItemData::ItemType::G3D_VoxelGrid:
 		ShowMenuOnVoxelGridItem(gItem, event.GetPoint());
@@ -256,7 +279,6 @@ void ProjectTreeCtrl::OnItemMenu(wxTreeEvent& event) {
 	default:
 		return;
 	}
-	event.Skip();
 }
 
 void ProjectTreeCtrl::ShowMenuOnStructureModelItem(G3DTreeItemData* itemData, const wxPoint& pos) {
@@ -265,15 +287,7 @@ void ProjectTreeCtrl::ShowMenuOnStructureModelItem(G3DTreeItemData* itemData, co
 	menu.Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
 	menu.AppendSeparator();
 	menu.Append(Events::ID::Menu_SaveToGeo3DML, Strings::TitleOfMenuItemSaveToGeo3DML());
-	menu.Append(Events::ID::Menu_CloseStructureModels, Strings::TitleOfMenuItemCloseStructureModels());
-	PopupMenu(&menu, pos);
-}
-
-void ProjectTreeCtrl::ShowMenuOnGridModelItem(G3DTreeItemData* itemData, const wxPoint& pos) {
-	wxMenu menu(GetItemText(itemData->GetId()));
-	menu.Append(Events::ID::Menu_NewGridModel, Strings::TitleOfMenuItemNewGridModel());
-	menu.AppendSeparator();
-	menu.Append(Events::ID::Menu_CloseGridModels, Strings::TitleOfMenuItemCloseGridModels());
+	menu.Append(Events::ID::Menu_CloseStructureModel, Strings::TitleOfMenuItemCloseStructureModel());
 	PopupMenu(&menu, pos);
 }
 
@@ -286,45 +300,20 @@ void ProjectTreeCtrl::ShowMenuOnVoxelGridItem(G3DTreeItemData* itemData, const w
 	menu.Append(Events::ID::Menu_EditVoxelGrid, Strings::TitleOfMenuItemEditVoxelGrid());
 	menu.AppendSeparator();
 	menu.Append(Events::ID::Menu_SaveToVoxelGrid, Strings::TitleOfMenuItemSaveToVoxelGrid());
+	menu.Append(Events::ID::Menu_CloseVoxelGridModel, Strings::TitleOfMenuItemCloseVoxelGridModel());
 	PopupMenu(&menu, pos);
-}
-
-void ProjectTreeCtrl::OnEditVoxelGrid(wxCommandEvent& event) {
-	wxTreeItemId item = GetSelection();
-	if (!item.IsOk()) {
-		return;
-	}
-	G3DTreeItemData* itemData = static_cast<G3DTreeItemData*>(GetItemData(item));
-	if (itemData->GetItemType() != G3DTreeItemData::ItemType::G3D_VoxelGrid) {
-		return;
-	}
-	g3dgrid::VoxelGrid* voxelGrid = static_cast<g3dgrid::VoxelGrid*>(itemData->GetG3DObject());
-	DlgEditVoxelGrid dlg(this, voxelGrid);
-	dlg.CenterOnScreen();
-	dlg.ShowModal();
 }
 
 void ProjectTreeCtrl::CloseAllModels() {
 	// block event handler and remove nodes
 	Unbind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
-	RemoveChildrenFromScene(rootStructureModel_);
-	DeleteChildren(rootStructureModel_);
+	RemoveChildrenFromScene(rootOfStructureModel_);
+	DeleteChildren(rootOfStructureModel_);
 	RemoveChildrenFromScene(rootOfGridModel_);
 	DeleteChildren(rootOfGridModel_);
-	// reset structure models
-	g3dvtk::ObjectFactory g3dFactory;
-	g3dProject_.reset(g3dFactory.NewProject());
-	g3dProject_->SetID(geo3dml::Object::NewID());
-	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
-	wxTreeItemData* oldData = GetItemData(rootStructureModel_);
-	SetItemData(rootStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
-	delete oldData;
-	g3dGrids_ = std::make_unique<g3dgrid::GridCollection>();
-	g3dGrids_->SetID(geo3dml::Object::NewID());
-	g3dGrids_->SetName(Strings::NameOfGridModel().ToUTF8().data());
-	oldData = GetItemData(rootOfGridModel_);
-	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dGrids_.get(), G3DTreeItemData::ItemType::G3D_GridModel));
-	delete oldData;
+	// reset structure and grid model
+	ResetStructureModel();
+	ResetVoxelGridModel();
 	// force to trigger the selection changed event to make sure the dashboard know the obsolete tree item.
 	wxTreeEvent evtSelection(wxEVT_TREE_SEL_CHANGED, this, GetSelection());
 	OnItemSelected(evtSelection);
@@ -332,19 +321,13 @@ void ProjectTreeCtrl::CloseAllModels() {
 	Bind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
 }
 
-void ProjectTreeCtrl::CloseStructureModels() {
+void ProjectTreeCtrl::CloseStructureModel() {
 	// block event handler and remove nodes
 	Unbind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
-	RemoveChildrenFromScene(rootStructureModel_);
-	DeleteChildren(rootStructureModel_);
+	RemoveChildrenFromScene(rootOfStructureModel_);
+	DeleteChildren(rootOfStructureModel_);
 	// reset structure models
-	g3dvtk::ObjectFactory g3dFactory;
-	g3dProject_.reset(g3dFactory.NewProject());
-	g3dProject_->SetID(geo3dml::Object::NewID());
-	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
-	wxTreeItemData* oldData = GetItemData(rootStructureModel_);
-	SetItemData(rootStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
-	delete oldData;
+	ResetStructureModel();
 	// force to trigger the selection changed event to make sure the dashboard know the obsolete tree item.
 	wxTreeEvent evtSelection(wxEVT_TREE_SEL_CHANGED, this, GetSelection());
 	OnItemSelected(evtSelection);
@@ -352,19 +335,13 @@ void ProjectTreeCtrl::CloseStructureModels() {
 	Bind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
 }
 
-void ProjectTreeCtrl::CloseGridModels() {
+void ProjectTreeCtrl::CloseVoxelGridModel() {
 	// block event handler and remove nodes
 	Unbind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
 	RemoveChildrenFromScene(rootOfGridModel_);
 	DeleteChildren(rootOfGridModel_);
 	// reset grid models
-	g3dvtk::ObjectFactory g3dFactory;
-	g3dGrids_ = std::make_unique<g3dgrid::GridCollection>();
-	g3dGrids_->SetID(geo3dml::Object::NewID());
-	g3dGrids_->SetName(Strings::NameOfGridModel().ToUTF8().data());
-	wxTreeItemData* oldData = GetItemData(rootOfGridModel_);
-	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dGrids_.get(), G3DTreeItemData::ItemType::G3D_GridModel));
-	delete oldData;
+	ResetVoxelGridModel();
 	// force to trigger the selection changed event to make sure the dashboard know the obsolete tree item.
 	wxTreeEvent evtSelection(wxEVT_TREE_SEL_CHANGED, this, GetSelection());
 	OnItemSelected(evtSelection);
@@ -384,4 +361,26 @@ void ProjectTreeCtrl::RemoveChildrenFromScene(const wxTreeItemId& item) {
 		RemoveChildrenFromScene(child);
 		child = GetNextChild(item, cookie);
 	}
+}
+
+void ProjectTreeCtrl::ResetStructureModel() {
+	g3dvtk::ObjectFactory g3dFactory;
+	g3dProject_.reset(g3dFactory.NewProject());
+	g3dProject_->SetID(geo3dml::Object::NewID());
+	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
+	wxTreeItemData* oldData = GetItemData(rootOfStructureModel_);
+	SetItemData(rootOfStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
+	SetItemText(rootOfStructureModel_, wxString::FromUTF8(g3dProject_->GetName()));
+	delete oldData;
+}
+
+void ProjectTreeCtrl::ResetVoxelGridModel() {
+	g3dVoxelGrid_ = std::make_unique<g3dgrid::VoxelGrid>();
+	g3dVoxelGrid_->SetID(geo3dml::Object::NewID());
+	g3dVoxelGrid_->SetName(Strings::NameOfGridModel().ToUTF8().data());
+	g3dVoxelGrid_->SetSRS("CGCS2000");
+	wxTreeItemData* oldData = GetItemData(rootOfGridModel_);
+	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dVoxelGrid_.get(), G3DTreeItemData::ItemType::G3D_VoxelGrid));
+	SetItemText(rootOfGridModel_, wxString::FromUTF8(g3dVoxelGrid_->GetName()));
+	delete oldData;
 }

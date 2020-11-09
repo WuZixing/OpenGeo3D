@@ -84,7 +84,6 @@ void GridLODViewListCtrl::OnAppendLOD(wxCommandEvent& event) {
 	voxelGrid_->SetLOD(lod);
 	
 	AppendLODItem(lod);
-	
 }
 
 void GridLODViewListCtrl::OnDeleteLOD(wxCommandEvent& event) {

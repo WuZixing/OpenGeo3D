@@ -40,11 +40,6 @@ void MetadataPage::BindToItem(geo3dml::Object* g3dObject, G3DTreeItemData::ItemT
 		BindToG3DActor(g3dActor);
 		break;
 	}
-	case G3DTreeItemData::ItemType::G3D_GridModel: {
-		g3dgrid::GridCollection* grids = static_cast<g3dgrid::GridCollection*>(g3dObject);
-		BindToG3DGridCollection(grids);
-		break;
-	}
 	case G3DTreeItemData::ItemType::G3D_VoxelGrid: {
 		g3dgrid::VoxelGrid* g3dGrid = static_cast<g3dgrid::VoxelGrid*>(g3dObject);
 		BindToG3DVoxelGrid(g3dGrid);
@@ -103,13 +98,6 @@ void MetadataPage::BindToG3DActor(geo3dml::Actor* g3dActor) {
 	SetFeatureProperty(g3dActor->GetBindingFeature());
 	// geometry
 	SetGeometryProperty(g3dActor->GetBindingGeometry());
-}
-
-void MetadataPage::BindToG3DGridCollection(g3dgrid::GridCollection* g3dGrids) {
-	SetBasicInfo(Strings::NameOfGridModel(), wxString::FromUTF8(g3dGrids->GetID()), g3dGrids->GetGridCount());
-	double minX = 0, maxX = -1, minY = 0, maxY = -1, minZ = 0, maxZ = -1;
-	g3dGrids->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
-	SetMBRProperty(minX, minY, minZ, maxX, maxY, maxZ);
 }
 
 void MetadataPage::BindToG3DVoxelGrid(g3dgrid::VoxelGrid* g3dVoxelGrid) {

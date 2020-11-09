@@ -16,6 +16,7 @@ private:
 	void OnSetScaleX(wxSpinEvent& evt);
 	void OnSetScaleY(wxSpinEvent& evt);
 	void OnSetScaleZ(wxSpinEvent& evt);
+	void OnButtonOK(wxCommandEvent& event);
 
 private:
 	int level_;

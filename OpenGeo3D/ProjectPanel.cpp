@@ -30,12 +30,20 @@ geo3dml::Project* ProjectPanel::GetG3DProject() const {
 	return projectTree_->GetG3DProject();
 }
 
+g3dgrid::VoxelGrid* ProjectPanel::GetG3DVoxelGrid() const {
+	return projectTree_->GetG3DVoxelGrid();
+}
+
 void ProjectPanel::AppendG3DModel(geo3dml::Model* model, bool appendToDefaultMap) {
 	projectTree_->AppendG3DModel(model, appendToDefaultMap);
 }
 
 void ProjectPanel::AppendG3DMap(geo3dml::Map* map) {
 	projectTree_->AppendG3DMap(map);
+}
+
+void ProjectPanel::UpdateVoxelGridModel() {
+	projectTree_->UpdateVoxelGridModel();
 }
 
 void ProjectPanel::ExpandStructureModelTree() {
@@ -58,18 +66,14 @@ void ProjectPanel::OnChildrenNotify(wxNotifyEvent& event) {
 	}
 }
 
-void ProjectPanel::AppendG3DGrid(g3dgrid::Grid* grid) {
-	projectTree_->AppendG3DGrid(grid);
-}
-
 void ProjectPanel::CloseAllModels() {
 	projectTree_->CloseAllModels();
 }
 
-void ProjectPanel::CloseStructureModels() {
-	projectTree_->CloseStructureModels();
+void ProjectPanel::CloseStructureModel() {
+	projectTree_->CloseStructureModel();
 }
 
-void ProjectPanel::CloseGridModels() {
-	projectTree_->CloseGridModels();
+void ProjectPanel::CloseVoxelGridModel() {
+	projectTree_->CloseVoxelGridModel();
 }

@@ -9,11 +9,11 @@ public:
 	enum ItemType {
 		Unknown,
 		G3D_StructureModel,
-		G3D_GridModel,
 		G3D_Map,
 		G3D_Layer,
 		G3D_Actor,
-		G3D_VoxelGrid
+		G3D_VoxelGrid,
+		G3D_GridLOD
 	};
 
 public:

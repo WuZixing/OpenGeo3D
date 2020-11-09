@@ -1,7 +1,7 @@
 #include "DlgNewGridModel.h"
 #include "Strings.h"
 
-DlgNewGridModel::DlgNewGridModel(wxWindow* parent) : wxDialog(parent, wxID_ANY, Strings::TitleOfMenuItemNewGridModel()) {
+DlgNewGridModel::DlgNewGridModel(wxWindow* parent) : wxDialog(parent, wxID_ANY, Strings::AppName()) {
 	wxFlexGridSizer* sizer = new wxFlexGridSizer(4, 4, wxSize(2, 4));
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfName()), wxSizerFlags().Right());
 	ctrlName_ = new wxTextCtrl(this, wxID_ANY);

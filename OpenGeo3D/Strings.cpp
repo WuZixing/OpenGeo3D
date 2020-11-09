@@ -68,10 +68,6 @@ wxString Strings::TitleOfMenuItemResetZScale() {
 	return wxString::FromUTF8("取消Z轴缩放");
 }
 
-wxString Strings::TitleOfMenuItemNewGridModel() {
-	return wxString::FromUTF8("新建网格模型...");
-}
-
 wxString Strings::TitleOfMenuItemProjectPanel() {
 	return wxString::FromUTF8("模型列表");
 }
@@ -92,12 +88,12 @@ wxString Strings::TitleOfMenuItemCloseAllModels() {
 	return wxString::FromUTF8("关闭所有数据");
 }
 
-wxString Strings::TitleOfMenuItemCloseStructureModels() {
+wxString Strings::TitleOfMenuItemCloseStructureModel() {
 	return wxString::FromUTF8("关闭结构模型");
 }
 
-wxString Strings::TitleOfMenuItemCloseGridModels() {
-	return wxString::FromUTF8("关闭网格模型");
+wxString Strings::TitleOfMenuItemCloseVoxelGridModel() {
+	return wxString::FromUTF8("关闭规则网格模型");
 }
 
 wxString Strings::TitleOfMenuItemSaveToGeo3DML() {
@@ -112,12 +108,12 @@ wxString Strings::ConfirmToCloseAllModels() {
 	return wxString::FromUTF8("确定关闭所有模型吗？未保存的数据将会丢失。");
 }
 
-wxString Strings::ConfirmToCloseStructureModels() {
-	return wxString::FromUTF8("确定关闭所有结构模型吗？未保存的数据将会丢失。");
+wxString Strings::ConfirmToCloseStructureModel() {
+	return wxString::FromUTF8("确定关闭结构模型吗？未保存的数据将会丢失。");
 }
 
-wxString Strings::ConfirmToCloseGridModels() {
-	return wxString::FromUTF8("确定关闭所有网格模型吗？未保存的数据将会丢失。");
+wxString Strings::ConfirmToCloseVoxelGridModel() {
+	return wxString::FromUTF8("确定关闭规则网格模型吗？未保存的数据将会丢失。");
 }
 
 wxString Strings::ConfirmToQuit() {

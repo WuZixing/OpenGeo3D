@@ -24,14 +24,13 @@ public:
 	static wxString TitleOfMenuItemScaleDownZ();
 	static wxString TitleOfMenuItemCustomizedZScale();
 	static wxString TitleOfMenuItemResetZScale();
-	static wxString TitleOfMenuItemNewGridModel();
 	static wxString TitleOfMenuItemProjectPanel();
 	static wxString TitleOfMenuItemEditVoxelGrid();
 	static wxString TitleOfMenuItemDeleteGridLOD();
 	static wxString TitleOfMenuItemAppendGridLOD();
 	static wxString TitleOfMenuItemCloseAllModels();
-	static wxString TitleOfMenuItemCloseStructureModels();
-	static wxString TitleOfMenuItemCloseGridModels();
+	static wxString TitleOfMenuItemCloseStructureModel();
+	static wxString TitleOfMenuItemCloseVoxelGridModel();
 	static wxString TitleOfMenuItemSaveToGeo3DML();
 	static wxString TitleOfMenuItemSaveToVoxelGrid();
 	///@}
@@ -89,8 +88,8 @@ public:
 	static wxString TipOfGridLODAndCellScale();
 	static wxString TipOfInvalidGridCellSize();
 	static wxString ConfirmToCloseAllModels();
-	static wxString ConfirmToCloseStructureModels();
-	static wxString ConfirmToCloseGridModels();
+	static wxString ConfirmToCloseStructureModel();
+	static wxString ConfirmToCloseVoxelGridModel();
 	static wxString TipOfSucceedInSavingToGeo3DMLFile(const wxString& modelName);
 	static wxString TipOfErrorInSavingToGeo3DMLFile(const wxString& modelName, const wxString& error);
 	static wxString TipOfSucceedInSavingToVoxelGridFile(const wxString& modelName);
