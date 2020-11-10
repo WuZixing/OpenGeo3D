@@ -4,8 +4,9 @@
 #include "GridSchemaViewListCtrl.h"
 #include "Strings.h"
 
-DlgEditVoxelGrid::DlgEditVoxelGrid(wxWindow* parent, g3dgrid::VoxelGrid* voxelGrid) : wxDialog(parent, wxID_ANY, Strings::TitleOfMenuItemEditVoxelGrid()) {
+DlgEditVoxelGrid::DlgEditVoxelGrid(wxWindow* parent, g3dgrid::VoxelGrid* voxelGrid, const geo3dml::Point3D& originCandidate) : wxDialog(parent, wxID_ANY, Strings::TitleOfMenuItemEditVoxelGrid()) {
 	voxelGrid_ = voxelGrid;
+	originCandidate_ = originCandidate;
 
 	wxFlexGridSizer* sizer = new wxFlexGridSizer(4, 4, wxSize(2, 4));
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfID()), wxSizerFlags().Right());
@@ -20,7 +21,6 @@ DlgEditVoxelGrid::DlgEditVoxelGrid(wxWindow* parent, g3dgrid::VoxelGrid* voxelGr
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfSRS()), wxSizerFlags().Right());
 	ctrlSRS_ = new wxTextCtrl(this, wxID_ANY, wxString::FromUTF8(voxelGrid_->GetSRS()));
 	sizer->Add(ctrlSRS_);
-
 	sizer->Add(new wxStaticText(this, wxID_ANY, wxEmptyString));
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfX()), wxSizerFlags().CenterHorizontal());
 	sizer->Add(new wxStaticText(this, wxID_ANY, Strings::LabelOfY()), wxSizerFlags().CenterHorizontal());
@@ -34,6 +34,13 @@ DlgEditVoxelGrid::DlgEditVoxelGrid(wxWindow* parent, g3dgrid::VoxelGrid* voxelGr
 	sizer->Add(ctrlY_);
 	sizer->Add(ctrlZ_);
 
+	wxButton* btn = new wxButton(this, wxID_ANY, Strings::LabelOfUseStructureModelMBRAsGridOrigin());
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DlgEditVoxelGrid::OnButtonUseStructureMBRAsOrigin, this);
+
+	wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
+	topSizer->Add(sizer, wxSizerFlags(1).Expand());
+	topSizer->Add(btn, wxSizerFlags().Border(wxLEFT, 6).Bottom());
+
 	wxNotebook* notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(500, 250)), wxNB_DEFAULT | wxNB_NOPAGETHEME);
 	notebook->AddPage(new GridLODViewListCtrl(notebook, voxelGrid_), Strings::LabelOfGridLOD());
 	notebook->AddPage(new GridSchemaViewListCtrl(notebook, voxelGrid_), Strings::LabelOfSchema());
@@ -42,7 +49,7 @@ DlgEditVoxelGrid::DlgEditVoxelGrid(wxWindow* parent, g3dgrid::VoxelGrid* voxelGr
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DlgEditVoxelGrid::OnButtonOK, this, wxID_OK);
 
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(sizer, wxSizerFlags().Expand().Border(wxALL, 10));
+	mainSizer->Add(topSizer, wxSizerFlags().Expand().Border(wxALL, 10));
 	mainSizer->Add(notebook, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 10));
 	mainSizer->Add(new wxStaticText(this, wxID_ANY, Strings::TipOfGridLODAndCellScale()), wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 10));
 	mainSizer->Add(btnSizer, wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 10));
@@ -92,4 +99,10 @@ void DlgEditVoxelGrid::OnButtonOK(wxCommandEvent& event) {
 	voxelGrid_->SetOrigin(geo3dml::Point3D(x, y, z));
 
 	EndModal(wxID_OK);
+}
+
+void DlgEditVoxelGrid::OnButtonUseStructureMBRAsOrigin(wxCommandEvent& event) {
+	ctrlX_->SetValue(wxString::FromDouble(originCandidate_.x, 6));
+	ctrlY_->SetValue(wxString::FromDouble(originCandidate_.y, 6));
+	ctrlZ_->SetValue(wxString::FromDouble(originCandidate_.z, 6));
 }

@@ -430,6 +430,10 @@ wxString Strings::LabelOfSchema() {
 	return Strings::MetadataCategorySchema();
 }
 
+wxString Strings::LabelOfUseStructureModelMBRAsGridOrigin() {
+	return wxString::FromUTF8("使用结构模型最小坐标为原点");
+}
+
 wxString Strings::MetadataCategoryBasicInfo() {
 	return wxString::FromUTF8("基本信息");
 }

@@ -240,7 +240,9 @@ void Frame::OnSaveToVoxelGrid(wxCommandEvent& event) {
 }
 
 void Frame::OnEditVoxelGrid(wxCommandEvent& event) {
-    DlgEditVoxelGrid dlg(this, projectPanel_->GetG3DVoxelGrid());
+    double minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
+    projectPanel_->GetG3DProject()->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
+    DlgEditVoxelGrid dlg(this, projectPanel_->GetG3DVoxelGrid(), geo3dml::Point3D(minX, minY, minZ));
     dlg.CenterOnScreen();
     if (dlg.ShowModal() != wxID_OK) {
         return;

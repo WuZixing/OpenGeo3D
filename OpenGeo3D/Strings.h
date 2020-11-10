@@ -124,6 +124,7 @@ public:
 	static wxString LabelOfCellScaleZ();
 	static wxString LabelOfCellCount();
 	static wxString LabelOfSchema();
+	static wxString LabelOfUseStructureModelMBRAsGridOrigin();
 
 	/// @name metadata
 	///@{

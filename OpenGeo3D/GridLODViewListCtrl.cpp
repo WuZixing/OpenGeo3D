@@ -4,7 +4,7 @@
 #include "Strings.h"
 
 GridLODViewListCtrl::GridLODViewListCtrl(wxWindow* parent, g3dgrid::VoxelGrid* voxelGrid) : wxDataViewListCtrl(parent, wxID_ANY), voxelGrid_(voxelGrid){
-	AppendTextColumn(Strings::LabelOfGridLOD(), wxDATAVIEW_CELL_INERT, 35);
+	AppendTextColumn(Strings::LabelOfGridLOD(), wxDATAVIEW_CELL_INERT, 40);
 	AppendTextColumn(Strings::LabelOfCellSizeX(), wxDATAVIEW_CELL_INERT, 70);
 	AppendTextColumn(Strings::LabelOfCellSizeY(), wxDATAVIEW_CELL_INERT, 70);
 	AppendTextColumn(Strings::LabelOfCellSizeZ(), wxDATAVIEW_CELL_INERT, 70);
