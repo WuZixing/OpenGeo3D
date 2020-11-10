@@ -7,11 +7,11 @@ wxBEGIN_EVENT_TABLE(ProjectPanel, wxSplitterWindow)
 wxEND_EVENT_TABLE()
 
 ProjectPanel::ProjectPanel(wxWindow* parent, const wxSize& size) : wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size) {
-	projectTree_ = new ProjectTreeCtrl(this, wxSize(size.GetWidth(), size.GetHeight() / 2));
+	projectTree_ = new ProjectTreeCtrl(this, wxSize(size.GetWidth(), -1));
 	projectMetaBook_ = new ProjectItemMetaBook(this);
 	
 	SplitHorizontally(projectTree_, projectMetaBook_, size.GetHeight() / 2);
-	SetMinimumPaneSize(20);
+	SetMinimumPaneSize(FromDIP(40));
 }
 
 ProjectPanel::~ProjectPanel() {

@@ -136,10 +136,6 @@ wxString Strings::TitleOfSizerOfSimpleDrillLog() {
 	return  wxString::FromUTF8("钻孔数据");
 }
 
-wxString Strings::NameOfDefaultG3DProject() {
-	return wxString::FromUTF8("默认Geo3DML工程");
-}
-
 wxString Strings::NameOfDefaultG3DMap() {
 	return wxString::FromUTF8("默认场景");
 }

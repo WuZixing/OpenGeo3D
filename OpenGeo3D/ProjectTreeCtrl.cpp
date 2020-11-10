@@ -13,7 +13,7 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 	g3dvtk::ObjectFactory g3dFactory;
 	g3dProject_.reset(g3dFactory.NewProject());
 	g3dProject_->SetID(geo3dml::Object::NewID());
-	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
+	g3dProject_->SetName(Strings::NameOfStructureModel().ToUTF8().data());
 	g3dVoxelGrid_ = std::make_unique<g3dgrid::VoxelGrid>();
 	g3dVoxelGrid_->SetID(geo3dml::Object::NewID());
 	g3dVoxelGrid_->SetName(Strings::NameOfGridModel().ToUTF8().data());
@@ -367,7 +367,7 @@ void ProjectTreeCtrl::ResetStructureModel() {
 	g3dvtk::ObjectFactory g3dFactory;
 	g3dProject_.reset(g3dFactory.NewProject());
 	g3dProject_->SetID(geo3dml::Object::NewID());
-	g3dProject_->SetName(Strings::NameOfDefaultG3DProject().ToUTF8().data());
+	g3dProject_->SetName(Strings::NameOfStructureModel().ToUTF8().data());
 	wxTreeItemData* oldData = GetItemData(rootOfStructureModel_);
 	SetItemData(rootOfStructureModel_, new G3DTreeItemData(g3dProject_.get(), G3DTreeItemData::ItemType::G3D_StructureModel));
 	SetItemText(rootOfStructureModel_, wxString::FromUTF8(g3dProject_->GetName()));

@@ -43,7 +43,6 @@ public:
 	static wxString TitleOfSizerOfSimpleDrillLog();
 	///@}
 
-	static wxString NameOfDefaultG3DProject();
 	static wxString NameOfDefaultG3DMap();
 	static wxString NameOfStructureModel();
 	static wxString NameOfGridModel();
