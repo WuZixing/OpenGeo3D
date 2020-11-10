@@ -6,7 +6,8 @@
 
 class GridSchemaViewListCtrl : public wxDataViewListCtrl {
 public:
-	GridSchemaViewListCtrl(wxWindow* parent, g3dgrid::VoxelGrid* voxelGrid);
+	GridSchemaViewListCtrl(wxWindow* parent);
 	virtual ~GridSchemaViewListCtrl();
 	
+	void BindToLocalGrid(g3dgrid::VoxelGrid* voxelGrid);
 };

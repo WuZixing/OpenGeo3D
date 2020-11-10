@@ -34,6 +34,7 @@ private:
 	void OnStateImageClicked(wxTreeEvent& event);
 	void OnItemSelected(wxTreeEvent& event);
 	void OnItemMenu(wxTreeEvent& event);
+	void OnStructureModelGridding(wxCommandEvent& event);
 
 private:;
 	geo3dml::Map* GetDefaultMap();
@@ -41,6 +42,8 @@ private:;
 	wxTreeItemId FindOrInsertVoxelGridItem(g3dgrid::VoxelGrid* g3dVoxelGrid);
 	void UpdateSubTreeOfMap(geo3dml::Map* g3dMap);
 	void AppendFeatureClassToMap(geo3dml::FeatureClass* g3dFC, geo3dml::Map* g3dMap);
+	int CountVisibleLayersOfStructureModel();
+
 	void CheckItem(wxTreeItemId item, int checkState);
 
 	void ShowMenuOnStructureModelItem(G3DTreeItemData* itemData, const wxPoint& pos);

@@ -6,8 +6,10 @@
 
 class GridLODViewListCtrl : public wxDataViewListCtrl {
 public:
-	GridLODViewListCtrl(wxWindow* parent, g3dgrid::VoxelGrid* voxelGrid);
+	GridLODViewListCtrl(wxWindow* parent, const wxSize& size = wxDefaultSize, bool enableEdit = true);
 	virtual ~GridLODViewListCtrl();
+
+	void BindToLocalGrid(g3dgrid::VoxelGrid* voxelGrid);
 
 private:
 	void OnItemContextMenu(wxDataViewEvent& event);

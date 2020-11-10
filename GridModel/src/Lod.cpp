@@ -9,6 +9,7 @@ LOD::LOD(int level) : level_(level) {
 
 LOD::LOD(const LOD& lod) {
 	SetID(((LOD*)(&lod))->GetID());
+	level_ = lod.level_;
 	cellScaleX_ = lod.cellScaleX_;
 	cellScaleY_ = lod.cellScaleY_;
 	cellScaleZ_ = lod.cellScaleZ_;
@@ -26,6 +27,7 @@ LOD& LOD::operator=(const LOD& lod) {
 		return *this;
 	}
 	SetID(((LOD*)(&lod))->GetID());
+	level_ = lod.level_;
 	cellScaleX_ = lod.cellScaleX_;
 	cellScaleY_ = lod.cellScaleY_;
 	cellScaleZ_ = lod.cellScaleZ_;

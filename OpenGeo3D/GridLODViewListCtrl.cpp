@@ -3,7 +3,7 @@
 #include "Events.h"
 #include "Strings.h"
 
-GridLODViewListCtrl::GridLODViewListCtrl(wxWindow* parent, g3dgrid::VoxelGrid* voxelGrid) : wxDataViewListCtrl(parent, wxID_ANY), voxelGrid_(voxelGrid){
+GridLODViewListCtrl::GridLODViewListCtrl(wxWindow* parent, const wxSize& size, bool enableEdit) : wxDataViewListCtrl(parent, wxID_ANY, wxDefaultPosition, size), voxelGrid_(nullptr) {
 	AppendTextColumn(Strings::LabelOfGridLOD(), wxDATAVIEW_CELL_INERT, 40);
 	AppendTextColumn(Strings::LabelOfCellSizeX(), wxDATAVIEW_CELL_INERT, 70);
 	AppendTextColumn(Strings::LabelOfCellSizeY(), wxDATAVIEW_CELL_INERT, 70);
@@ -13,17 +13,11 @@ GridLODViewListCtrl::GridLODViewListCtrl(wxWindow* parent, g3dgrid::VoxelGrid* v
 	AppendTextColumn(Strings::LabelOfCellScaleZ(), wxDATAVIEW_CELL_INERT, 70);
 	AppendTextColumn(Strings::LabelOfCellCount(), wxDATAVIEW_CELL_INERT, 60);
 
-	int maxLevel = voxelGrid_->GetMaxLOD();
-	for (int level = 0; level <= maxLevel; ++level) {
-		g3dgrid::LOD* lod = voxelGrid_->GetLOD(level);
-		if (lod != nullptr) {
-			AppendLODItem(*lod);
-		}
+	if (enableEdit) {
+		Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &GridLODViewListCtrl::OnItemContextMenu, this);
+		Bind(wxEVT_MENU, &GridLODViewListCtrl::OnAppendLOD, this, Events::ID::Menu_AppendGridLOD, Events::ID::Menu_AppendGridLOD);
+		Bind(wxEVT_MENU, &GridLODViewListCtrl::OnDeleteLOD, this, Events::ID::Menu_DeleteGridLOD, Events::ID::Menu_DeleteGridLOD);
 	}
-
-	Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &GridLODViewListCtrl::OnItemContextMenu, this);
-	Bind(wxEVT_MENU, &GridLODViewListCtrl::OnAppendLOD, this, Events::ID::Menu_AppendGridLOD, Events::ID::Menu_AppendGridLOD);
-	Bind(wxEVT_MENU, &GridLODViewListCtrl::OnDeleteLOD, this, Events::ID::Menu_DeleteGridLOD, Events::ID::Menu_DeleteGridLOD);
 }
 
 GridLODViewListCtrl::~GridLODViewListCtrl() {
@@ -113,4 +107,19 @@ void GridLODViewListCtrl::AppendLODItem(const g3dgrid::LOD& lod) {
 	itemValue.push_back(wxString::Format("%d", scaleZ));
 	itemValue.push_back(wxString::Format("%d", 0));
 	AppendItem(itemValue);
+}
+
+void GridLODViewListCtrl::BindToLocalGrid(g3dgrid::VoxelGrid* voxelGrid) {
+	voxelGrid_ = voxelGrid;
+	DeleteAllItems();
+	if (voxelGrid_ == nullptr) {
+		return;
+	}
+	int maxLevel = voxelGrid_->GetMaxLOD();
+	for (int level = 0; level <= maxLevel; ++level) {
+		g3dgrid::LOD* lod = voxelGrid_->GetLOD(level);
+		if (lod != nullptr) {
+			AppendLODItem(*lod);
+		}
+	}
 }

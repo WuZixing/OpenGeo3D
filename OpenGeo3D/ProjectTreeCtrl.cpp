@@ -3,6 +3,7 @@
 #include <g3dvtk/ObjectFactory.h>
 #include "checked_box.xpm"
 #include "unchecked_box.xpm"
+#include "DlgStructureModelGridding.h"
 #include "Events.h"
 #include "Strings.h"
 
@@ -42,6 +43,7 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 	Bind(wxEVT_TREE_STATE_IMAGE_CLICK, &ProjectTreeCtrl::OnStateImageClicked, this);
 	Bind(wxEVT_TREE_SEL_CHANGED, &ProjectTreeCtrl::OnItemSelected, this);
 	Bind(wxEVT_TREE_ITEM_MENU, &ProjectTreeCtrl::OnItemMenu, this);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &ProjectTreeCtrl::OnStructureModelGridding, this, Events::ID::Menu_StructureModelGridding, Events::ID::Menu_StructureModelGridding);
 }
 
 ProjectTreeCtrl::~ProjectTreeCtrl() {
@@ -223,6 +225,25 @@ void ProjectTreeCtrl::AppendFeatureClassToMap(geo3dml::FeatureClass* g3dFC, geo3
 	g3dMap->AddLayer(layer);
 }
 
+int ProjectTreeCtrl::CountVisibleLayersOfStructureModel() {
+	int count = 0;
+	wxTreeItemIdValue mapCookie = nullptr;
+	wxTreeItemId mapItem = GetFirstChild(rootOfStructureModel_, mapCookie);
+	while (mapItem.IsOk()) {
+		wxTreeItemIdValue layerCookie = nullptr;
+		wxTreeItemId layerItem = GetFirstChild(mapItem, layerCookie);
+		while (layerItem.IsOk()) {
+			int state = GetItemState(layerItem);
+			if (state == ItemState_Checked_) {
+				++count;
+			}
+			layerItem = GetNextChild(mapItem, layerCookie);
+		}
+		mapItem = GetNextChild(rootOfStructureModel_, mapCookie);
+	}
+	return count;
+}
+
 void ProjectTreeCtrl::OnItemSelected(wxTreeEvent& event) {
 	wxNotifyEvent evt;
 	evt.SetId(Events::ID::Notify_ProjectTreeItemSelected);
@@ -285,6 +306,9 @@ void ProjectTreeCtrl::ShowMenuOnStructureModelItem(G3DTreeItemData* itemData, co
 	wxMenu menu(GetItemText(itemData->GetId()));
 	menu.Append(Events::ID::Menu_OpenGeo3DML, Strings::TitleOfMenuItemOpenGeo3DML());
 	menu.Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
+	menu.AppendSeparator();
+	wxMenuItem* item = menu.Append(Events::ID::Menu_StructureModelGridding, Strings::TitleOfMenuItemStructureModelGridding());
+	item->Enable(CountVisibleLayersOfStructureModel() > 0);
 	menu.AppendSeparator();
 	menu.Append(Events::ID::Menu_SaveToGeo3DML, Strings::TitleOfMenuItemSaveToGeo3DML());
 	menu.Append(Events::ID::Menu_CloseStructureModel, Strings::TitleOfMenuItemCloseStructureModel());
@@ -383,4 +407,11 @@ void ProjectTreeCtrl::ResetVoxelGridModel() {
 	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dVoxelGrid_.get(), G3DTreeItemData::ItemType::G3D_VoxelGrid));
 	SetItemText(rootOfGridModel_, wxString::FromUTF8(g3dVoxelGrid_->GetName()));
 	delete oldData;
+}
+
+void ProjectTreeCtrl::OnStructureModelGridding(wxCommandEvent& event) {
+	DlgStructureModelGridding dlg(this);
+	dlg.SetLocalGridModel(g3dVoxelGrid_.get());
+	dlg.CenterOnScreen();
+	dlg.ShowModal();
 }

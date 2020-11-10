@@ -104,6 +104,10 @@ wxString Strings::TitleOfMenuItemSaveToVoxelGrid() {
 	return wxString::FromUTF8("保存规则网格数据...");
 }
 
+wxString Strings::TitleOfMenuItemStructureModelGridding() {
+	return wxString::FromUTF8("网格化...");
+}
+
 wxString Strings::ConfirmToCloseAllModels() {
 	return wxString::FromUTF8("确定关闭所有模型吗？未保存的数据将会丢失。");
 }
@@ -133,7 +137,11 @@ wxString Strings::TitleOfRenderOption() {
 }
 
 wxString Strings::TitleOfSizerOfSimpleDrillLog() {
-	return  wxString::FromUTF8("钻孔数据");
+	return wxString::FromUTF8("钻孔数据");
+}
+
+wxString Strings::TitleOfStructureModelGridding() {
+	return wxString::FromUTF8("网格化结构模型");
 }
 
 wxString Strings::NameOfDefaultG3DMap() {
@@ -204,6 +212,14 @@ wxString Strings::NameOfRenderRepresentationModeSurface() {
 
 wxString Strings::NameOfVoxelGrid() {
 	return wxString::FromUTF8("规则网格");
+}
+
+wxString Strings::NameOfGeologicFeatureBody() {
+	return wxString::FromUTF8("地质体");
+}
+
+wxString Strings::NameOfGeologicFeatureSamplePoint() {
+	return wxString::FromUTF8("采样点");
 }
 
 wxString Strings::NameOfDrillModel() {
@@ -308,6 +324,10 @@ wxString Strings::TipOfSucceedInSavingToVoxelGridFile(const wxString& modelName)
 
 wxString Strings::TipOfErrorInSavingToVoxelGridFile(const wxString& modelName, const wxString& error) {
 	return wxString::Format(wxString::FromUTF8("导出模型“%s”到规则网格模型文件出错：%s"), modelName, error);
+}
+
+wxString Strings::TipOfStructureModelGridding() {
+	return wxString::FromUTF8("网格化是将结构模型中地质要素的属性赋给相同位置的网格。\r\n仅使用当前可见的图层（或要素类，见下表）执行网格化计算。");
 }
 
 wxString Strings::LabelOfOpen() {
@@ -432,6 +452,22 @@ wxString Strings::LabelOfSchema() {
 
 wxString Strings::LabelOfUseStructureModelMBRAsGridOrigin() {
 	return wxString::FromUTF8("使用结构模型最小坐标为原点");
+}
+
+wxString Strings::LabelOfGeologicFeatureType() {
+	return wxString::FromUTF8("地质要素类型");
+}
+
+wxString Strings::LabelOfGridModelSource() {
+	return wxString::FromUTF8("模型来源");
+}
+
+wxString Strings::LabelOfLocalDataSource() {
+	return wxString::FromUTF8("本地数据");
+}
+
+wxString Strings::LabelOfRemoteDataSource() {
+	return wxString::FromUTF8("远程数据");
 }
 
 wxString Strings::MetadataCategoryBasicInfo() {

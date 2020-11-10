@@ -31,6 +31,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   DlgNewGridLOD.h
   DlgNewGridModel.h
   DlgOpenSimpleDrillLog.h
+  DlgStructureModelGridding.h
   DrillLogFile.h
   Events.h
   Frame.h

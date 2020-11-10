@@ -33,6 +33,7 @@ public:
 	static wxString TitleOfMenuItemCloseVoxelGridModel();
 	static wxString TitleOfMenuItemSaveToGeo3DML();
 	static wxString TitleOfMenuItemSaveToVoxelGrid();
+	static wxString TitleOfMenuItemStructureModelGridding();
 	///@}
 
 	/// @name title of windows/dialogs
@@ -41,6 +42,7 @@ public:
 	static wxString TitleOfMetadata();
 	static wxString TitleOfRenderOption();
 	static wxString TitleOfSizerOfSimpleDrillLog();
+	static wxString TitleOfStructureModelGridding();
 	///@}
 
 	static wxString NameOfDefaultG3DMap();
@@ -61,6 +63,8 @@ public:
 	static wxString NameOfRenderRepresentationModeWireframe();
 	static wxString NameOfRenderRepresentationModeSurface();
 	static wxString NameOfVoxelGrid();
+	static wxString NameOfGeologicFeatureBody();
+	static wxString NameOfGeologicFeatureSamplePoint();
 
 	static wxString NameOfDrillModel();
 	static wxString NameOfDrillFeatureClass();
@@ -93,6 +97,7 @@ public:
 	static wxString TipOfErrorInSavingToGeo3DMLFile(const wxString& modelName, const wxString& error);
 	static wxString TipOfSucceedInSavingToVoxelGridFile(const wxString& modelName);
 	static wxString TipOfErrorInSavingToVoxelGridFile(const wxString& modelName, const wxString& error);
+	static wxString TipOfStructureModelGridding();
 
 	static wxString LabelOfOpen();
 	static wxString LabelOfAppend();
@@ -125,6 +130,10 @@ public:
 	static wxString LabelOfCellCount();
 	static wxString LabelOfSchema();
 	static wxString LabelOfUseStructureModelMBRAsGridOrigin();
+	static wxString LabelOfGeologicFeatureType();
+	static wxString LabelOfGridModelSource();
+	static wxString LabelOfLocalDataSource();
+	static wxString LabelOfRemoteDataSource();
 
 	/// @name metadata
 	///@{
