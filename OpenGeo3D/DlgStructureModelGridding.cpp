@@ -1,23 +1,27 @@
 #include "DlgStructureModelGridding.h"
-#include <wx/dataview.h>
 #include <wx/notebook.h>
+#include <geo3dml/MultiPoint.h>
+#include <geo3dml/Point.h>
+#include <geo3dml/TIN.h>
 #include "Strings.h"
 
 DlgStructureModelGridding::DlgStructureModelGridding(wxWindow* parent) : wxDialog(parent, wxID_ANY, Strings::TitleOfStructureModelGridding()), voxelGrid_(nullptr) {
 	// infomation of structure model
 	wxStaticBoxSizer* structureModelSizer = new wxStaticBoxSizer(wxVERTICAL, this, Strings::NameOfStructureModel());
 	structureModelSizer->Add(new wxStaticText(structureModelSizer->GetStaticBox(), wxID_ANY, Strings::TipOfStructureModelGridding()), wxSizerFlags().Expand().Border(wxALL, 6));
-	wxDataViewListCtrl* featureClassViewList = new wxDataViewListCtrl(structureModelSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize(-1, FromDIP(250)));
-	featureClassViewList->AppendTextColumn(Strings::LabelOfNo(), wxDATAVIEW_CELL_INERT, 40);
-	featureClassViewList->AppendTextColumn(Strings::LabelOfID(), wxDATAVIEW_CELL_INERT, 80);
-	featureClassViewList->AppendTextColumn(Strings::LabelOfName(), wxDATAVIEW_CELL_INERT, 80);
+	featureClassViewList_ = new wxDataViewListCtrl(structureModelSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize(-1, FromDIP(250)));
+	featureClassViewList_->AppendTextColumn(Strings::LabelOfNo(), wxDATAVIEW_CELL_INERT, 40);
+	featureClassViewList_->AppendTextColumn(Strings::LabelOfID(), wxDATAVIEW_CELL_INERT, 80);
+	featureClassViewList_->AppendTextColumn(Strings::LabelOfName(), wxDATAVIEW_CELL_INERT, 80);
 	wxArrayString choices;
 	choices.Add(Strings::NameOfGeologicFeatureBody());
 	choices.Add(Strings::NameOfGeologicFeatureSamplePoint());
+	choices.Add(Strings::Strings::NameOfGeologicFeatureUnknown());
 	wxDataViewChoiceRenderer* choiceRenderer = new wxDataViewChoiceRenderer(choices);
 	wxDataViewColumn* typeColumn = new wxDataViewColumn(Strings::LabelOfGeologicFeatureType(), choiceRenderer, 3, 60);
-	featureClassViewList->AppendColumn(typeColumn);
-	structureModelSizer->Add(featureClassViewList, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 6));
+	featureClassViewList_->AppendColumn(typeColumn);
+	structureModelSizer->Add(featureClassViewList_, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 6));
+	structureModelSizer->Add(new wxStaticText(structureModelSizer->GetStaticBox(), wxID_ANY, Strings::TipOfTargetGridOfGridding()), wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 6));
 
 	// information of target grid model
 	wxStaticBoxSizer* gridModelSizer = new wxStaticBoxSizer(wxVERTICAL, this, Strings::NameOfGridModel());
@@ -93,7 +97,37 @@ void DlgStructureModelGridding::OnButtonOK(wxCommandEvent& event) {
 }
 
 void DlgStructureModelGridding::AppendFeatureClassFromStructureModel(geo3dml::FeatureClass* fc) {
-
+	if (fc == nullptr || fc->GetFeatureCount() < 1) {
+		return;
+	}
+	wxVector<wxVariant> itemValue;
+	itemValue.push_back(wxString::Format("%d", featureClassViewList_->GetItemCount() + 1));
+	itemValue.push_back(wxString::FromUTF8(fc->GetID()));
+	itemValue.push_back(wxString::FromUTF8(fc->GetName()));
+	for (int i = 0; i < fc->GetFeatureCount(); ++i) {
+		geo3dml::Feature* g3dFeature = fc->GetFeatureAt(i);
+		if (g3dFeature->GetGeometryCount() > 0) {
+			geo3dml::Geometry* geo = g3dFeature->GetGeometryAt(0);
+			geo3dml::TIN* tin = dynamic_cast<geo3dml::TIN*>(geo);
+			if (tin != nullptr) {
+				itemValue.push_back(Strings::NameOfGeologicFeatureBody());
+			} else {
+				geo3dml::Point* point = dynamic_cast<geo3dml::Point*>(geo);
+				if (point != nullptr) {
+					itemValue.push_back(Strings::NameOfGeologicFeatureSamplePoint());
+				} else {
+					geo3dml::MultiPoint* mPoint = dynamic_cast<geo3dml::MultiPoint*>(geo);
+					if (mPoint != nullptr) {
+						itemValue.push_back(Strings::NameOfGeologicFeatureSamplePoint());
+					} else {
+						itemValue.push_back(Strings::NameOfGeologicFeatureUnknown());
+					}
+				}
+			}
+			break;
+		}
+	}
+	featureClassViewList_->AppendItem(itemValue, (wxUIntPtr)fc);
 }
 
 void DlgStructureModelGridding::SetLocalGridModel(g3dgrid::VoxelGrid* voxelGrid) {

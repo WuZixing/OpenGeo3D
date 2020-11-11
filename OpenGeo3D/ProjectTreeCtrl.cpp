@@ -19,6 +19,7 @@ ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) :
 	g3dVoxelGrid_->SetID(geo3dml::Object::NewID());
 	g3dVoxelGrid_->SetName(Strings::NameOfGridModel().ToUTF8().data());
 	g3dVoxelGrid_->SetSRS("CGCS2000");
+	g3dVoxelGrid_->SetDescription(Strings::NameOfVoxelGrid().ToUTF8().data());
 
 	wxIcon icons[2];
 	icons[ItemState_Checked_] = wxIcon(xpm_checked_box);
@@ -403,6 +404,7 @@ void ProjectTreeCtrl::ResetVoxelGridModel() {
 	g3dVoxelGrid_->SetID(geo3dml::Object::NewID());
 	g3dVoxelGrid_->SetName(Strings::NameOfGridModel().ToUTF8().data());
 	g3dVoxelGrid_->SetSRS("CGCS2000");
+	g3dVoxelGrid_->SetDescription(Strings::NameOfVoxelGrid().ToUTF8().data());
 	wxTreeItemData* oldData = GetItemData(rootOfGridModel_);
 	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dVoxelGrid_.get(), G3DTreeItemData::ItemType::G3D_VoxelGrid));
 	SetItemText(rootOfGridModel_, wxString::FromUTF8(g3dVoxelGrid_->GetName()));
@@ -411,6 +413,22 @@ void ProjectTreeCtrl::ResetVoxelGridModel() {
 
 void ProjectTreeCtrl::OnStructureModelGridding(wxCommandEvent& event) {
 	DlgStructureModelGridding dlg(this);
+	wxTreeItemIdValue mapCookie = nullptr;
+	wxTreeItemId mapItem = GetFirstChild(rootOfStructureModel_, mapCookie);
+	while (mapItem.IsOk()) {
+		wxTreeItemIdValue layerCookie = nullptr;
+		wxTreeItemId layerItem = GetFirstChild(mapItem, layerCookie);
+		while (layerItem.IsOk()) {
+			if (GetItemState(layerItem) == ItemState_Checked_) {
+				G3DTreeItemData* itemData = static_cast<G3DTreeItemData*>(GetItemData(layerItem));
+				geo3dml::Layer* g3dLayer = static_cast<geo3dml::Layer*>(itemData->GetG3DObject());
+				geo3dml::FeatureClass* g3dFeatureClass = g3dLayer->GetBindingFeatureClass();
+				dlg.AppendFeatureClassFromStructureModel(g3dFeatureClass);
+			}
+			layerItem = GetNextChild(mapItem, layerCookie);
+		}
+		mapItem = GetNextChild(rootOfStructureModel_, mapCookie);
+	}
 	dlg.SetLocalGridModel(g3dVoxelGrid_.get());
 	dlg.CenterOnScreen();
 	dlg.ShowModal();

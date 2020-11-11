@@ -63,6 +63,7 @@ public:
 	static wxString NameOfRenderRepresentationModeWireframe();
 	static wxString NameOfRenderRepresentationModeSurface();
 	static wxString NameOfVoxelGrid();
+	static wxString NameOfGeologicFeatureUnknown();
 	static wxString NameOfGeologicFeatureBody();
 	static wxString NameOfGeologicFeatureSamplePoint();
 
@@ -98,6 +99,8 @@ public:
 	static wxString TipOfSucceedInSavingToVoxelGridFile(const wxString& modelName);
 	static wxString TipOfErrorInSavingToVoxelGridFile(const wxString& modelName, const wxString& error);
 	static wxString TipOfStructureModelGridding();
+	static wxString TipOfTargetGridOfGridding();
+	static wxString TipOfSpecifyFieldValueType();
 
 	static wxString LabelOfOpen();
 	static wxString LabelOfAppend();

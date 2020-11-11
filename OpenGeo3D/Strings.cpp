@@ -214,6 +214,10 @@ wxString Strings::NameOfVoxelGrid() {
 	return wxString::FromUTF8("规则网格");
 }
 
+wxString Strings::NameOfGeologicFeatureUnknown() {
+	return wxString::FromUTF8("未知");
+}
+
 wxString Strings::NameOfGeologicFeatureBody() {
 	return wxString::FromUTF8("地质体");
 }
@@ -328,6 +332,14 @@ wxString Strings::TipOfErrorInSavingToVoxelGridFile(const wxString& modelName, c
 
 wxString Strings::TipOfStructureModelGridding() {
 	return wxString::FromUTF8("网格化是将结构模型中地质要素的属性赋给相同位置的网格。\r\n仅使用当前可见的图层（或要素类，见下表）执行网格化计算。");
+}
+
+wxString Strings::TipOfTargetGridOfGridding() {
+	return wxString::FromUTF8("请为上表中图层指定适当的“地质要素类型”。\r\n然后从右侧选择网格模型及其LOD层级做为网格化的目标对象。");
+}
+
+wxString Strings::TipOfSpecifyFieldValueType() {
+	return wxString::FromUTF8("请为属性字段指定适当的“数据类型”。");
 }
 
 wxString Strings::LabelOfOpen() {

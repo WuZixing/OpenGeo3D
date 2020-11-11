@@ -17,20 +17,21 @@ SizerOfSimpleDrillLogFiles::SizerOfSimpleDrillLogFiles(wxWindow* parent, const w
 	listOfDrills_ = new wxDataViewListCtrl(GetStaticBox(), wxID_ANY, wxDefaultPosition, GetStaticBox()->FromDIP(wxSize(-1, 190)));
 	listOfDrills_->AppendTextColumn(Strings::LabelOfNo(), wxDATAVIEW_CELL_INERT, 30);
 	listOfDrills_->AppendTextColumn(Strings::LabelOfDrillNo(), wxDATAVIEW_CELL_INERT, 40);
-	listOfDrills_->AppendTextColumn(wxS("X"), wxDATAVIEW_CELL_INERT, 80);
-	listOfDrills_->AppendTextColumn(wxS("Y"), wxDATAVIEW_CELL_INERT, 80);
-	listOfDrills_->AppendTextColumn(wxS("Z"), wxDATAVIEW_CELL_INERT, 80);
+	listOfDrills_->AppendTextColumn(Strings::LabelOfX(), wxDATAVIEW_CELL_INERT, 80);
+	listOfDrills_->AppendTextColumn(Strings::LabelOfY(), wxDATAVIEW_CELL_INERT, 80);
+	listOfDrills_->AppendTextColumn(Strings::LabelOfZ(), wxDATAVIEW_CELL_INERT, 80);
 	listOfDrills_->AppendTextColumn(Strings::LabelOfDrillDepth(), wxDATAVIEW_CELL_INERT, 40);
 
 	// drill log
-	wxBoxSizer* sizerDirllLog = new wxBoxSizer(wxHORIZONTAL);
-	sizerDirllLog->Add(new wxStaticText(GetStaticBox(), wxID_ANY, Strings::LabelOfDrillLog()), wxSizerFlags().CenterVertical());
+	wxBoxSizer* sizerDrillLog = new wxBoxSizer(wxHORIZONTAL);
+	sizerDrillLog->Add(new wxStaticText(GetStaticBox(), wxID_ANY, Strings::LabelOfDrillLog()), wxSizerFlags().CenterVertical());
 	wxButton* btnAppendFile = new wxButton(GetStaticBox(), wxID_ANY, Strings::LabelOfAppend());
 	btnAppendFile->Bind(wxEVT_BUTTON, &SizerOfSimpleDrillLogFiles::OnAppendDrillLogFiles, this);
 	wxButton* btnClearFiles = new wxButton(GetStaticBox(), wxID_ANY, Strings::LabelOfClear());
 	btnClearFiles->Bind(wxEVT_BUTTON, &SizerOfSimpleDrillLogFiles::OnClearDrillLogFiles, this);
-	sizerDirllLog->Add(btnAppendFile, wxSizerFlags().Border(wxLEFT, 4).CenterVertical());
-	sizerDirllLog->Add(btnClearFiles, wxSizerFlags().Border(wxLEFT, 4).CenterVertical());
+	sizerDrillLog->Add(btnAppendFile, wxSizerFlags().Border(wxLEFT, 4).CenterVertical());
+	sizerDrillLog->Add(btnClearFiles, wxSizerFlags().Border(wxLEFT, 4).CenterVertical());
+	sizerDrillLog->Add(new wxStaticText(GetStaticBox(), wxID_ANY, Strings::TipOfSpecifyFieldValueType()), wxSizerFlags().Border(wxLEFT, 4).CenterVertical());
 	wxBoxSizer* sizerOfDrillLogData = new wxBoxSizer(wxHORIZONTAL);
 	listOfLogFiles_ = new wxDataViewListCtrl(GetStaticBox(), wxID_ANY, wxDefaultPosition, GetStaticBox()->FromDIP(wxSize(260, 200)));
 	listOfLogFields_ = new wxDataViewListCtrl(GetStaticBox(), wxID_ANY, wxDefaultPosition, GetStaticBox()->FromDIP(wxSize(170, 200)));
@@ -52,7 +53,7 @@ SizerOfSimpleDrillLogFiles::SizerOfSimpleDrillLogFiles(wxWindow* parent, const w
 
 	Add(sizerOfPositionFilePath, wxSizerFlags().Expand().Border(wxALL, 4));
 	Add(listOfDrills_, wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 4));
-	Add(sizerDirllLog, wxSizerFlags().Border(wxLEFT | wxRIGHT | wxBOTTOM, 4));
+	Add(sizerDrillLog, wxSizerFlags().Border(wxLEFT | wxRIGHT | wxBOTTOM, 4));
 	Add(sizerOfDrillLogData, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 4));
 }
 

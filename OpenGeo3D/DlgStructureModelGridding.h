@@ -19,6 +19,7 @@ private:
 	void OnButtonOK(wxCommandEvent& event);
 
 private:
+	wxDataViewListCtrl* featureClassViewList_;
 	wxTextCtrl *ctrlGridId_, *ctrlGridName_, *ctrlGridSRS_, *ctrlGridDescription_, *ctrlGridOrigin_;
 	wxRadioButton *ctrlLocalGrid_, *ctrlRemoteGrid_;
 	GridLODViewListCtrl* gridLODList_;
