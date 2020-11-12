@@ -303,7 +303,7 @@ wxString Strings::TipOfInvalidGridOrigin() {
 }
 
 wxString Strings::ConfirmToDeleteGridLOD(int level) {
-	return wxString::Format(wxString::FromUTF8("确认删除 LOD-%d 吗？"), level);
+	return wxString::Format(wxString::FromUTF8("确认删除 LOD-%d 吗？该操作不能被撤销。"), level);
 }
 
 wxString Strings::TipOfGridLODAndCellScale() {
@@ -331,11 +331,14 @@ wxString Strings::TipOfErrorInSavingToVoxelGridFile(const wxString& modelName, c
 }
 
 wxString Strings::TipOfStructureModelGridding() {
-	return wxString::FromUTF8("网格化是将结构模型中地质要素的属性赋给相同位置的网格。\r\n仅使用当前可见的图层（或要素类，见下表）执行网格化计算。");
+	return wxString::FromUTF8("网格化是将结构模型中地质要素的属性赋给相同位置的网格。"\
+		"\r\n当前仅支持点对象，或者由顶底面圈闭的地质体对象的网格化，"\
+		"\r\n并且要求这些对象所在的图层在视图中处于显示状态（见下表）。"\
+		"\r\n请在表中为图层中的对象设置其所对应的“地质要素类型”。");
 }
 
 wxString Strings::TipOfTargetGridOfGridding() {
-	return wxString::FromUTF8("请为上表中图层指定适当的“地质要素类型”。\r\n然后从右侧选择网格模型及其LOD层级做为网格化的目标对象。");
+	return wxString::FromUTF8("请从右侧选择网格模型及其LOD层级做为网格化的目标对象。");
 }
 
 wxString Strings::TipOfSpecifyFieldValueType() {
