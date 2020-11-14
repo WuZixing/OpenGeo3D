@@ -108,6 +108,14 @@ wxString Strings::TitleOfMenuItemStructureModelGridding() {
 	return wxString::FromUTF8("网格化...");
 }
 
+wxString Strings::TitleOfMenuItemStopStructureModelGridding() {
+	return wxString::FromUTF8("终止网格化");
+}
+
+wxString Strings::TitleOfMenuItemLogWindow() {
+	return wxString::FromUTF8("日志内容");
+}
+
 wxString Strings::ConfirmToCloseAllModels() {
 	return wxString::FromUTF8("确定关闭所有模型吗？未保存的数据将会丢失。");
 }
@@ -134,6 +142,10 @@ wxString Strings::TitleOfMetadata() {
 
 wxString Strings::TitleOfRenderOption() {
 	return wxString::FromUTF8("可视化");
+}
+
+wxString Strings::TitleOfLogWindow() {
+	return wxString::FromUTF8("日志");
 }
 
 wxString Strings::TitleOfSizerOfSimpleDrillLog() {
@@ -338,11 +350,31 @@ wxString Strings::TipOfStructureModelGridding() {
 }
 
 wxString Strings::TipOfTargetGridOfGridding() {
-	return wxString::FromUTF8("请从右侧选择网格模型及其LOD层级做为网格化的目标对象。");
+	return wxString::FromUTF8("请选择网格模型及其LOD层级做为网格化的目标对象。");
 }
 
 wxString Strings::TipOfSpecifyFieldValueType() {
 	return wxString::FromUTF8("请为属性字段指定适当的“数据类型”。");
+}
+
+wxString Strings::TipOfEmptyListOfVisibleLayersForGridding() {
+	return wxString::FromUTF8("当前没有处于显示状态的地质要素图层，不能执行网格化。");
+}
+
+wxString Strings::TipOfSelectLODFroGridding() {
+	return wxString::FromUTF8("请为网格化指定目标网格模型及LOD级别。");
+}
+
+wxString Strings::ConfirmToStopStructureModelGridding() {
+	return wxString::FromUTF8("确定终止网格化计算吗？终止后不能恢复。");
+}
+
+wxString Strings::TipOfInvalidGriddingRange() {
+	return wxString::FromUTF8("网格化区域无效：可能是因为输入了非数值字符，或者因为指定的最小坐标大于最大坐标等。");
+}
+
+wxString Strings::TipOfGriddingJobStart() {
+	return wxString::FromUTF8("网格化任务已启动，可日志窗口中查看进度。");
 }
 
 wxString Strings::LabelOfOpen() {
@@ -485,6 +517,21 @@ wxString Strings::LabelOfRemoteDataSource() {
 	return wxString::FromUTF8("远程数据");
 }
 
+wxString Strings::LabelOfGriddingRange() {
+	return wxString::FromUTF8("网格化的区域");
+}
+
+wxString Strings::LabelOfSetGriddingRangeBySourceFeatureClasses() {
+	return wxString::FromUTF8("根据表中图层设置网格化的区域");
+}
+
+wxString Strings::LabelOfMBRMinimumCoordinates() {
+	return wxString::FromUTF8("最小坐标");
+}
+wxString Strings::LabelOfMBRMaximumCoordinates() {
+	return wxString::FromUTF8("最大坐标");
+}
+
 wxString Strings::MetadataCategoryBasicInfo() {
 	return wxString::FromUTF8("基本信息");
 }
@@ -603,4 +650,12 @@ wxString Strings::RenderEntryRepresentationMode() {
 
 wxString Strings::RenderEntryDrawWireframe() {
 	return wxString::FromUTF8("绘制线框");
+}
+
+wxString Strings::MessageOfGriddingJobThreadStop(const wxThreadIdType& id, int runningNumber) {
+	return wxString::Format(wxString::FromUTF8("网格化线程（ID：%zd）停止，继续运行的线程数：%d。"), id, runningNumber);
+}
+
+wxString Strings::MessageOfGriddingJobEnd() {
+	return wxString::FromUTF8("网格化任务结束。");
 }

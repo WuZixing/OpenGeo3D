@@ -17,9 +17,15 @@ private:
 	void OnLocalGrid(wxCommandEvent& event);
 	void OnRemoteGrid(wxCommandEvent& event);
 	void OnButtonOK(wxCommandEvent& event);
+	void OnCheckGridingRange(wxCommandEvent& event);
+
+private:
+	void UpdateGriddingRangeByStructureModel();
 
 private:
 	wxDataViewListCtrl* featureClassViewList_;
+	wxCheckBox* ctrlGriddingRangeBySources_;
+	wxTextCtrl *ctrlMinX_, *ctrlMinY_, *ctrlMinZ_, *ctrlMaxX_, *ctrlMaxY_, *ctrlMaxZ_;
 	wxTextCtrl *ctrlGridId_, *ctrlGridName_, *ctrlGridSRS_, *ctrlGridDescription_, *ctrlGridOrigin_;
 	wxRadioButton *ctrlLocalGrid_, *ctrlRemoteGrid_;
 	GridLODViewListCtrl* gridLODList_;

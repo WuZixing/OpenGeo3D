@@ -34,6 +34,8 @@ public:
 	static wxString TitleOfMenuItemSaveToGeo3DML();
 	static wxString TitleOfMenuItemSaveToVoxelGrid();
 	static wxString TitleOfMenuItemStructureModelGridding();
+	static wxString TitleOfMenuItemStopStructureModelGridding();
+	static wxString TitleOfMenuItemLogWindow();
 	///@}
 
 	/// @name title of windows/dialogs
@@ -41,6 +43,7 @@ public:
 	static wxString TitleOfProjectPanel();
 	static wxString TitleOfMetadata();
 	static wxString TitleOfRenderOption();
+	static wxString TitleOfLogWindow();
 	static wxString TitleOfSizerOfSimpleDrillLog();
 	static wxString TitleOfStructureModelGridding();
 	///@}
@@ -101,6 +104,11 @@ public:
 	static wxString TipOfStructureModelGridding();
 	static wxString TipOfTargetGridOfGridding();
 	static wxString TipOfSpecifyFieldValueType();
+	static wxString TipOfEmptyListOfVisibleLayersForGridding();
+	static wxString TipOfSelectLODFroGridding();
+	static wxString ConfirmToStopStructureModelGridding();
+	static wxString TipOfInvalidGriddingRange();
+	static wxString TipOfGriddingJobStart();
 
 	static wxString LabelOfOpen();
 	static wxString LabelOfAppend();
@@ -137,6 +145,10 @@ public:
 	static wxString LabelOfGridModelSource();
 	static wxString LabelOfLocalDataSource();
 	static wxString LabelOfRemoteDataSource();
+	static wxString LabelOfGriddingRange();
+	static wxString LabelOfSetGriddingRangeBySourceFeatureClasses();
+	static wxString LabelOfMBRMinimumCoordinates();
+	static wxString LabelOfMBRMaximumCoordinates();
 
 	/// @name metadata
 	///@{
@@ -175,4 +187,7 @@ public:
 	static wxString RenderEntryRepresentationMode();
 	static wxString RenderEntryDrawWireframe();
 	///@}
+
+	static wxString MessageOfGriddingJobThreadStop(const wxThreadIdType& id, int runningNumber);
+	static wxString MessageOfGriddingJobEnd();
 };

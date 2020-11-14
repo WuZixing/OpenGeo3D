@@ -17,6 +17,7 @@ public:
 		Menu_CustomizedZScale,
 		Menu_ResetZScale,
 		Menu_ProjectPanel,
+		Menu_LogWindow,
 		Menu_EditVoxelGrid,
 		Menu_DeleteGridLOD,
 		Menu_AppendGridLOD,
@@ -26,6 +27,7 @@ public:
 		Menu_SaveToGeo3DML,
 		Menu_SaveToVoxelGrid,
 		Menu_StructureModelGridding,
+		Menu_StopStructureModelGridding,
 
 		// general notifications
 		Notify_ResetAndRefreshRenderWindow,

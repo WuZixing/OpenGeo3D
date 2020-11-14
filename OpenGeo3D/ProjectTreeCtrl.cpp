@@ -5,6 +5,7 @@
 #include "unchecked_box.xpm"
 #include "DlgStructureModelGridding.h"
 #include "Events.h"
+#include "JobStructureModelGridding.h"
 #include "Strings.h"
 
 ProjectTreeCtrl::ProjectTreeCtrl(wxWindow* parent, const wxSize& size) : 
@@ -309,7 +310,9 @@ void ProjectTreeCtrl::ShowMenuOnStructureModelItem(G3DTreeItemData* itemData, co
 	menu.Append(Events::ID::Menu_OpenSimpleDrillLog, Strings::TitleOfMenuItemOpenSimpleDrillLog());
 	menu.AppendSeparator();
 	wxMenuItem* item = menu.Append(Events::ID::Menu_StructureModelGridding, Strings::TitleOfMenuItemStructureModelGridding());
-	item->Enable(CountVisibleLayersOfStructureModel() > 0);
+	item->Enable(!JobStructureModelGridding::IsRunning() && CountVisibleLayersOfStructureModel() > 0);
+	item = menu.Append(Events::ID::Menu_StopStructureModelGridding, Strings::TitleOfMenuItemStopStructureModelGridding());
+	item->Enable(JobStructureModelGridding::IsRunning());
 	menu.AppendSeparator();
 	menu.Append(Events::ID::Menu_SaveToGeo3DML, Strings::TitleOfMenuItemSaveToGeo3DML());
 	menu.Append(Events::ID::Menu_CloseStructureModel, Strings::TitleOfMenuItemCloseStructureModel());
@@ -431,5 +434,7 @@ void ProjectTreeCtrl::OnStructureModelGridding(wxCommandEvent& event) {
 	}
 	dlg.SetLocalGridModel(g3dVoxelGrid_.get());
 	dlg.CenterOnScreen();
-	dlg.ShowModal();
+	if (dlg.ShowModal() == wxID_OK) {
+		wxMessageBox(Strings::TipOfGriddingJobStart(), Strings::AppName());
+	}
 }

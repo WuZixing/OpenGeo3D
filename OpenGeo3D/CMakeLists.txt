@@ -38,6 +38,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   G3DTreeItemData.h
   GridLODViewListCtrl.h
   GridSchemaViewListCtrl.h
+  JobStructureModelGridding.h
   MetadataPage.h
   OpenGeo3D.h
   ProjectItemMetaBook.h

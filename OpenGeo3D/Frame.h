@@ -25,6 +25,7 @@ private:
 	void OnCustomizedZScale(wxCommandEvent& event);
 	void OnResetZScale(wxCommandEvent& event);
 	void OnProjectPanel(wxCommandEvent& event);
+	void OnLogWindow(wxCommandEvent& event);
 	void OnNotify(wxNotifyEvent& notify);
 	void OnCloseAllModels(wxCommandEvent& event);
 	void OnCloseStructureModel(wxCommandEvent& event);
@@ -42,6 +43,7 @@ private:
 	wxAuiManager auiMgr_;
 	ProjectPanel* projectPanel_;
 	vtkSmartPointer<wxVTKRenderWindowInteractor> renderWindow_;
+	wxLogWindow* logWindow_;
 
 	wxDECLARE_EVENT_TABLE();
 };

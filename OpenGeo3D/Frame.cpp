@@ -31,6 +31,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_MENU(Events::ID::Menu_CustomizedZScale, Frame::OnCustomizedZScale)
     EVT_MENU(Events::ID::Menu_ResetZScale, Frame::OnResetZScale)
     EVT_MENU(Events::ID::Menu_ProjectPanel, Frame::OnProjectPanel)
+    EVT_MENU(Events::ID::Menu_LogWindow, Frame::OnLogWindow)
     EVT_MENU(Events::ID::Menu_SaveToGeo3DML, Frame::OnSaveToGeo3DML)
     EVT_MENU(Events::ID::Menu_SaveToVoxelGrid, Frame::OnSaveToVoxelGrid)
     EVT_MENU(Events::ID::Menu_EditVoxelGrid, Frame::OnEditVoxelGrid)
@@ -82,6 +83,7 @@ void Frame::InitMenu() {
     menuWnd->Append(Events::ID::Menu_ResetZScale, Strings::TitleOfMenuItemResetZScale());
     menuWnd->AppendSeparator();
     menuWnd->AppendCheckItem(Events::ID::Menu_ProjectPanel, Strings::TitleOfMenuItemProjectPanel());
+    menuWnd->AppendCheckItem(Events::ID::Menu_LogWindow, Strings::TitleOfMenuItemLogWindow());
     menuBar->Append(menuWnd, Strings::TitleOfMenuWindow());
 
     // Help(&H)
@@ -105,7 +107,11 @@ void Frame::InitClientWindows() {
     renderWindow_ = vtkSmartPointer<wxVTKRenderWindowInteractor>::Take(new wxVTKRenderWindowInteractor(this, wxID_ANY));
     renderWindow_->SetupRenderWindow(projectPanel_->GetRenderer());
     auiMgr_.AddPane(renderWindow_, wxAuiPaneInfo().CenterPane().PaneBorder(false));
+
     auiMgr_.Update();
+
+    logWindow_ = new wxLogWindow(this, Strings::TitleOfLogWindow(), false, false);
+    wxLog::SetActiveTarget(logWindow_);
 }
 
 void Frame::InitStatusBar() {
@@ -152,6 +158,10 @@ void Frame::OnMenuOpened(wxMenuEvent& event) {
     if (itemProjectPanel != nullptr) {
         wxAuiPaneInfo& pane = auiMgr_.GetPane(projectPanel_);
         itemProjectPanel->Check(pane.IsShown());
+    }
+    wxMenuItem* itemLogWindow = evtMenu->FindItem(Events::ID::Menu_LogWindow);
+    if (itemLogWindow != nullptr) {
+        itemLogWindow->Check(logWindow_->GetFrame()->IsShown());
     }
 }
 
@@ -344,6 +354,12 @@ void Frame::OnProjectPanel(wxCommandEvent& event) {
     wxBusyCursor waiting;
     wxAuiPaneInfo& pane = auiMgr_.GetPane(projectPanel_);
     pane.Show(!pane.IsShown());
+    auiMgr_.Update();
+}
+
+void Frame::OnLogWindow(wxCommandEvent& event) {
+    wxBusyCursor waiting;
+    logWindow_->Show(!logWindow_->GetFrame()->IsShown());
     auiMgr_.Update();
 }
 
