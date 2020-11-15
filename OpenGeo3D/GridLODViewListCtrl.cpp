@@ -43,7 +43,7 @@ void GridLODViewListCtrl::OnItemContextMenu(wxDataViewEvent& event) {
 	PopupMenu(&ctxMenu, event.GetPosition());
 }
 
-int GridLODViewListCtrl::GetLODLevel(const wxDataViewItem& item) {
+int GridLODViewListCtrl::GetLODLevel(const wxDataViewItem& item) const {
 	int row = ItemToRow(item);
 	return row;
 }
@@ -73,11 +73,10 @@ void GridLODViewListCtrl::OnAppendLOD(wxCommandEvent& event) {
 	}
 	dlg.GetCellScale(scaleX, scaleY, scaleZ);
 	wxBusyCursor waiting;
-	g3dgrid::LOD lod(nextLevel);
-	lod.SetCellSize(sizeX, sizeY, sizeZ).SetCellScale(scaleX, scaleY, scaleZ);
+	g3dgrid::LOD* lod = new g3dgrid::LOD(nextLevel, voxelGrid_->GetOrigin(), geo3dml::Point3D(sizeX, sizeY, sizeZ), scaleX, scaleY, scaleZ);
 	voxelGrid_->SetLOD(lod);
 	
-	AppendLODItem(lod);
+	AppendLODItem(*lod);
 }
 
 void GridLODViewListCtrl::OnDeleteLOD(wxCommandEvent& event) {
@@ -96,16 +95,16 @@ void GridLODViewListCtrl::AppendLODItem(const g3dgrid::LOD& lod) {
 	wxVector<wxVariant> itemValue;
 	itemValue.push_back(wxString::Format("%d", lod.GetLevel()));
 	double sizeX, sizeY, sizeZ;
-	lod.GetCellSize(sizeX, sizeY, sizeZ);
+	lod.GetVoxelSize(sizeX, sizeY, sizeZ);
 	itemValue.push_back(wxString::FromDouble(sizeX, 6));
 	itemValue.push_back(wxString::FromDouble(sizeY, 6));
 	itemValue.push_back(wxString::FromDouble(sizeZ, 6));
 	int scaleX, scaleY, scaleZ;
-	lod.GetCellScale(scaleX, scaleY, scaleZ);
+	lod.GetVoxelScale(scaleX, scaleY, scaleZ);
 	itemValue.push_back(wxString::Format("%d", scaleX));
 	itemValue.push_back(wxString::Format("%d", scaleY));
 	itemValue.push_back(wxString::Format("%d", scaleZ));
-	itemValue.push_back(wxString::Format("%d", 0));
+	itemValue.push_back(wxString::Format("%d", lod.GetVoxelCount()));
 	AppendItem(itemValue);
 }
 
@@ -121,5 +120,14 @@ void GridLODViewListCtrl::BindToLocalGrid(g3dgrid::VoxelGrid* voxelGrid) {
 		if (lod != nullptr) {
 			AppendLODItem(*lod);
 		}
+	}
+}
+
+int GridLODViewListCtrl::GetSelectedLODLevel() const {
+	wxDataViewItem item = GetSelection();
+	if (item.IsOk()) {
+		return GetLODLevel(item);
+	} else {
+		return -1;
 	}
 }

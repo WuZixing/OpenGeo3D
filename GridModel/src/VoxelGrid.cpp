@@ -2,6 +2,31 @@
 
 using namespace g3dgrid;
 
+Voxel VoxelGrid::PointToVoxel(const geo3dml::Point3D& origin, const geo3dml::Point3D& step, const geo3dml::Point3D& point) {
+	int i = (int)floor((point.x - origin.x) / step.x + 1e-6);
+	int j = (int)floor((point.y - origin.y) / step.y + 1e-6);
+	int k = (int)floor((point.z - origin.z) / step.z + 1e-6);
+	return Voxel(i, j, k);
+}
+
+geo3dml::Point3D VoxelGrid::VoxelAnchor(const geo3dml::Point3D& origin, const geo3dml::Point3D& step, const Voxel& voxel) {
+	double x = voxel.i * step.x + origin.x;
+	double y = voxel.j * step.y + origin.y;
+	double z = voxel.k * step.z + origin.z;
+	return geo3dml::Point3D(x, y, z);
+}
+
+VoxelBox VoxelGrid::BoxToVoxelBox(const geo3dml::Point3D& origin, const geo3dml::Point3D& step, const geo3dml::Box3D& box) {
+	Voxel min, max;
+	min.i = (int)floor((box.min.x - origin.x) / step.x + 1e-6);
+	min.j = (int)floor((box.min.y - origin.y) / step.y + 1e-6);
+	min.k = (int)floor((box.min.z - origin.z) / step.z + 1e-6);
+	max.i = (int)floor((box.max.x - origin.x) / step.x - 1e-6);
+	max.j = (int)floor((box.max.y - origin.y) / step.y - 1e-6);
+	max.k = (int)floor((box.max.z - origin.z) / step.z - 1e-6);
+	return VoxelBox(min, max);
+}
+
 VoxelGrid::VoxelGrid() {
 
 }
@@ -33,14 +58,14 @@ VoxelGrid& VoxelGrid::SetOrigin(const geo3dml::Point3D& origin) {
 	return *this;
 }
 
-VoxelGrid& VoxelGrid::SetLOD(const LOD& lod) {
-	int level = lod.GetLevel();
+VoxelGrid& VoxelGrid::SetLOD(LOD* lod) {
+	int level = lod->GetLevel();
 	auto itor = lods_.find(level);
 	if (itor == lods_.cend()) {
-		lods_[level] = new LOD(lod);
+		lods_[level] = lod;
 	} else {
 		delete itor->second;
-		itor->second = new LOD(lod);
+		itor->second = lod;
 	}
 	return *this;
 }
@@ -102,4 +127,17 @@ LOD* VoxelGrid::GetLOD(int level) const {
 
 bool VoxelGrid::GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) {
 	return false;
+}
+
+VoxelGrid& VoxelGrid::AddField(const geo3dml::Field& f) {
+	fields_.push_back(f);
+	return *this;
+}
+
+int VoxelGrid::GetFieldCount() const {
+	return (int)fields_.size();
+}
+
+const geo3dml::Field& VoxelGrid::GetFieldAt(int i) const {
+	return fields_.at(i);
 }

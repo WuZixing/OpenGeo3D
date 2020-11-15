@@ -10,6 +10,9 @@ public:
 	virtual ~GridLODViewListCtrl();
 
 	void BindToLocalGrid(g3dgrid::VoxelGrid* voxelGrid);
+	/// Get level of the selected LOD.
+	/// In case of no LOD has been selected, it will return -1.
+	int GetSelectedLODLevel() const;
 
 private:
 	void OnItemContextMenu(wxDataViewEvent& event);
@@ -17,7 +20,7 @@ private:
 	void OnDeleteLOD(wxCommandEvent& event);
 
 private:
-	int GetLODLevel(const wxDataViewItem& item);
+	int GetLODLevel(const wxDataViewItem& item) const;
 	void AppendLODItem(const g3dgrid::LOD& lod);
 
 private:

@@ -3,6 +3,7 @@
 #include <geo3dml/MultiPoint.h>
 #include <geo3dml/Point.h>
 #include <geo3dml/TIN.h>
+#include "JobStructureModelGridding.h"
 #include "Strings.h"
 
 DlgStructureModelGridding::DlgStructureModelGridding(wxWindow* parent) : wxDialog(parent, wxID_ANY, Strings::TitleOfStructureModelGridding()), voxelGrid_(nullptr) {
@@ -14,9 +15,9 @@ DlgStructureModelGridding::DlgStructureModelGridding(wxWindow* parent) : wxDialo
 	featureClassViewList_->AppendTextColumn(Strings::LabelOfID(), wxDATAVIEW_CELL_INERT, 80);
 	featureClassViewList_->AppendTextColumn(Strings::LabelOfName(), wxDATAVIEW_CELL_INERT, 80);
 	wxArrayString choices;
-	choices.Add(Strings::NameOfGeologicFeatureBody());
-	choices.Add(Strings::NameOfGeologicFeatureSamplePoint());
-	choices.Add(Strings::Strings::NameOfGeologicFeatureUnknown());
+	choices.Add(JobStructureModelGridding::NameOfFeatureType(JobStructureModelGridding::FeatureType::GeologicalBody));
+	choices.Add(JobStructureModelGridding::NameOfFeatureType(JobStructureModelGridding::FeatureType::GeologicalSamplePoint));
+	choices.Add(JobStructureModelGridding::NameOfFeatureType(JobStructureModelGridding::FeatureType::Unknown));
 	wxDataViewChoiceRenderer* choiceRenderer = new wxDataViewChoiceRenderer(choices);
 	wxDataViewColumn* typeColumn = new wxDataViewColumn(Strings::LabelOfGeologicFeatureType(), choiceRenderer, 3, 60);
 	featureClassViewList_->AppendColumn(typeColumn);
@@ -133,49 +134,58 @@ void DlgStructureModelGridding::OnButtonOK(wxCommandEvent& event) {
 		return;
 	}
 	// gridding range
-	double minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-	if (!ctrlMinX_->GetValue().ToDouble(&minX)) {
+	geo3dml::Box3D range;
+	if (!ctrlMinX_->GetValue().ToDouble(&range.min.x)) {
 		wxMessageBox(Strings::TipOfInvalidGriddingRange(), Strings::AppName(), wxOK | wxICON_EXCLAMATION);
 		ctrlMinX_->SetFocus();
 		return;
 	}
-	if (!ctrlMinY_->GetValue().ToDouble(&minY)) {
+	if (!ctrlMinY_->GetValue().ToDouble(&range.min.y)) {
 		wxMessageBox(Strings::TipOfInvalidGriddingRange(), Strings::AppName(), wxOK | wxICON_EXCLAMATION);
 		ctrlMinY_->SetFocus();
 		return;
 	}
-	if (!ctrlMinZ_->GetValue().ToDouble(&minZ)) {
+	if (!ctrlMinZ_->GetValue().ToDouble(&range.min.z)) {
 		wxMessageBox(Strings::TipOfInvalidGriddingRange(), Strings::AppName(), wxOK | wxICON_EXCLAMATION);
 		ctrlMinZ_->SetFocus();
 		return;
 	}
-	if (!ctrlMaxX_->GetValue().ToDouble(&maxX)) {
+	if (!ctrlMaxX_->GetValue().ToDouble(&range.max.x)) {
 		wxMessageBox(Strings::TipOfInvalidGriddingRange(), Strings::AppName(), wxOK | wxICON_EXCLAMATION);
 		ctrlMaxX_->SetFocus();
 		return;
 	}
-	if (!ctrlMaxY_->GetValue().ToDouble(&maxY)) {
+	if (!ctrlMaxY_->GetValue().ToDouble(&range.max.y)) {
 		wxMessageBox(Strings::TipOfInvalidGriddingRange(), Strings::AppName(), wxOK | wxICON_EXCLAMATION);
 		ctrlMaxY_->SetFocus();
 		return;
 	}
-	if (!ctrlMaxZ_->GetValue().ToDouble(&maxZ)) {
+	if (!ctrlMaxZ_->GetValue().ToDouble(&range.max.z)) {
 		wxMessageBox(Strings::TipOfInvalidGriddingRange(), Strings::AppName(), wxOK | wxICON_EXCLAMATION);
 		ctrlMaxZ_->SetFocus();
 		return;
 	}
-	if (minX > maxX || minY > maxY || minZ > maxZ) {
+	if (range.min.x > range.max.x || range.min.y > range.max.y || range.min.z > range.max.z) {
 		wxMessageBox(Strings::TipOfInvalidGriddingRange(), Strings::AppName(), wxOK | wxICON_EXCLAMATION);
 		ctrlMinX_->SetFocus();
 		return;
 	}
 	// target grid model and its LOD
-	wxDataViewItem lodItem = gridLODList_->GetSelection();
-	if (!lodItem.IsOk()) {
+	int lodLevel = gridLODList_->GetSelectedLODLevel();
+	if (lodLevel < 0) {
 		wxMessageBox(Strings::TipOfSelectLODFroGridding(), Strings::AppName(), wxOK | wxICON_EXCLAMATION);
 		gridLODList_->SetFocus();
 		return;
 	}
+
+	JobStructureModelGridding::FeatureClasses featureClasses;
+	for (int r = 0; r < featureClassViewList_->GetItemCount(); ++r) {
+		JobStructureModelGridding::FeatureType featureType = JobStructureModelGridding::NameToFeatureType(featureClassViewList_->GetTextValue(r, 3));
+		wxUIntPtr itemData = featureClassViewList_->GetItemData(featureClassViewList_->RowToItem(r));
+		geo3dml::FeatureClass* featureClass = (geo3dml::FeatureClass*)(itemData);
+		featureClasses.push_back(JobStructureModelGridding::FeatureClassItem(featureClass, featureType));
+	}
+	JobStructureModelGridding::Start(featureClasses, range, voxelGrid_, lodLevel);
 	EndModal(wxID_OK);
 }
 

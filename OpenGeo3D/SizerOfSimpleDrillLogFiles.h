@@ -4,7 +4,8 @@
 #include <map>
 #include <set>
 #include <wx/dataview.h>
-#include <geo3dml/Point.h>
+#include <geo3dml/Field.h>
+#include <geo3dml/Point3D.h>
 
 using DrillPositionMap = std::map<wxString, geo3dml::Point3D>;	///< drill No => point
 using DrillLogFileMap = std::map<wxString, wxString>;			///< drill No => file path

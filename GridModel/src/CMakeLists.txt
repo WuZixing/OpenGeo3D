@@ -11,6 +11,7 @@ set(G3DGRID_LIBRARIES libG3DGRID CACHE STRING "")
 aux_source_directory(. G3DGRID_SOURCES)
 list(APPEND G3DGRID_HEADERS
 	${PROJECT_SOURCE_DIR}/include/g3dgrid/LOD.h
+	${PROJECT_SOURCE_DIR}/include/g3dgrid/Voxel.h
 	${PROJECT_SOURCE_DIR}/include/g3dgrid/VoxelGrid.h
 )
 

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <map>
+#include <geo3dml/Field.h>
 #include <geo3dml/Geo3DML.h>
-#include <geo3dml/Point.h>
+#include <geo3dml/Point3D.h>
 #include "LOD.h"
+#include "Voxel.h"
 
 namespace g3dgrid {
 
@@ -22,6 +24,11 @@ namespace g3dgrid {
 
 	class VoxelGrid : public Grid {
 	public:
+		static Voxel PointToVoxel(const geo3dml::Point3D& origin, const geo3dml::Point3D& step, const geo3dml::Point3D& point);
+		static geo3dml::Point3D VoxelAnchor(const geo3dml::Point3D& origin, const geo3dml::Point3D& step, const Voxel& voxel);
+		static VoxelBox BoxToVoxelBox(const geo3dml::Point3D& origin, const geo3dml::Point3D& step, const geo3dml::Box3D& box);
+
+	public:
 		VoxelGrid();
 		virtual ~VoxelGrid();
 
@@ -29,7 +36,7 @@ namespace g3dgrid {
 		VoxelGrid& SetDescription(const std::string& description);
 		VoxelGrid& SetSRS(const std::string& srs);
 		VoxelGrid& SetOrigin(const geo3dml::Point3D& origin);
-		VoxelGrid& SetLOD(const LOD& lod);
+		VoxelGrid& SetLOD(LOD* lod);
 		VoxelGrid& DeleteLOD(int level);
 
 		std::string GetName() const;
@@ -41,11 +48,18 @@ namespace g3dgrid {
 		int GetMaxLOD() const;
 		LOD* GetLOD(int level) const;
 
+		///@{
+		VoxelGrid& AddField(const geo3dml::Field& f);
+		int GetFieldCount() const;
+		const geo3dml::Field& GetFieldAt(int i) const;
+		///@}
+
 		virtual bool GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) override;
 
 	private:
 		std::string name_, description_, srs_;
 		geo3dml::Point3D origin_;
 		std::map<int, LOD*> lods_;
+		std::vector<geo3dml::Field> fields_;
 	};
 }

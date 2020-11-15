@@ -406,7 +406,7 @@ void ProjectTreeCtrl::ResetVoxelGridModel() {
 	g3dVoxelGrid_ = std::make_unique<g3dgrid::VoxelGrid>();
 	g3dVoxelGrid_->SetID(geo3dml::Object::NewID());
 	g3dVoxelGrid_->SetName(Strings::NameOfGridModel().ToUTF8().data());
-	g3dVoxelGrid_->SetSRS("CGCS2000");
+	g3dVoxelGrid_->SetSRS("CGCS 2000");
 	g3dVoxelGrid_->SetDescription(Strings::NameOfVoxelGrid().ToUTF8().data());
 	wxTreeItemData* oldData = GetItemData(rootOfGridModel_);
 	SetItemData(rootOfGridModel_, new G3DTreeItemData(g3dVoxelGrid_.get(), G3DTreeItemData::ItemType::G3D_VoxelGrid));

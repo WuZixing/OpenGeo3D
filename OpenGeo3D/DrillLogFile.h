@@ -2,7 +2,7 @@
 
 #include <map>
 #include <geo3dml/Field.h>
-#include <geo3dml/Point.h>
+#include <geo3dml/Point3D.h>
 #include <g3dvtk/MultiPoint.h>
 
 class DrillLogFile {
