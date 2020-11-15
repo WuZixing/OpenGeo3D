@@ -19,7 +19,7 @@ namespace g3dgrid {
 		/// @param maxY Output the maximum Y coordinate.
 		/// @param maxZ Output the maximum Z coordinate.
 		/// @return In case of an empty grid, it will return false.
-		virtual bool GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) = 0;
+		virtual bool GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) const = 0;
 	};
 
 	class VoxelGrid : public Grid {
@@ -54,7 +54,7 @@ namespace g3dgrid {
 		const geo3dml::Field& GetFieldAt(int i) const;
 		///@}
 
-		virtual bool GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) override;
+		virtual bool GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) const override;
 
 	private:
 		std::string name_, description_, srs_;

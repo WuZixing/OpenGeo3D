@@ -125,7 +125,7 @@ LOD* VoxelGrid::GetLOD(int level) const {
 	}
 }
 
-bool VoxelGrid::GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) {
+bool VoxelGrid::GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) const {
 	return false;
 }
 
