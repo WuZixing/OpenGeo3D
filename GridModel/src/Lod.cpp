@@ -24,6 +24,10 @@ int LOD::GetLevel() const {
 	return level_;
 }
 
+geo3dml::Point3D LOD::GetGridOrigin() const {
+	return gridOrigin_;
+}
+
 void LOD::GetVoxelSize(double& x, double& y, double& z) const {
 	x = voxelSize_.x;
 	y = voxelSize_.y;
@@ -69,6 +73,7 @@ void LOD::Extend(const geo3dml::Box3D& range) {
 			gridOrigin_.x, gridOrigin_.y, gridOrigin_.z,
 			voxelSize_.x, voxelSize_.y, voxelSize_.z,
 			dimI, dimJ, dimK);
+		voxelOffset_ = newBox.min;
 	} else {
 		VoxelBox oldBox = VoxelGrid::BoxToVoxelBox(gridOrigin_, voxelSize_, oldRange);
 		if (oldBox.min.i <= newBox.min.i && oldBox.min.j <= newBox.min.j && oldBox.min.k <= newBox.min.k
@@ -163,5 +168,6 @@ void LOD::Extend(const geo3dml::Box3D& range) {
 		}
 		delete g3dUniformGrid_;
 		g3dUniformGrid_ = newUniformGrid;
+		voxelOffset_ = newBox.min;
 	}
 }

@@ -12,6 +12,7 @@ aux_source_directory(. G3DGRID_SOURCES)
 list(APPEND G3DGRID_HEADERS
 	${PROJECT_SOURCE_DIR}/include/g3dgrid/LOD.h
 	${PROJECT_SOURCE_DIR}/include/g3dgrid/Voxel.h
+	${PROJECT_SOURCE_DIR}/include/g3dgrid/VoxelCell.h
 	${PROJECT_SOURCE_DIR}/include/g3dgrid/VoxelGrid.h
 )
 
