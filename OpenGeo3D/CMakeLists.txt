@@ -2,6 +2,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(APP_NAME ${CMAKE_PROJECT_NAME})
 set(APP_VERSION "" CACHE STRING "Version: vX.Y.Z")
 add_definitions(-DAPP_NAME="${APP_NAME}" -DAPP_VERSION="${APP_VERSION}")
+add_compile_options(/utf-8)
 
 # wxWidgets
 find_package(wxWidgets 3.1 REQUIRED COMPONENTS core base adv propgrid aui)
