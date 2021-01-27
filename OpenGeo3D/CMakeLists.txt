@@ -49,6 +49,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   Strings.h
   wxWidgets.h
   wxVTKRenderWindowInteractor.h
+  wxVTKRenderWindowInteractor.cxx
 )
 
 target_link_libraries(${APP_NAME} 
