@@ -217,7 +217,143 @@ JobStructureModelGridding::JobThread::ExitCode JobStructureModelGridding::JobThr
 				int numOfFields = fc->GetFieldCount();
 				for (int relativeK = 0; relativeK < dimK && !TestDestroy(); ++relativeK) {
 					g3dgrid::VoxelCell cell(i, relativeJ + ijkRange.min.j, relativeK + ijkRange.min.k);
-
+					for (int f = 0; f < 3; ++f) {
+						int sampleIndex = relativeK * 2 + f;	// 2 for half step sampling
+						linkedSamples[f * 9 + 0] = bottomLeftSamples->GetValue(sampleIndex);
+						linkedSamples[f * 9 + 1] = middleLeftSamples->GetValue(sampleIndex);
+						linkedSamples[f * 9 + 2] = topLeftSamples->GetValue(sampleIndex);
+						linkedSamples[f * 9 + 3] = bottomMiddleSamples->GetValue(sampleIndex);
+						linkedSamples[f * 9 + 4] = centerSamples->GetValue(sampleIndex);
+						linkedSamples[f * 9 + 5] = topMiddleSamples->GetValue(sampleIndex);
+						linkedSamples[f * 9 + 6] = bottomRightSamples->GetValue(sampleIndex);
+						linkedSamples[f * 9 + 7] = middleRightSamples->GetValue(sampleIndex);
+						linkedSamples[f * 9 + 8] = topRightSamples->GetValue(sampleIndex);
+					}
+					// empty cell test
+					cell.IsValid(false);
+					for (int f = 0; f < numOfLinkedSamples; ++f) {
+						if (linkedSamples[f] >= 0) {
+							cell.IsValid(true);
+							break;
+						}
+					}
+					for (int f = 0; f < numOfFields; ++f) {
+						const geo3dml::Field& field = fc->GetFieldAt(f);
+						CheckOrAddFieldIntoGrid(field);
+						if (!cell.IsValid()) {
+							continue;
+						}
+						std::string fieldName = field.Name();
+						switch (field.DataType()) {
+						case geo3dml::Field::ValueType::Boolean: {
+							// select majority votes on TRUE or FALSE.
+							std::map<bool, char> votes;
+							votes[true] = 0;
+							votes[false] = 0;
+							for (int f = 0; f < numOfLinkedSamples; ++f) {
+								if (linkedSamples[f] < 0) {
+									continue;
+								}
+								auto* boolValue = dynamic_cast<geo3dml::BooleanFieldValue*>(fc->GetFeatureAt(linkedSamples[f])->GetField(fieldName));
+								if (boolValue != nullptr) {
+									votes[boolValue->Value()] += 1;
+								} else {
+									votes[false] += 1;
+								}
+							}
+							auto* boolValue = new geo3dml::BooleanFieldValue(fieldName);
+							boolValue->Value(votes[true] >= votes[false]);
+							cell.SetField(boolValue);
+							break;
+						}
+						case geo3dml::Field::ValueType::Double: {
+							// take average value as cell's value.
+							int numOfSamples = 0;
+							double average = 0;
+							for (int f = 0; f < numOfLinkedSamples; ++f) {
+								if (linkedSamples[f] < 0) {
+									continue;
+								}
+								auto* doubleValue = dynamic_cast<geo3dml::DoubleFieldValue*>(fc->GetFeatureAt(linkedSamples[f])->GetField(fieldName));
+								if (doubleValue != nullptr) {
+									++numOfSamples;
+									average += doubleValue->Value();
+								}
+							}
+							if (numOfSamples > 0) {
+								average = average / numOfSamples;
+							}
+							auto* doubleValue = new geo3dml::DoubleFieldValue(fieldName);
+							doubleValue->Value(average);
+							cell.SetField(doubleValue);
+							break;
+						}
+						case geo3dml::Field::ValueType::Integer: {
+							// select the value with majority votes.
+							std::map<int, char> votes;
+							for (int f = 0; f < numOfLinkedSamples; ++f) {
+								if (linkedSamples[f] < 0) {
+									continue;
+								}
+								auto* intValue = dynamic_cast<geo3dml::IntegerFieldValue*>(fc->GetFeatureAt(linkedSamples[f])->GetField(fieldName));
+								if (intValue != nullptr) {
+									if (votes.find(intValue->Value()) != votes.cend()) {
+										votes[intValue->Value()] += 1;
+									} else {
+										votes[intValue->Value()] = 1;
+									}
+								}
+							}
+							std::map<int, char>::const_iterator majorVote = votes.cbegin();
+							std::map<int, char>::const_iterator citor = majorVote;
+							while (citor != votes.cend()) {
+								if (citor->second > majorVote->second) {
+									majorVote = citor;
+								}
+								++citor;
+							}
+							if (majorVote != votes.cend()) {
+								auto* intValue = new geo3dml::IntegerFieldValue(fieldName);
+								intValue->Value(majorVote->first);
+								cell.SetField(intValue);
+							}
+							break;
+						}
+						case geo3dml::Field::ValueType::Text: {
+							// select the text with majority votes.
+							std::map<std::string, char> votes;
+							for (int f = 0; f < numOfLinkedSamples; ++f) {
+								if (linkedSamples[f] < 0) {
+									continue;
+								}
+								auto* textValue = dynamic_cast<geo3dml::TextFieldValue*>(fc->GetFeatureAt(linkedSamples[f])->GetField(fieldName));
+								if (textValue != nullptr) {
+									if (votes.find(textValue->Value()) != votes.cend()) {
+										votes[textValue->Value()] += 1;
+									} else {
+										votes[textValue->Value()] = 1;
+									}
+								}
+							}
+							std::map<std::string, char>::const_iterator majorVote = votes.cbegin();
+							std::map<std::string, char>::const_iterator citor = majorVote;
+							while (citor != votes.cend()) {
+								if (citor->second > majorVote->second) {
+									majorVote = citor;
+								}
+								++citor;
+							}
+							if (majorVote != votes.cend()) {
+								auto* textValue = new geo3dml::TextFieldValue(fieldName);
+								textValue->Value(majorVote->first);
+								cell.SetField(textValue);
+							}
+							break;
+						}
+						default:
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -235,4 +371,11 @@ std::string JobStructureModelGridding::JobThread::MakeFieldNameToFeatureClass(in
 	char propName[64] = { '\0' };
 	snprintf(propName, 64, "FC-%d", fcIndex);
 	return propName;
+}
+
+void JobStructureModelGridding::CheckOrAddFieldIntoGrid(const geo3dml::Field& field) {
+	wxCriticalSectionLocker locker(criticalSection_);
+	if (!g3dVoxelGrid_->HasField(field.Name())) {
+		g3dVoxelGrid_->AddField(field);
+	}
 }

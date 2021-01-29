@@ -141,3 +141,12 @@ int VoxelGrid::GetFieldCount() const {
 const geo3dml::Field& VoxelGrid::GetFieldAt(int i) const {
 	return fields_.at(i);
 }
+
+bool VoxelGrid::HasField(const std::string& name) const {
+	for (auto citor = fields_.cbegin(); citor != fields_.cend(); ++citor) {
+		if (name == citor->Name()) {
+			return true;
+		}
+	}
+	return false;
+}

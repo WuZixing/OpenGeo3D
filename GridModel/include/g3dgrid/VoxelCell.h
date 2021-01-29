@@ -12,12 +12,16 @@ namespace g3dgrid {
 		VoxelCell(int i, int j, int k);
 		virtual ~VoxelCell();
 
+		VoxelCell& IsValid(bool v); 
+		bool IsValid() const;
+
 		VoxelCell& SetField(geo3dml::FieldValue* fv);
 		geo3dml::FieldValue* GetField(const std::string& name) const;
 		std::vector<std::string> GetFieldNames() const;
 
 	private:
 		std::map<std::string, geo3dml::FieldValue*> fieldValues_;
+		bool isValid_;
 	};
 
 }

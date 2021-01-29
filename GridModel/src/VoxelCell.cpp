@@ -3,7 +3,7 @@
 using namespace g3dgrid;
 
 VoxelCell::VoxelCell(int i, int j, int k) : Voxel(i, j, k) {
-
+	isValid_ = false;
 }
 
 VoxelCell::~VoxelCell() {
@@ -39,4 +39,13 @@ std::vector<std::string> VoxelCell::GetFieldNames() const {
 		++citor;
 	}
 	return names;
+}
+
+VoxelCell& VoxelCell::IsValid(bool v) {
+	isValid_ = v;
+	return *this;
+}
+
+bool VoxelCell::IsValid() const {
+	return isValid_;
 }

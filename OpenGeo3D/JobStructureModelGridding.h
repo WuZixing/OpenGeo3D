@@ -52,8 +52,9 @@ private:
 		int totalWorkers_, workerNo_;
 	};
 
-protected:
+private:
 	static void JobThreadQuit(JobThread* thread);
+	static void CheckOrAddFieldIntoGrid(const geo3dml::Field& field);
 
 private:
 	static g3dgrid::VoxelGrid* g3dVoxelGrid_;

@@ -52,6 +52,7 @@ namespace g3dgrid {
 		VoxelGrid& AddField(const geo3dml::Field& f);
 		int GetFieldCount() const;
 		const geo3dml::Field& GetFieldAt(int i) const;
+		bool HasField(const std::string& name) const;
 		///@}
 
 		virtual bool GetMinimumBoundingRectangle(double& minX, double& minY, double& minZ, double& maxX, double& maxY, double& maxZ) const override;
