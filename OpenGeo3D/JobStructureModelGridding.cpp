@@ -74,9 +74,7 @@ void JobStructureModelGridding::Stop() {
 		job->Delete();	// wxThread::Wait() dose not ask the thread to quit, but only wait for it to quit.
 		delete job;
 	}
-	jobThreads_.clear();
-	g3dVoxelGrid_ = nullptr;
-	lodLevel_ = -1;
+	Clear();
 }
 
 void JobStructureModelGridding::JobThreadQuit(wxThreadIdType threadId) {
@@ -92,10 +90,25 @@ void JobStructureModelGridding::JobThreadQuit(wxThreadIdType threadId) {
 	delete (*citor);
 	jobThreads_.erase(citor);
 	if (jobThreads_.empty()) {
+		Clear();
 		wxLogInfo(Strings::MessageOfGriddingJobEnd());
 	} else {
 		wxLogInfo(Strings::MessageOfGriddingJobThreadStop(threadId, int(jobThreads_.size())));
 	}
+}
+
+void JobStructureModelGridding::Clear() {
+	jobThreads_.clear();
+	g3dVoxelGrid_ = nullptr;
+	lodLevel_ = -1;
+	tinBufMutex_.lock();
+	std::map<void*, TinBuf*>::iterator itor = tinBufs_.begin();
+	while (itor != tinBufs_.end()) {
+		delete itor->second;
+		++itor;
+	}
+	tinBufs_.clear();
+	tinBufMutex_.unlock();
 }
 
 JobStructureModelGridding::JobThread::JobThread(const FeatureClasses& featureClasses, const geo3dml::Box3D& range, g3dgrid::LOD* g3dGridLOD, wxCriticalSection* gridLODCS, int totalWokers, int workerNo) : wxThread(wxTHREAD_JOINABLE) {
@@ -105,6 +118,10 @@ JobStructureModelGridding::JobThread::JobThread(const FeatureClasses& featureCla
 	gridLODCS_ = gridLODCS;
 	totalWorkers_ = totalWokers;
 	workerNo_ = workerNo;
+
+	mPointAll_ = nullptr;
+	mPointNet_ = nullptr;
+	mPointSampling_ = nullptr;
 }
 
 JobStructureModelGridding::JobThread::~JobThread() {
@@ -396,7 +413,192 @@ wxThread::ExitCode JobStructureModelGridding::JobThread::RunGridding() {
 }
 
 vtkSmartPointer<vtkPolyData> JobStructureModelGridding::JobThread::NewPillar(double x, double y, double bottomZ, double topZ, double stepZ) {
-	return nullptr;
+	double topPoint[3], bottomPoint[3];
+	topPoint[0] = bottomPoint[0] = x;
+	topPoint[1] = bottomPoint[1] = y;
+	topPoint[2] = topZ;
+	bottomPoint[2] = bottomZ;
+	vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+	vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+	polyData->SetPoints(points);
+	vtkIdType ptId = points->InsertNextPoint(bottomPoint);
+	double z = bottomZ + stepZ;
+	while (z < topZ) {
+		ptId = points->InsertNextPoint(x, y, z);
+		z += stepZ;	// from bottom to top
+	}
+	ptId = points->InsertNextPoint(topPoint);
+	const vtkIdType numOfPoints = polyData->GetNumberOfPoints();
+	size_t fcIndex = 0;
+	const int NullFeatureIndex = -1;
+	int samplingIndexBase = 0;
+	geo3dml::ShapeProperty* samplingProp = NULL;
+	if (mPointSampling_ != NULL) {
+		samplingIndexBase = mPointSampling_->GetPointCount();
+		mPointSampling_->AddPoint(bottomPoint[0], bottomPoint[1], bottomPoint[2]);
+		z = bottomZ + stepZ;
+		while (z < topZ) {
+			mPointSampling_->AddPoint(x, y, z);
+			z += stepZ;
+		}
+		mPointSampling_->AddPoint(topPoint[0], topPoint[1], topPoint[2]);
+		samplingProp = mPointSampling_->GetProperty(geo3dml::ShapeProperty::Vertex);
+		for (fcIndex = 0; fcIndex < sourceFeatureClasses_.size(); ++fcIndex) {
+			std::string propName = MakeFieldNameToFeatureClass(fcIndex);
+			if (samplingProp->GetFieldIndex(propName) < 0) {
+				geo3dml::Field samplingFieldDef;
+				samplingFieldDef.Name(propName).DataType(geo3dml::Field::Integer);
+				samplingProp->AddField(samplingFieldDef);
+			}
+			for (int v = 0; v < numOfPoints; ++v) {
+				samplingProp->IntValue(propName, samplingIndexBase + v, NullFeatureIndex);
+			}
+		}
+	}
+	struct IntersectionElement {
+		double z;
+		std::vector<int> triangles;
+		bool isAccepted;
+		IntersectionElement() {
+			z = 0;
+			isAccepted = true;
+		};
+	};
+	int v1 = 0, v2 = 0, v3 = 0;
+	double intersectPoint[3] = { 0 }, boundingRect[6] = { 0 };
+	std::list<IntersectionElement> intersections;
+	vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
+	triangle->Initialize();
+	topPoint[2] = range_.max.z + (range_.max.z - range_.min.z);		// extend topPoint and bottomPoint in Z to make sure the pillar go through all geometries in the model.
+	bottomPoint[2] = range_.min.z - (range_.max.z - range_.min.z);
+	for (fcIndex = 0; fcIndex < sourceFeatureClasses_.size() && !TestDestroy(); ++fcIndex) {
+		std::string propName = MakeFieldNameToFeatureClass(fcIndex);
+		vtkSmartPointer<vtkIntArray> featureLabelArray = vtkSmartPointer<vtkIntArray>::New();
+		featureLabelArray->SetName(propName.c_str());
+		featureLabelArray->SetNumberOfComponents(1);
+		polyData->GetPointData()->AddArray(featureLabelArray);
+		for (vtkIdType v = 0; v < numOfPoints; ++v) {	// init featureLabelArray to null features.
+			featureLabelArray->InsertValue(v, NullFeatureIndex);
+		}
+		int numOfTestFeatures = 0;
+		geo3dml::FeatureClass* fc = sourceFeatureClasses_[fcIndex].first;
+		int numOfFeatures = fc->GetFeatureCount();
+		for (int featureIndex = 0; featureIndex < numOfFeatures && !TestDestroy(); ++featureIndex) {
+			geo3dml::Feature* feature = fc->GetFeatureAt(featureIndex);
+			int numOfGeometries = feature->GetGeometryCount();
+			if (numOfGeometries != 1) {
+				continue;
+			}
+			geo3dml::Geometry* geo = feature->GetGeometryAt(0);
+			geo3dml::TIN* tin = dynamic_cast<geo3dml::TIN*>(geo);
+			if (tin == NULL) {
+				continue;
+			}
+			++numOfTestFeatures;
+			tin->GetMinimumBoundingRectangle(boundingRect[0], boundingRect[1], boundingRect[2], boundingRect[3], boundingRect[4], boundingRect[5]);
+			if (topPoint[0] < boundingRect[0] || topPoint[0] > boundingRect[3] || topPoint[1] < boundingRect[1] || topPoint[1] > boundingRect[4]) {
+				continue;
+			}
+			intersections.clear();
+			const TinBuf* tinBuf = GetTinBuf(tin);
+			for (int triIndex = 0; triIndex < tinBuf->numOfTriangles_ && !TestDestroy(); ++triIndex) {
+				v1 = tinBuf->triangles_[triIndex * 3];
+				v2 = tinBuf->triangles_[triIndex * 3 + 1];
+				v3 = tinBuf->triangles_[triIndex * 3 + 2];
+				triangle->GetPoints()->SetPoint(0, tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2]);
+				triangle->GetPoints()->SetPoint(1, tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2]);
+				triangle->GetPoints()->SetPoint(2, tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2]);
+				if (!IntersectWithLine(triangle, topPoint, bottomPoint, intersectPoint)) {
+					continue;
+				}
+				// sort intersections from bottom to top.
+				std::list<IntersectionElement>::iterator itor = intersections.begin();
+				while (itor != intersections.end()) {
+					if (IsEqual(intersectPoint[2], itor->z)) {
+						itor->triangles.push_back(triIndex);
+						break;
+					} else if (intersectPoint[2] < itor->z) {
+						IntersectionElement xe;
+						xe.z = intersectPoint[2];
+						xe.triangles.push_back(triIndex);
+						intersections.insert(itor, xe);
+						break;
+					}
+					++itor;
+				}
+				if (itor == intersections.end()) {
+					IntersectionElement xe;
+					xe.z = intersectPoint[2];
+					xe.triangles.push_back(triIndex);
+					intersections.push_back(xe);
+				}
+			}
+			// in the case of the vertical line intersecting mulitple triangles at one point.
+			int numOfAcceptedPt = 0;
+			std::list<IntersectionElement>::iterator itor = intersections.begin();
+			while (itor != intersections.end()) {
+				itor->isAccepted = JudgeOnInsersection(x, y, itor->z, itor->triangles, tinBuf);
+				if (itor->isAccepted) {
+					++numOfAcceptedPt;
+				}
+				++itor;
+			}
+			if (numOfAcceptedPt < 2) {
+				continue;
+			}
+			// for a regularly closed body, the line should intersect it at even intersections.
+			if (numOfAcceptedPt % 2 != 0) {
+				// reject the middle intersection
+				int counter = 0, middle = (numOfAcceptedPt + 1) / 2;
+				itor = intersections.begin();
+				while (itor != intersections.end()) {
+					if (itor->isAccepted) {
+						if (++counter == middle) {
+							itor->isAccepted = false;
+							break;
+						}
+					}
+					++itor;
+				}
+			}
+			if (mPointAll_ != NULL && mPointNet_ != NULL) {
+				// for debug
+				itor = intersections.begin();
+				while (itor != intersections.end()) {
+					mPointAll_->AddPoint(x, y, itor->z);
+					if (itor->isAccepted) {
+						mPointNet_->AddPoint(x, y, itor->z);
+					}
+					++itor;
+				}
+			}
+			// vertices
+			std::list<IntersectionElement>::const_iterator curPt = intersections.cbegin();
+			while (curPt != intersections.cend() && !curPt->isAccepted) {
+				++curPt;
+			}
+			int numOfLowerPoints = 0;
+			for (vtkIdType v = 0; v < numOfPoints; ++v) {
+				double* pt = polyData->GetPoint(v);
+				while (curPt != intersections.cend() && (!curPt->isAccepted || pt[2] >= curPt->z)) {
+					if (curPt->isAccepted) {
+						++numOfLowerPoints;
+					}
+					++curPt;
+				}
+				if (numOfLowerPoints % 2 == 1) {
+					featureLabelArray->InsertValue(v, featureIndex);
+					if (samplingProp != NULL) {
+						samplingProp->IntValue(propName, samplingIndexBase + v, featureIndex);
+					}
+				}
+			}
+		}
+		if (numOfTestFeatures < 1) {
+			polyData->GetPointData()->RemoveArray(featureLabelArray->GetName());
+		}
+	}
+	return polyData;
 }
 
 std::string JobStructureModelGridding::JobThread::MakeFieldNameToFeatureClass(int fcIndex) const {
@@ -412,7 +614,670 @@ void JobStructureModelGridding::CheckOrAddFieldIntoGrid(const geo3dml::Field& fi
 	}
 }
 
-
 void JobStructureModelGridding::JobThread::SubmitCells(const std::vector<g3dgrid::VoxelCell>& cells) {
 	wxLogInfo(Strings::MessageOfGriddingProgress(GetId(), (int)cells.size()));
+}
+
+bool JobStructureModelGridding::JobThread::IntersectWithLine(vtkTriangle* triangle, double p1[3], double p2[3], double x[3]) const {
+	double* bounds = triangle->GetBounds();
+	if (p1[0] < bounds[0] || p1[0] > bounds[1] || p1[1] < bounds[2] || p1[1] > bounds[3]) {
+		return false;
+	}
+	int subId;
+	double t, pcoords[3];
+	// Cases of returning 1:
+	// (1) line p1-p2 intersects triangle on one edge.
+	// (2) line p1-p2 intersects traingle on one vertex.
+	// (3) line p1-p2 intersects traingle in the triangle.
+	// Cases of returning 0:
+	// (1) line p1-p2 lies in the plane of the traingle.
+	// (2) line segment p1-p2 dose not touch the plane of the triangle.
+	// (3) line p1-p2 intersects the plane of the triangle at a point outside of the triangle.
+	return triangle->IntersectWithLine(p1, p2, ZERO_ERROR, t, x, pcoords, subId) == 1;
+}
+
+bool JobStructureModelGridding::JobThread::JudgeOnInsersection(double x, double y, double z, const std::vector<int>& triangleIndices, const TinBuf* tinBuf) const {
+	size_t numOfTriangles = triangleIndices.size();
+	if (numOfTriangles < 2) {
+		return true;
+	} else if (numOfTriangles == 2) {
+		//if (IsSameTriangle(triangleIndices[0], triangleIndices[1], tinBuf)) {
+		//	return true;
+		//}
+		// reject intersection at the vertex
+		int v1 = tinBuf->triangles_[triangleIndices[0] * 3];
+		int v2 = tinBuf->triangles_[triangleIndices[0] * 3 + 1];
+		int v3 = tinBuf->triangles_[triangleIndices[0] * 3 + 2];
+		if (IsSamePosition(x, y, 0, tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], 0)) {
+			return false;
+		} else if (IsSamePosition(x, y, 0, tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], 0)) {
+			return false;
+		} else if (IsSamePosition(x, y, 0, tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], 0)) {
+			return false;
+		}
+		// reject intersection if the two triangles lying in the same side of the share edge.
+		int v4 = tinBuf->triangles_[triangleIndices[1] * 3];
+		int v5 = tinBuf->triangles_[triangleIndices[1] * 3 + 1];
+		int v6 = tinBuf->triangles_[triangleIndices[1] * 3 + 2];
+		double shareVertex1[2], shareVertex2[2], vertex1[2], vertex2[2];
+		if (v1 == v4) {
+			shareVertex1[0] = tinBuf->vertices_[v1 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+			if (v2 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v2 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v3 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v3 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else if (v1 == v5) {
+			shareVertex1[0] = tinBuf->vertices_[v1 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+			if (v2 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v2 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else if (v3 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v3 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else if (v1 == v6) {
+			shareVertex1[0] = tinBuf->vertices_[v1 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+			if (v2 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v2 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else if (v3 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v3 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else if (v2 == v4) {
+			shareVertex1[0] = tinBuf->vertices_[v2 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+			if (v1 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v1 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v3 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v3 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else if (v2 == v5) {
+			shareVertex1[0] = tinBuf->vertices_[v2 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+			if (v1 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v1 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else if (v3 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v3 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else if (v2 == v6) {
+			shareVertex1[0] = tinBuf->vertices_[v2 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+			if (v1 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v1 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v3 * 3];
+				vertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else if (v3 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v3 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v3 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v3 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else if (v3 == v4) {
+			shareVertex1[0] = tinBuf->vertices_[v3 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+			if (v1 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v1 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v2 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v2 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else if (v3 == v5) {
+			shareVertex1[0] = tinBuf->vertices_[v3 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+			if (v1 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v1 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else if (v2 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v6 * 3];
+				vertex2[1] = tinBuf->vertices_[v6 * 3 + 1];
+			} else if (v2 == v6) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else if (v3 == v6) {
+			shareVertex1[0] = tinBuf->vertices_[v3 * 3];
+			shareVertex1[1] = tinBuf->vertices_[v3 * 3 + 1];
+			if (v1 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v1 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v1 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v2 * 3];
+				vertex1[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else if (v2 == v4) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v5 * 3];
+				vertex2[1] = tinBuf->vertices_[v5 * 3 + 1];
+			} else if (v2 == v5) {
+				shareVertex2[0] = tinBuf->vertices_[v2 * 3];
+				shareVertex2[1] = tinBuf->vertices_[v2 * 3 + 1];
+				vertex1[0] = tinBuf->vertices_[v1 * 3];
+				vertex1[1] = tinBuf->vertices_[v1 * 3 + 1];
+				vertex2[0] = tinBuf->vertices_[v4 * 3];
+				vertex2[1] = tinBuf->vertices_[v4 * 3 + 1];
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+		double s1 = (vertex1[0] - shareVertex1[0]) * (shareVertex2[1] - shareVertex1[1]) - (vertex1[1] - shareVertex1[1]) * (shareVertex2[0] - shareVertex1[0]);
+		double s2 = (vertex2[0] - shareVertex1[0]) * (shareVertex2[1] - shareVertex1[1]) - (vertex2[1] - shareVertex1[1]) * (shareVertex2[0] - shareVertex1[0]);
+		return s1 * s2 < 0;
+	} else {	// numOfTriangles > 2
+		// the intersection must be one of the vertex.
+		int v1 = tinBuf->triangles_[triangleIndices[0] * 3];
+		int v2 = tinBuf->triangles_[triangleIndices[0] * 3 + 1];
+		int v3 = tinBuf->triangles_[triangleIndices[0] * 3 + 2];
+		int theShareVertex = 0;
+		if (IsSamePosition(x, y, 0, tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], 0)) {
+			theShareVertex = v1;
+		} else if (IsSamePosition(x, y, 0, tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], 0)) {
+			theShareVertex = v2;
+		} else if (IsSamePosition(x, y, 0, tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], 0)) {
+			theShareVertex = v3;
+		} else {
+			return false;
+		}
+		std::map<int, std::list<int>> nodeLinks;
+		for (size_t triIndex = 0; triIndex < numOfTriangles; ++triIndex) {
+			v1 = tinBuf->triangles_[triangleIndices[triIndex] * 3];
+			v2 = tinBuf->triangles_[triangleIndices[triIndex] * 3 + 1];
+			v3 = tinBuf->triangles_[triangleIndices[triIndex] * 3 + 2];
+			if (theShareVertex == v1) {
+				if (nodeLinks.find(v2) == nodeLinks.cend()) {
+					std::list<int> nodes;
+					nodes.push_back(v3);
+					nodeLinks[v2] = nodes;
+				} else {
+					nodeLinks[v2].push_back(v3);
+				}
+				if (nodeLinks.find(v3) == nodeLinks.cend()) {
+					std::list<int> nodes;
+					nodes.push_back(v2);
+					nodeLinks[v3] = nodes;
+				} else {
+					nodeLinks[v3].push_back(v2);
+				}
+			} else if (theShareVertex == v2) {
+				if (nodeLinks.find(v1) == nodeLinks.cend()) {
+					std::list<int> nodes;
+					nodes.push_back(v3);
+					nodeLinks[v1] = nodes;
+				} else {
+					nodeLinks[v1].push_back(v3);
+				}
+				if (nodeLinks.find(v3) == nodeLinks.cend()) {
+					std::list<int> nodes;
+					nodes.push_back(v1);
+					nodeLinks[v3] = nodes;
+				} else {
+					nodeLinks[v3].push_back(v1);
+				}
+			} else {
+				// theSharedVertex == v3
+				if (nodeLinks.find(v1) == nodeLinks.cend()) {
+					std::list<int> nodes;
+					nodes.push_back(v2);
+					nodeLinks[v1] = nodes;
+				} else {
+					nodeLinks[v1].push_back(v2);
+				}
+				if (nodeLinks.find(v2) == nodeLinks.cend()) {
+					std::list<int> nodes;
+					nodes.push_back(v1);
+					nodeLinks[v2] = nodes;
+				} else {
+					nodeLinks[v2].push_back(v1);
+				}
+			}
+		}
+		std::list<int> polygon;
+		std::map<int, std::list<int>>::iterator linkItor = nodeLinks.begin();
+		polygon.push_back(linkItor->first);
+		while (linkItor != nodeLinks.end()) {
+			if (linkItor->second.size() > 0) {
+				std::list<int>::const_iterator nodeItor = linkItor->second.cbegin();
+				while (nodeItor != linkItor->second.cend()) {
+					if (*nodeItor == linkItor->first) {
+						linkItor->second.erase(nodeItor);
+						break;
+					} else {
+						++nodeItor;
+					}
+				}
+				if (linkItor->second.size() > 0) {
+					polygon.push_back(linkItor->second.front());
+					linkItor->second.pop_front();
+					linkItor = nodeLinks.find(polygon.back());
+				} else {
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		if (polygon.size() < 3 || polygon.front() != polygon.back()) {
+			// nodes can not connected to a closed polygon.
+			return false;
+		}
+		int numOfPoints = polygon.size() - 1;
+		polygon.pop_back();
+		int nodeIndex = 0;
+		double bounds[6] = { 0 };
+		double* pts = new double[numOfPoints * 3];
+		std::list<int>::const_iterator nodeItor = polygon.cbegin();
+		pts[nodeIndex] = tinBuf->vertices_[*nodeItor * 3];
+		pts[nodeIndex + 1] = tinBuf->vertices_[*nodeItor * 3 + 1];
+		pts[nodeIndex + 2] = 0;
+		bounds[0] = bounds[1] = pts[nodeIndex];
+		bounds[2] = bounds[3] = pts[nodeIndex + 1];
+		nodeIndex += 3;
+		++nodeItor;
+		while (nodeItor != polygon.cend()) {
+			pts[nodeIndex] = tinBuf->vertices_[*nodeItor * 3];
+			pts[nodeIndex + 1] = tinBuf->vertices_[*nodeItor * 3 + 1];
+			pts[nodeIndex + 2] = 0;
+			if (pts[nodeIndex] < bounds[0]) {
+				bounds[0] = pts[nodeIndex];
+			} else if (pts[nodeIndex] > bounds[1]) {
+				bounds[1] = pts[nodeIndex];
+			}
+			if (pts[nodeIndex + 1] < bounds[2]) {
+				bounds[2] = pts[nodeIndex + 1];
+			} else if (pts[nodeIndex + 1] > bounds[3]) {
+				bounds[3] = pts[nodeIndex + 1];
+			}
+			nodeIndex += 3;
+			++nodeItor;
+		}
+		double pt[3] = { x, y, 0 }, n[3];
+		int ret = vtkPolygon::PointInPolygon(pt, numOfPoints, pts, bounds, n);
+		delete[] pts;
+		return ret == 1;
+	}
+}
+
+bool JobStructureModelGridding::JobThread::IsSamePosition(double x1, double y1, double z1, double x2, double y2, double z2, double tol, bool ignoreZ)  const {
+	bool v = fabs(x1 - x2) < tol && fabs(y1 - y2) < tol;
+	if (ignoreZ) {
+		return v;
+	} else {
+		return v && fabs(z1 - z2) < tol;
+	}
+}
+
+bool JobStructureModelGridding::JobThread::IsSameTriangle(int triangleIndex1, int triangleIndex2, const TinBuf* tinBuf) const {
+	int v1 = tinBuf->triangles_[triangleIndex1 * 3];
+	int v2 = tinBuf->triangles_[triangleIndex1 * 3 + 1];
+	int v3 = tinBuf->triangles_[triangleIndex1 * 3 + 2];
+	int v4 = tinBuf->triangles_[triangleIndex2 * 3];
+	int v5 = tinBuf->triangles_[triangleIndex2 * 3 + 1];
+	int v6 = tinBuf->triangles_[triangleIndex2 * 3 + 2];
+	if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if (IsSamePosition(tinBuf->vertices_[v3 * 3], tinBuf->vertices_[v3 * 3 + 1], tinBuf->vertices_[v3 * 3 + 2], tinBuf->vertices_[v6 * 3], tinBuf->vertices_[v6 * 3 + 1], tinBuf->vertices_[v6 * 3 + 2], ZERO_ERROR, false)) {
+		if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else if (IsSamePosition(tinBuf->vertices_[v1 * 3], tinBuf->vertices_[v1 * 3 + 1], tinBuf->vertices_[v1 * 3 + 2], tinBuf->vertices_[v5 * 3], tinBuf->vertices_[v5 * 3 + 1], tinBuf->vertices_[v5 * 3 + 2], ZERO_ERROR, false)
+			&& IsSamePosition(tinBuf->vertices_[v2 * 3], tinBuf->vertices_[v2 * 3 + 1], tinBuf->vertices_[v2 * 3 + 2], tinBuf->vertices_[v4 * 3], tinBuf->vertices_[v4 * 3 + 1], tinBuf->vertices_[v4 * 3 + 2], ZERO_ERROR, false)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
+
+std::map<void*, JobStructureModelGridding::TinBuf*> JobStructureModelGridding::tinBufs_;
+std::shared_mutex JobStructureModelGridding::tinBufMutex_;
+
+JobStructureModelGridding::TinBuf::TinBuf(int numOfVertices, int numOfTriangles) {
+	numOfVertices_ = numOfVertices;
+	numOfTriangles_ = numOfTriangles;
+	if (numOfVertices_ > 0) {
+		vertices_ = new double[numOfVertices_ * 3];
+	} else {
+		vertices_ = NULL;
+	}
+	if (numOfTriangles_ > 0) {
+		triangles_ = new int[numOfTriangles_ * 3];
+	} else {
+		triangles_ = NULL;
+	}
+}
+JobStructureModelGridding::TinBuf::~TinBuf() {
+	if (vertices_ != NULL) {
+		delete[] vertices_;
+	}
+	if (triangles_ != NULL) {
+		delete[] triangles_;
+	}
+}
+
+const JobStructureModelGridding::TinBuf* JobStructureModelGridding::GetTinBuf(geo3dml::TIN* tin) {
+	TinBuf* tinBuf = NULL;
+	tinBufMutex_.lock_shared();
+	std::map<void*, TinBuf*>::const_iterator citor = tinBufs_.find(tin);
+	if (citor != tinBufs_.cend()) {
+		tinBuf = citor->second;
+		tinBufMutex_.unlock_shared();
+	} else {
+		tinBufMutex_.unlock_shared();
+		tinBufMutex_.lock();
+		// check again
+		citor = tinBufs_.find(tin);
+		if (citor != tinBufs_.cend()) {
+			tinBuf = citor->second;
+		} else {
+			int numOfVertices = tin->GetVertexCount();
+			int numOfTriangles = tin->GetTriangleCount();
+			tinBuf = new TinBuf(numOfVertices, numOfTriangles);
+			double x = 0, y = 0, z = 0;
+			for (int i = 0; i < numOfVertices; ++i) {
+				tin->GetVertexAt(i, x, y, z);
+				tinBuf->vertices_[i * 3] = x;
+				tinBuf->vertices_[i * 3 + 1] = y;
+				tinBuf->vertices_[i * 3 + 2] = z;
+			}
+			int v1 = 0, v2 = 0, v3 = 0;
+			for (int i = 0; i < numOfTriangles; ++i) {
+				tin->GetTriangleAt(i, v1, v2, v3);
+				tinBuf->triangles_[i * 3] = v1;
+				tinBuf->triangles_[i * 3 + 1] = v2;
+				tinBuf->triangles_[i * 3 + 2] = v3;
+			}
+			tinBufs_[tin] = tinBuf;
+		}
+		tinBufMutex_.unlock();
+	}
+	return tinBuf;
 }
