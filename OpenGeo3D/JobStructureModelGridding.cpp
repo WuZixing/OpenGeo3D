@@ -79,22 +79,23 @@ void JobStructureModelGridding::Stop() {
 	lodLevel_ = -1;
 }
 
-void JobStructureModelGridding::JobThreadQuit(JobThread* thread) {
+void JobStructureModelGridding::JobThreadQuit(wxThreadIdType threadId) {
 	wxCriticalSectionLocker locker(criticalSection_);
-	auto itor = std::find(jobThreads_.cbegin(), jobThreads_.cend(), thread);
-	if (itor == jobThreads_.cend()) {
+	auto citor = jobThreads_.cbegin();
+	while ((*citor)->GetId() != threadId && citor != jobThreads_.cend()) {
+		++citor;
+	}
+	if (citor == jobThreads_.cend()) {
 		return;
 	}
-	wxThreadIdType threadId = thread->GetId();
-	(*itor)->Delete();	// wxThread::Wait() dose not ask the thread to quit, but only wait for it to quit.
-	delete (*itor);
-	jobThreads_.erase(itor);
+	(*citor)->Delete();	// wxThread::Wait() dose not ask the thread to quit, but only wait for it to quit.
+	delete (*citor);
+	jobThreads_.erase(citor);
 	if (jobThreads_.empty()) {
 		wxLogInfo(Strings::MessageOfGriddingJobEnd());
 	} else {
 		wxLogInfo(Strings::MessageOfGriddingJobThreadStop(threadId, int(jobThreads_.size())));
 	}
-	Events::Notify(Events::ID::Notify_RefreshRenderWindow);
 }
 
 JobStructureModelGridding::JobThread::JobThread(const FeatureClasses& featureClasses, const geo3dml::Box3D& range, g3dgrid::LOD* g3dGridLOD, wxCriticalSection* gridLODCS, int totalWokers, int workerNo) : wxThread(wxTHREAD_JOINABLE) {
@@ -110,7 +111,24 @@ JobStructureModelGridding::JobThread::~JobThread() {
 
 }
 
-JobStructureModelGridding::JobThread::ExitCode JobStructureModelGridding::JobThread::Entry() {
+wxThread::ExitCode JobStructureModelGridding::JobThread::Entry() {
+	wxStopWatch sw;
+	ExitCode code = RunGridding();
+	wxThreadEvent* thdEvt = new wxThreadEvent(wxEVT_THREAD);
+	wxThreadIdType thdId = GetId();
+	thdEvt->SetExtraLong(thdId);
+	thdEvt->SetInt(sw.Time() / 1000);
+	if (TestDestroy()) {
+		thdEvt->SetId(Events::ID::Thread_GriddingThreadQuit);
+		Events::QueueThreadEvent(thdEvt);
+	} else {
+		thdEvt->SetId(Events::ID::Thread_GriddingThreadFinished);
+		Events::QueueThreadEvent(thdEvt);
+	}
+	return code;
+}
+
+wxThread::ExitCode JobStructureModelGridding::JobThread::RunGridding() {
 	geo3dml::Point3D origin, step;
 	gridLODCS_->Enter();
 	origin = g3dGridLOD_->GetGridOrigin();
@@ -133,6 +151,7 @@ JobStructureModelGridding::JobThread::ExitCode JobStructureModelGridding::JobThr
 	if (startI >= endI) {
 		ExitCode(0);
 	}
+	const size_t batchSizeOfCells = 10000;
 	// resampling geological features by half distance of the step along x, y and z axies, respectively.
 	const double bottomZ = origin.z + step.z * ijkRange.min.k;
 	const double topZ = origin.z + step.z * (ijkRange.max.k + 1);
@@ -150,6 +169,8 @@ JobStructureModelGridding::JobThread::ExitCode JobStructureModelGridding::JobThr
 		rightPillars = vtkSmartPointer<vtkPolyDataCollection>::New();
 		vtkSmartPointer<vtkPolyData> bottomMiddlePillar, centerPillar, topMiddlePillar;
 		vtkSmartPointer<vtkPolyData> bottomRightPillar, middleRightPillar, topRightPillar;
+		std::vector<g3dgrid::VoxelCell> cells;
+		cells.reserve(batchSizeOfCells + batchSizeOfCells / 2);
 		for (int relativeJ = 0; relativeJ < dimJ && !TestDestroy(); ++relativeJ) {
 			// pillars for column of (i, j, *)
 			double bottomY = origin.y + step.y * (relativeJ + ijkRange.min.j);
@@ -354,11 +375,22 @@ JobStructureModelGridding::JobThread::ExitCode JobStructureModelGridding::JobThr
 							break;
 						}
 					}
+					cells.push_back(cell);
+				}
+				if (TestDestroy()) {
+					break;
+				}
+				if (cells.size() >= batchSizeOfCells) {
+					SubmitCells(cells);
+					cells.clear();
 				}
 			}
 		}
+		if (!TestDestroy() && !cells.empty()) {
+			SubmitCells(cells);
+		}
+		cells.clear();
 	}
-
 
 	return ExitCode(0);
 }
@@ -378,4 +410,9 @@ void JobStructureModelGridding::CheckOrAddFieldIntoGrid(const geo3dml::Field& fi
 	if (!g3dVoxelGrid_->HasField(field.Name())) {
 		g3dVoxelGrid_->AddField(field);
 	}
+}
+
+
+void JobStructureModelGridding::JobThread::SubmitCells(const std::vector<g3dgrid::VoxelCell>& cells) {
+	wxLogInfo(Strings::MessageOfGriddingProgress(GetId(), (int)cells.size()));
 }

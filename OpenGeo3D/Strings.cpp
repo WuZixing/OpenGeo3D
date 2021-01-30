@@ -659,3 +659,15 @@ wxString Strings::MessageOfGriddingJobThreadStop(const wxThreadIdType& id, int r
 wxString Strings::MessageOfGriddingJobEnd() {
 	return wxString::FromUTF8("网格化任务结束。");
 }
+
+wxString Strings::MessageOfGriddingProgress(wxThreadIdType id, int numOfCells) {
+	return wxString::Format(wxString::FromUTF8("网格化线程（ID: %zd）提交%d个网格。"), id, numOfCells);
+}
+
+wxString Strings::MessageOfGriddingJobThreadQuit(wxThreadIdType id, int seconds) {
+	return wxString::Format(wxString::FromUTF8("网格化线程（ID: %zd）退出，耗时%d秒。"), id, seconds);
+}
+
+wxString Strings::MessageOfGriddingJobThreadFinished(wxThreadIdType id, int seconds) {
+	return wxString::Format(wxString::FromUTF8("网格化线程（ID: %zd）完成工作，耗时%d秒。"), id, seconds);
+}

@@ -190,4 +190,7 @@ public:
 
 	static wxString MessageOfGriddingJobThreadStop(const wxThreadIdType& id, int runningNumber);
 	static wxString MessageOfGriddingJobEnd();
+	static wxString MessageOfGriddingProgress(wxThreadIdType id, int numOfCells);
+	static wxString MessageOfGriddingJobThreadQuit(wxThreadIdType id , int seconds);
+	static wxString MessageOfGriddingJobThreadFinished(wxThreadIdType id, int seconds);
 };

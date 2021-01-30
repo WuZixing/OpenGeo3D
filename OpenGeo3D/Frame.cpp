@@ -11,6 +11,7 @@
 #include "DlgNewGridModel.h"
 #include "DlgOpenSimpleDrillLog.h"
 #include "Events.h"
+#include "JobStructureModelGridding.h"
 #include "Strings.h"
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
@@ -43,6 +44,7 @@ Frame::Frame(const wxString& title) : wxFrame(nullptr, Events::ID::Window_Frame,
     InitMenu();
     InitClientWindows();
     InitStatusBar();
+    Bind(wxEVT_THREAD, &Frame::OnThreadEvent, this);
 }
 
 Frame::~Frame() {
@@ -391,4 +393,23 @@ void Frame::OnCloseVoxelGridModel(wxCommandEvent& event) {
     wxBusyCursor waiting;
     projectPanel_->CloseVoxelGridModel();
     Events::Notify(Events::ID::Notify_RefreshRenderWindow);
+}
+
+void Frame::OnThreadEvent(wxThreadEvent& event) {
+    switch (event.GetId()) {
+    case Events::ID::Thread_GriddingThreadQuit: {
+        wxThreadIdType thdId = (wxThreadIdType)event.GetExtraLong();
+        wxLogInfo(Strings::MessageOfGriddingJobThreadQuit(thdId, event.GetInt()));
+        JobStructureModelGridding::JobThreadQuit(thdId);
+        break;
+    }
+    case Events::ID::Thread_GriddingThreadFinished: {
+        wxThreadIdType thdId = (wxThreadIdType)event.GetExtraLong();
+        wxLogInfo(Strings::MessageOfGriddingJobThreadFinished(thdId, event.GetInt()));
+        JobStructureModelGridding::JobThreadQuit(thdId);
+        break;
+    }
+    default:
+        break;
+    }
 }

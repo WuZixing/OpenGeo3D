@@ -24,6 +24,7 @@ public:
 	
 	static void Start(const FeatureClasses& featureClasses, const geo3dml::Box3D& range, g3dgrid::VoxelGrid* g3dVoxelGrid, int lodLevel);
 	static bool IsRunning();
+	static void JobThreadQuit(wxThreadIdType threadId);
 	static void Stop();
 
 	JobStructureModelGridding() = delete;
@@ -37,12 +38,14 @@ private:
 
 	protected:
 		virtual ExitCode Entry() override;
+		ExitCode RunGridding();
 
 	private:
 		// List sampling positions from bottomZ to topZ by half of stepZ.
 		// Sampling positions on a pillar are labeled which feature they are in.
 		vtkSmartPointer<vtkPolyData> NewPillar(double x, double y, double bottomZ, double topZ, double stepZ);
 		std::string MakeFieldNameToFeatureClass(int fcIndex) const;
+		void SubmitCells(const std::vector<g3dgrid::VoxelCell>& cells);
 
 	private:
 		FeatureClasses sourceFeatureClasses_;
@@ -53,7 +56,6 @@ private:
 	};
 
 private:
-	static void JobThreadQuit(JobThread* thread);
 	static void CheckOrAddFieldIntoGrid(const geo3dml::Field& field);
 
 private:

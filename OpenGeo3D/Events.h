@@ -33,9 +33,13 @@ public:
 		Notify_ResetAndRefreshRenderWindow,
 		Notify_RefreshRenderWindow,
 		// project panel notifications
-		Notify_ProjectTreeItemSelected
+		Notify_ProjectTreeItemSelected,
+		// gridding thread events
+		Thread_GriddingThreadFinished,
+		Thread_GriddingThreadQuit
 	};
 
 public:
-	static void Notify(ID id);
+	static void Notify(ID id);	///< not thread-safe
+	static void QueueThreadEvent(wxEvent* evt);	///< thread-safe
 };

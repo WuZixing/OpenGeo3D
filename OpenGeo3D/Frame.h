@@ -33,6 +33,7 @@ private:
 	void OnSaveToGeo3DML(wxCommandEvent& event);
 	void OnSaveToVoxelGrid(wxCommandEvent& event);
 	void OnEditVoxelGrid(wxCommandEvent& event);
+	void OnThreadEvent(wxThreadEvent& event);
 
 private:
 	void InitMenu();
