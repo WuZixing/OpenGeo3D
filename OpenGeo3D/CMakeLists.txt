@@ -4,9 +4,12 @@ set(APP_VERSION "" CACHE STRING "Version: vX.Y.Z")
 add_definitions(-DAPP_NAME="${APP_NAME}" -DAPP_VERSION="${APP_VERSION}")
 add_compile_options(/utf-8)
 
-# wxWidgets
-find_package(wxWidgets 3.1 REQUIRED COMPONENTS core base adv propgrid aui)
-include(${wxWidgets_USE_FILE})
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+# Qt5
+find_package(Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
 
 # VTK
 find_package(VTK 9.0 REQUIRED)
@@ -21,39 +24,18 @@ if(MSVC)
 else()
   set(TARGET_PROPERTY "")
 endif(MSVC)
+
+set(TS_FILES OpenApp_zh_CN.ts)
 aux_source_directory(. CPP_SOURCES)
+
 add_executable(${APP_NAME} ${TARGET_PROPERTY}
-  icon.xpm
-  checked_box.xpm
-  unchecked_box.xpm
   ${CPP_SOURCES}
-  Config.h
-  DlgEditVoxelGrid.h
-  DlgNewGridLOD.h
-  DlgNewGridModel.h
-  DlgOpenSimpleDrillLog.h
-  DlgStructureModelGridding.h
-  DrillLogFile.h
-  Events.h
-  Frame.h
-  G3DTreeItemData.h
-  GridLODViewListCtrl.h
-  GridSchemaViewListCtrl.h
-  JobStructureModelGridding.h
-  MetadataPage.h
-  OpenGeo3D.h
-  ProjectItemMetaBook.h
-  ProjectPanel.h
-  ProjectTreeCtrl.h
-  RenderOptionPage.h
-  SizerOfSimpleDrillLogFiles.h
-  Strings.h
-  wxWidgets.h
-  wxVTKRenderWindowInteractor.h
-  wxVTKRenderWindowInteractor.cxx
+  AppFrame.h
+  ${TS_FILES}
 )
+qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 target_link_libraries(${APP_NAME} 
-  PRIVATE ${wxWidgets_LIBRARIES} ${VTK_LIBRARIES} ${GEO3DML_LIBRARIES} ${G3DXML_LIBRARIES} ${G3DVTK_LIBRARIES} ${G3DGRID_LIBRARIES}
+  PRIVATE Qt5::Widgets ${VTK_LIBRARIES} ${GEO3DML_LIBRARIES} ${G3DXML_LIBRARIES} ${G3DVTK_LIBRARIES} ${G3DGRID_LIBRARIES}
 )
 vtk_module_autoinit(TARGETS ${APP_NAME} MODULES ${VTK_LIBRARIES})
