@@ -9,4 +9,7 @@ class AppFrame : public QMainWindow
 public:
 	AppFrame(QWidget* parent = nullptr);
 	virtual ~AppFrame();
+
+private slots:
+	void about();
 };

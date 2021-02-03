@@ -1,10 +1,25 @@
 #include "AppFrame.h"
-
-#include <QApplication>
+#include <QtWidgets/QApplication>
+#include <QtCore/QTranslator>
+#include <QtCore/QLibraryInfo>
 
 int main(int argc, char* argv[]) {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
+
+    QString path = QLibraryInfo::location(QLibraryInfo::LibraryLocation::TranslationsPath);
+    QLocale locale(QLocale::Language::Chinese, QLocale::Country::China);
+    QTranslator qtTranslator, appTranslator;
+    bool status = qtTranslator.load(locale, QStringLiteral("qtbase_"), QString(), path);
+    if (status) {
+        status = app.installTranslator(&qtTranslator);
+    }
+    status = appTranslator.load(locale, QStringLiteral("OpenApp_"), QString(), path);
+    if (status) {
+        status = app.installTranslator(&appTranslator);
+    }
+    
     AppFrame frame;
     frame.showMaximized();
-    return a.exec();
+
+    return app.exec();
 }
