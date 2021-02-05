@@ -2,8 +2,7 @@
 
 #include <QMainWindow>
 
-class AppFrame : public QMainWindow
-{
+class AppFrame : public QMainWindow {
 	Q_OBJECT
 
 public:

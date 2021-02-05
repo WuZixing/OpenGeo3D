@@ -9,14 +9,16 @@ int main(int argc, char* argv[]) {
     QString path = QLibraryInfo::location(QLibraryInfo::LibraryLocation::TranslationsPath);
     QLocale locale(QLocale::Language::Chinese, QLocale::Country::China);
     QTranslator qtTranslator, appTranslator;
-    bool status = qtTranslator.load(locale, QStringLiteral("qtbase_"), QString(), path);
+    bool status = qtTranslator.load(locale, QStringLiteral("qt_"), QString(), path);
     if (status) {
         status = app.installTranslator(&qtTranslator);
     }
+    /*
     status = appTranslator.load(locale, QStringLiteral("OpenApp_"), QString(), path);
     if (status) {
         status = app.installTranslator(&appTranslator);
     }
+    */
     
     AppFrame frame;
     frame.showMaximized();

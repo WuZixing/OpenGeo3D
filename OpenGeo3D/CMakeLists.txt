@@ -25,15 +25,23 @@ else()
   set(TARGET_PROPERTY "")
 endif(MSVC)
 
-set(TS_FILES OpenApp_zh_CN.ts)
+#set(TS_FILES OpenApp_zh_CN.ts)
 aux_source_directory(. CPP_SOURCES)
+list(APPEND UI_Files
+  DlgAbout.ui
+)
+qt5_wrap_ui(UI_SOURCES ${UI_Files})
 
 add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ${CPP_SOURCES}
   AppFrame.h
-  ${TS_FILES}
+  DlgAbout.h
+  Text.h
+  ${UI_SOURCES}
+  ${UI_Files}
+  #${TS_FILES}
 )
-qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+#qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 target_link_libraries(${APP_NAME} 
   PRIVATE Qt5::Widgets ${VTK_LIBRARIES} ${GEO3DML_LIBRARIES} ${G3DXML_LIBRARIES} ${G3DVTK_LIBRARIES} ${G3DGRID_LIBRARIES}
