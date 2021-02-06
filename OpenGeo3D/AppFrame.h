@@ -11,4 +11,7 @@ public:
 
 private slots:
 	void about();
+
+private:
+	void setupMenu();
 };

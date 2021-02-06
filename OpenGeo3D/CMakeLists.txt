@@ -9,7 +9,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 # Qt5
-find_package(Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
+#find_package(Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 # VTK
 find_package(VTK 9.0 REQUIRED)
@@ -21,24 +22,28 @@ include_directories(${G3DGRID_INCLUDE_DIRS})
 
 if(MSVC)
   set(TARGET_PROPERTY "WIN32")
+  set(APP_RC "${CMAKE_CURRENT_SOURCE_DIR}/OpenGeo3D.rc")
 else()
   set(TARGET_PROPERTY "")
 endif(MSVC)
 
 #set(TS_FILES OpenApp_zh_CN.ts)
+#list(APPEND UI_Files
+#  DlgAbout.ui
+#)
+#qt5_wrap_ui(UI_SOURCES ${UI_Files})
 aux_source_directory(. CPP_SOURCES)
-list(APPEND UI_Files
-  DlgAbout.ui
-)
-qt5_wrap_ui(UI_SOURCES ${UI_Files})
 
 add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ${CPP_SOURCES}
   AppFrame.h
   DlgAbout.h
   Text.h
-  ${UI_SOURCES}
-  ${UI_Files}
+  icon.xpm
+  icon.ico
+  ${APP_RC}
+  #${UI_SOURCES}
+  #${UI_Files}
   #${TS_FILES}
 )
 #qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})

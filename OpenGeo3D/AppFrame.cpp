@@ -1,19 +1,25 @@
 #include "AppFrame.h"
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMessageBox>
+#include "icon.xpm"
 #include "DlgAbout.h"
 #include "Text.h"
 
 AppFrame::AppFrame(QWidget* parent) : QMainWindow(parent) {
-	QMenu* menu = menuBar()->addMenu(Text::menuHelp());
-	menu->addAction(Text::menuAbout(), this, &AppFrame::about);
+	QPixmap pixmap(xpm_icon);
+	setWindowIcon(QIcon(pixmap));
+	setupMenu();
 }
 
 AppFrame::~AppFrame() {
 }
 
 void AppFrame::about() {
-	// QMessageBox::about(this, tr("OpenGeo3D"), tr("about-open-geo3d"));
 	DlgAbout about(this);
 	about.exec();
+}
+
+void AppFrame::setupMenu() {
+	QMenu* menu = menuBar()->addMenu(Text::menuHelp());
+	menu->addAction(Text::menuAbout(), this, &AppFrame::about);
 }

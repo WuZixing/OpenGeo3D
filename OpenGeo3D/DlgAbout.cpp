@@ -1,27 +1,40 @@
 #include "DlgAbout.h"
 #include <QtCore/QDate>
-#include <ui_DlgAbout.h>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 #include "Text.h"
 
 DlgAbout::DlgAbout(QWidget* parent) : QDialog(parent, Qt::Dialog | Qt::WindowCloseButtonHint) {
-	ui_ = new Ui::DlgAbout();
-	ui_->setupUi(this);
+	initUI();
+	setWindowTitle(Text::titleOfDlgAbout());
+}
 
-	ui_->appInfo->setText(Text::appName() + " " + Text::appVersion());
+DlgAbout::~DlgAbout() {
+
+}
+
+void DlgAbout::initUI() {
+	QLabel* appInfo = new QLabel(Text::appName() + "  " + Text::appVersion());
 	QString copyRightString = QString::fromUtf8("\u00A92020");
 	QDate dt = QDate::currentDate();
 	if (dt.year() > 2020) {
 		copyRightString += QStringLiteral("-") + dt.toString("yyyy");
 	}
-	ui_->appCopyright->setText(copyRightString);
-	ui_->appDescription->setText(Text::appDescription());
-	ui_->appWebSite->setTextInteractionFlags(Qt::TextInteractionFlag::LinksAccessibleByMouse);
-	ui_->appWebSite->setOpenExternalLinks(true);
-	ui_->appWebSite->setText(QStringLiteral("<a href=") + Text::appWebSite() + QStringLiteral(">") + Text::appWebSite() + QStringLiteral("</a>"));
-	this->setWindowTitle(Text::titleOfDlgAbout());
-}
+	QLabel* appCopyright = new QLabel(copyRightString);
+	QLabel* appDescription = new QLabel(Text::appDescription());
+	QLabel* appWebSite = new QLabel(QStringLiteral("<a href=") + Text::appWebSite() + QStringLiteral(">") + Text::appWebSite() + QStringLiteral("</a>"));
+	appWebSite->setTextInteractionFlags(Qt::TextInteractionFlag::LinksAccessibleByMouse);
+	appWebSite->setOpenExternalLinks(true);
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::StandardButton::Ok, Qt::Orientation::Horizontal);
 
-DlgAbout::~DlgAbout() {
-	delete ui_;
-}
+	QVBoxLayout* vLayout = new QVBoxLayout(this);
+	vLayout->addWidget(appInfo, 0, Qt::AlignmentFlag::AlignHCenter);
+	vLayout->addWidget(appCopyright, 0, Qt::AlignmentFlag::AlignHCenter);
+	vLayout->addWidget(appDescription, 0, Qt::AlignmentFlag::AlignHCenter);
+	vLayout->addWidget(appWebSite, 0, Qt::AlignmentFlag::AlignHCenter);
+	vLayout->addWidget(buttonBox, 0, Qt::AlignmentFlag::AlignHCenter);
 
+	setLayout(vLayout);
+    QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+}
