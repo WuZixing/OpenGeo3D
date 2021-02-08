@@ -2,8 +2,12 @@
 #include <QtWidgets/QApplication>
 #include <QtCore/QTranslator>
 #include <QtCore/QLibraryInfo>
+#include <QtGui/QSurfaceFormat>
+#include <QVTKOpenGLNativeWidget.h>
 
 int main(int argc, char* argv[]) {
+    QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
+
     QApplication app(argc, argv);
 
     QString path = QLibraryInfo::location(QLibraryInfo::LibraryLocation::TranslationsPath);

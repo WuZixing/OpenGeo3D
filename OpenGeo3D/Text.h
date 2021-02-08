@@ -9,9 +9,15 @@ public:
 	static QString appDescription();
 	static QString appWebSite();
 
+	/// @name strings for menu.
+	///@{
 	static QString menuHelp();
 	static QString menuAbout();
+	static QString menuQuit();
+	///@}
 
 	static QString titleOfDlgAbout();
+	static QString titleOfConfirmingQuit();
+	static QString confirmToQuit();
 
 };

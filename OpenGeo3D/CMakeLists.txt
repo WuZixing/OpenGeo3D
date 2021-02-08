@@ -38,6 +38,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ${CPP_SOURCES}
   AppFrame.h
   DlgAbout.h
+  RenderWidget.h
   Text.h
   icon.xpm
   icon.ico

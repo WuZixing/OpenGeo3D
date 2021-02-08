@@ -24,6 +24,18 @@ QString Text::menuAbout() {
 	return QString::fromUtf8("关于(&A)...");
 }
 
+QString Text::menuQuit() {
+	return QString::fromUtf8("退出(&Q)");
+}
+
 QString Text::titleOfDlgAbout() {
 	return QString::fromUtf8("关于") + appName();
+}
+
+QString Text::titleOfConfirmingQuit() {
+	return QString::fromUtf8("退出") + appName();
+}
+
+QString Text::confirmToQuit() {
+	return QString::fromUtf8("确定退出") + appName() + QString::fromUtf8("吗？未保存的数据将会丢失。");
 }

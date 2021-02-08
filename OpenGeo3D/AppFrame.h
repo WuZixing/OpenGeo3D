@@ -12,6 +12,10 @@ public:
 private slots:
 	void about();
 
+protected:
+    virtual void closeEvent(QCloseEvent *event) override;
+
 private:
 	void setupMenu();
+	void setupWidgets();
 };
