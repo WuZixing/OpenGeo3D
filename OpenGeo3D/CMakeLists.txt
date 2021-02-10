@@ -38,6 +38,11 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ${CPP_SOURCES}
   AppFrame.h
   DlgAbout.h
+  MetadataPage.h
+  ProjectMetaBook.h
+  ProjectPanel.h
+  ProjectTreeCtrl.h
+  RenderOptionPage.h
   RenderWidget.h
   Text.h
   icon.xpm

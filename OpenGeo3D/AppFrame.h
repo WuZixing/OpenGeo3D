@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include "ProjectPanel.h"
 
 class AppFrame : public QMainWindow {
 	Q_OBJECT
@@ -10,7 +11,10 @@ public:
 	virtual ~AppFrame();
 
 private slots:
+	void openGeo3DML();
+	void openDrillLog();
 	void about();
+	void quit();
 
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
@@ -18,4 +22,7 @@ protected:
 private:
 	void setupMenu();
 	void setupWidgets();
+
+private:
+	ProjectPanel* projectPanel_;
 };

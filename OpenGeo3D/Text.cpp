@@ -16,6 +16,34 @@ QString Text::appWebSite() {
 	return QStringLiteral("https://github.com/WuZixing/OpenGeo3D");
 }
 
+QString Text::nameOfStructureModel() {
+	return QString::fromUtf8("结构模型");
+}
+
+QString Text::nameOfVoxelGridModel() {
+	return QString::fromUtf8("网格模型");
+}
+
+QString Text::menuFile() {
+	return QString::fromUtf8("文件(&F)");
+}
+
+QString Text::menuStructureModel() {
+	return QString::fromUtf8("结构模型");
+}
+
+QString Text::menuOpenGeo3DML() {
+	return QString::fromUtf8("打开Geo3DML文件...");
+}
+
+QString Text::menuOpenDrillLog() {
+	return QString::fromUtf8("打开简单钻孔记录...");
+}
+
+QString Text::menuGridModel() {
+	return QString::fromUtf8("网格模型");
+}
+
 QString Text::menuHelp() {
 	return QString::fromUtf8("帮助(&H)");
 }
@@ -38,4 +66,8 @@ QString Text::titleOfConfirmingQuit() {
 
 QString Text::confirmToQuit() {
 	return QString::fromUtf8("确定退出") + appName() + QString::fromUtf8("吗？未保存的数据将会丢失。");
+}
+
+QString Text::filterOfGeo3DMLFiles() {
+	return QString::fromUtf8("Geo3DML文件(*.xm.)");
 }
