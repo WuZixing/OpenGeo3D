@@ -1,13 +1,14 @@
 #include "ProjectPanel.h"
-#include "ProjectMetaBook.h"
 #include <QtWidgets/QTextEdit>
 
 ProjectPanel::ProjectPanel(QWidget* parent) : QSplitter(Qt::Orientation::Vertical, parent) {
 	projectTreeCtrl_ = new ProjectTreeCtrl(this);
-	ProjectMetaBook* projectMetaBook_ = new ProjectMetaBook(this);
+	projectMetaBook_ = new ProjectMetaBook(this);
 
-	this->setStretchFactor(0, 1);
-	this->setStretchFactor(1, 1);
+	setStretchFactor(0, 1);
+	setStretchFactor(1, 1);
+
+	connect(projectTreeCtrl_, &ProjectTreeCtrl::itemSelectionChanged, this, &ProjectPanel::onTreeItemSelectionChanged);
 }
 
 ProjectPanel::~ProjectPanel() {
@@ -52,4 +53,10 @@ void ProjectPanel::closeStructureModel() {
 
 void ProjectPanel::closeVoxelGridModel() {
 	projectTreeCtrl_->closeVoxelGridModel();
+}
+
+void ProjectPanel::onTreeItemSelectionChanged() {
+	QTreeWidgetItem* item = projectTreeCtrl_->currentItem();
+	void* ptr = item->data(0, Qt::ItemDataRole::UserRole).value<void*>();
+	geo3dml::Object* g3dObj = static_cast<geo3dml::Object*>(ptr);
 }

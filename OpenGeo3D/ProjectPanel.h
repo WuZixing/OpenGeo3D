@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QSplitter>
+#include "ProjectMetaBook.h"
 #include "ProjectTreeCtrl.h"
 
 class ProjectPanel : public QSplitter {
@@ -25,5 +26,9 @@ public:
 	void closeVoxelGridModel();
 
 private:
+	void onTreeItemSelectionChanged();
+
+private:
 	ProjectTreeCtrl* projectTreeCtrl_;
+	ProjectMetaBook* projectMetaBook_;
 };
