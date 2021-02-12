@@ -37,8 +37,11 @@ aux_source_directory(. CPP_SOURCES)
 add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ${CPP_SOURCES}
   AppFrame.h
+  BusyCursor.h
   DlgAbout.h
+  Events.h
   MetadataPage.h
+  OpenApp.h
   ProjectMetaBook.h
   ProjectPanel.h
   ProjectTreeCtrl.h

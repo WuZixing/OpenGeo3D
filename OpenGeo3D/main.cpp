@@ -1,14 +1,14 @@
 #include "AppFrame.h"
-#include <QtWidgets/QApplication>
 #include <QtCore/QTranslator>
 #include <QtCore/QLibraryInfo>
 #include <QtGui/QSurfaceFormat>
 #include <QVTKOpenGLNativeWidget.h>
+#include "OpenApp.h"
 
 int main(int argc, char* argv[]) {
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 
-    QApplication app(argc, argv);
+    OpenApp app(argc, argv);
 
     QString path = QLibraryInfo::location(QLibraryInfo::LibraryLocation::TranslationsPath);
     QLocale locale(QLocale::Language::Chinese, QLocale::Country::China);
@@ -24,8 +24,6 @@ int main(int argc, char* argv[]) {
     }
     */
     
-    AppFrame frame;
-    frame.showMaximized();
-
+    app.showWindow();
     return app.exec();
 }

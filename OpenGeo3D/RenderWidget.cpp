@@ -2,9 +2,9 @@
 #include <vtkAxesActor.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorStyleSwitch.h>
-#include <vtkRenderer.h>
+#include <vtkRendererCollection.h>
 
-RenderWidget::RenderWidget(QWidget* parent) : QVTKOpenGLNativeWidget(parent) {
+RenderWidget::RenderWidget(QWidget* parent, vtkRenderer* renderer) : QVTKOpenGLNativeWidget(parent) {
 	vtkNew<vtkGenericOpenGLRenderWindow> window;
 	setRenderWindow(window);
 	vtkRenderWindowInteractor* interactor = window->GetInteractor();
@@ -15,8 +15,7 @@ RenderWidget::RenderWidget(QWidget* parent) : QVTKOpenGLNativeWidget(parent) {
 		}
 	}
 
-	renderer_ = vtkSmartPointer<vtkRenderer>::New();
-	window->AddRenderer(renderer_);
+	window->AddRenderer(renderer);
 
 	axesWidget_ = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
 	vtkNew<vtkAxesActor> axes;
@@ -28,4 +27,14 @@ RenderWidget::RenderWidget(QWidget* parent) : QVTKOpenGLNativeWidget(parent) {
 
 RenderWidget::~RenderWidget() {
 
+}
+
+void RenderWidget::render() {
+	renderWindow()->Render();
+}
+
+void RenderWidget::resetAndRender() {
+	vtkRendererCollection* renderers = renderWindow()->GetRenderers();
+	renderers->GetFirstRenderer()->ResetCamera();
+	renderWindow()->Render();
 }

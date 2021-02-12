@@ -8,10 +8,12 @@ class RenderWidget : public QVTKOpenGLNativeWidget {
 	Q_OBJECT
 
 public:
-	RenderWidget(QWidget* parent = nullptr);
+	RenderWidget(QWidget* parent, vtkRenderer* renderer);
 	virtual ~RenderWidget();
+
+	void render();
+	void resetAndRender();
 
 private:
 	vtkSmartPointer<vtkOrientationMarkerWidget> axesWidget_;
-	vtkSmartPointer<vtkRenderer> renderer_;
 };

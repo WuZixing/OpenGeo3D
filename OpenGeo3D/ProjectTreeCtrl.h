@@ -13,6 +13,31 @@ public:
 	ProjectTreeCtrl(QWidget* parent);
 	virtual ~ProjectTreeCtrl();
 
+	vtkRenderer* getRenderer() const;
+	vtkTransform* getTransform() const;
+
+	void appendG3DModel(geo3dml::Model* model, bool appendToDefaultMap);
+	void appendG3DMap(geo3dml::Map* map);
+	void updateVoxelGridModel();
+
+	void expandStructureModelTree();
+	void expandGridModelNodeTree();
+
+	void closeAllModels();
+	void closeStructureModel();
+	void closeVoxelGridModel();
+
+private:
+	geo3dml::Map* getDefaultMap();
+
+	void updateSubTreeOfMap(geo3dml::Map* g3dMap);
+	void appendFeatureClassToMap(geo3dml::FeatureClass* g3dFC, geo3dml::Map* g3dMap);
+	QTreeWidgetItem* findOrInsertMapItem(geo3dml::Map* g3dMap);
+
+	void removeChildrenFromScene(QTreeWidgetItem* item);
+	void resetStructureModel();
+	void resetVoxelGridModel();
+
 private:
 	std::unique_ptr<geo3dml::Project> g3dProject_;
 	vtkSmartPointer<vtkRenderer> renderer_;

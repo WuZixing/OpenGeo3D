@@ -13,6 +13,7 @@ public:
 	///@{
 	static QString nameOfStructureModel();
 	static QString nameOfVoxelGridModel();
+	static QString nameOfDefaultG3DMap();
 	///@}
 
 	/// @name strings for menu.
@@ -22,6 +23,8 @@ public:
 	static QString menuOpenGeo3DML();
 	static QString menuOpenDrillLog();
 	static QString menuGridModel();
+	static QString menuCloseStructureModel();
+	static QString menuCloseAllModels();
 	static QString menuHelp();
 	static QString menuAbout();
 	static QString menuQuit();
@@ -31,6 +34,7 @@ public:
 	///@{
 	static QString titleOfDlgAbout();
 	static QString titleOfConfirmingQuit();
+	static QString confirmToCloseStructureModel();
 	static QString confirmToQuit();
 	///@}
 
