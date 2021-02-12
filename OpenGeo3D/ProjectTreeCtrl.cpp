@@ -1,6 +1,8 @@
 #include "ProjectTreeCtrl.h"
+#include <QtWidgets/QMessageBox>
 #include <g3dvtk/Actor.h>
 #include <g3dvtk/ObjectFactory.h>
+#include "Events.h"
 #include "Text.h"
 
 ProjectTreeCtrl::ProjectTreeCtrl(QWidget* parent) : QTreeWidget(parent) {
@@ -20,6 +22,8 @@ ProjectTreeCtrl::ProjectTreeCtrl(QWidget* parent) : QTreeWidget(parent) {
 	renderer_ = vtkSmartPointer<vtkRenderer>::New();
 	transform_ = vtkSmartPointer<vtkTransform>::New();
 	transform_->Identity();
+
+	connect(this, &ProjectTreeCtrl::itemChanged, this, &ProjectTreeCtrl::onItemChanged);
 }
 
 ProjectTreeCtrl::~ProjectTreeCtrl() {
@@ -179,4 +183,51 @@ void ProjectTreeCtrl::resetStructureModel() {
 
 void ProjectTreeCtrl::resetVoxelGridModel() {
 
+}
+
+void ProjectTreeCtrl::onItemChanged(QTreeWidgetItem* item, int column) {
+	if (item == nullptr || column != 0) {
+		return;
+	}
+	Qt::CheckState state = item->checkState(column);
+	switch (state) {
+	case Qt::CheckState::Checked: {
+		void* ptr = item->data(0, Qt::ItemDataRole::UserRole).value<void*>();
+		g3dvtk::Actor* g3dActor = dynamic_cast<g3dvtk::Actor*>((geo3dml::Object*)ptr);
+		if (g3dActor != nullptr) {
+			g3dActor->SetVisible(true);
+		}
+		checkChildrenState(item, Qt::CheckState::Checked);
+		Events::PostEvent(Events::Type::UpdateScene);
+		break;
+	}
+	case Qt::CheckState::Unchecked: {
+		void* ptr = item->data(0, Qt::ItemDataRole::UserRole).value<void*>();
+		g3dvtk::Actor* g3dActor = dynamic_cast<g3dvtk::Actor*>((geo3dml::Object*)ptr);
+		if (g3dActor != nullptr) {
+			g3dActor->SetVisible(false);
+		}
+		checkChildrenState(item, Qt::CheckState::Unchecked);
+		Events::PostEvent(Events::Type::UpdateScene);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void ProjectTreeCtrl::checkChildrenState(QTreeWidgetItem* item, Qt::CheckState state) {
+	int numberOfChildren = item->childCount();
+	for (int m = 0; m < numberOfChildren; ++m) {
+		QTreeWidgetItem* child = item->child(m);
+		if (child->checkState(0) != state) {
+			child->setCheckState(0, state);
+			void* ptr = child->data(0, Qt::ItemDataRole::UserRole).value<void*>();
+			g3dvtk::Actor* g3dActor = dynamic_cast<g3dvtk::Actor*>((geo3dml::Object*)ptr);
+			if (g3dActor != nullptr) {
+				g3dActor->SetVisible(state == Qt::CheckState::Checked);
+			}
+			checkChildrenState(child, state);
+		}
+	}
 }

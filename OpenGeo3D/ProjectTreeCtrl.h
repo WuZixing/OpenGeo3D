@@ -27,6 +27,9 @@ public:
 	void closeStructureModel();
 	void closeVoxelGridModel();
 
+private slots:
+	void onItemChanged(QTreeWidgetItem* item, int column);
+
 private:
 	geo3dml::Map* getDefaultMap();
 
@@ -37,6 +40,8 @@ private:
 	void removeChildrenFromScene(QTreeWidgetItem* item);
 	void resetStructureModel();
 	void resetVoxelGridModel();
+
+	void checkChildrenState(QTreeWidgetItem* item, Qt::CheckState state);
 
 private:
 	std::unique_ptr<geo3dml::Project> g3dProject_;
