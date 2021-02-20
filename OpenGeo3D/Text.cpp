@@ -76,6 +76,14 @@ QString Text::titleOfConfirmingQuit() {
 	return QString::fromUtf8("退出") + appName();
 }
 
+QString Text::titleOfMetadataPage() {
+	return QString::fromUtf8("数据");
+}
+
+QString Text::titleOfRenderOptionPage() {
+	return QString::fromUtf8("可视化");
+}
+
 QString Text::confirmToCloseStructureModel() {
 	return QString::fromUtf8("确定关闭结构模型吗？未保存的数据将会丢失。");
 }
@@ -85,5 +93,49 @@ QString Text::confirmToQuit() {
 }
 
 QString Text::filterOfGeo3DMLFiles() {
-	return QString::fromUtf8("Geo3DML文件(*.xml)");
+	return QString::fromUtf8("Geo3DML文件（UTF-8编码）(*.xml)");
+}
+
+QString Text::labelOfBasicMetaInfo() {
+	return QString::fromUtf8("基本信息");
+}
+
+QString Text::labelOfDataset() {
+	return QString::fromUtf8("数据集");
+}
+
+QString Text::labelOfSubNodeNumber() {
+	return QString::fromUtf8("子节点数");
+}
+
+QString Text::labelOfId() {
+	return QString::fromUtf8("ID");
+}
+
+QString Text::labelOfAABB() {
+	return QString::fromUtf8("最小外包矩形");
+}
+
+QString Text::labelOfAABBMinPoint() {
+	return QString::fromUtf8("最小坐标");
+}
+
+QString Text::labelOfAABBMaxPoint() {
+	return QString::fromUtf8("最大坐标");
+}
+
+QString Text::labelOfStructureModel() {
+	return QString::fromUtf8("结构模型");
+}
+
+QString Text::labelOf3DMap() {
+	return QString::fromUtf8("地质图/模型");
+}
+
+QString Text::labelOfLayer() {
+	return QString::fromUtf8("图层/要素类");
+}
+
+QString Text::labelOfActor() {
+	return QString::fromUtf8("图元/要素");
 }

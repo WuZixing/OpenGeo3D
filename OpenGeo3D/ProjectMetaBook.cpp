@@ -1,11 +1,16 @@
 #include "ProjectMetaBook.h"
-#include "MetadataPage.h"
+#include "Text.h"
 
 ProjectMetaBook::ProjectMetaBook(QWidget* parent) : QTabWidget(parent) {
-	MetadataPage* metadataPage_ = new MetadataPage(this);
-
+	setTabPosition(QTabWidget::TabPosition::South);
+	metadataPage_ = new MetadataPage(this);
+	addTab(metadataPage_, Text::titleOfMetadataPage());
 }
 
 ProjectMetaBook::~ProjectMetaBook() {
 
+}
+
+void ProjectMetaBook::setCurrentItem(QTreeWidgetItem* item) {
+	metadataPage_->setCurrentItem(item);
 }

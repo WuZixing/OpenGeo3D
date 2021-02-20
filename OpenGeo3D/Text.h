@@ -30,10 +30,12 @@ public:
 	static QString menuQuit();
 	///@}
 
-	/// @name titles of dialogs.
+	/// @name titles of dialogs/widgets.
 	///@{
 	static QString titleOfDlgAbout();
 	static QString titleOfConfirmingQuit();
+	static QString titleOfMetadataPage();
+	static QString titleOfRenderOptionPage();
 	static QString confirmToCloseStructureModel();
 	static QString confirmToQuit();
 	///@}
@@ -41,6 +43,21 @@ public:
 	/// @name file filters
 	///@{
 	static QString filterOfGeo3DMLFiles();
+	///@}
+
+	/// @name Labels.
+	///@{
+	static QString labelOfBasicMetaInfo();
+	static QString labelOfDataset();
+	static QString labelOfSubNodeNumber();
+	static QString labelOfId();
+	static QString labelOfAABB();
+	static QString labelOfAABBMinPoint();
+	static QString labelOfAABBMaxPoint();
+	static QString labelOfStructureModel();
+	static QString labelOf3DMap();
+	static QString labelOfLayer();
+	static QString labelOfActor();
 	///@}
 
 };

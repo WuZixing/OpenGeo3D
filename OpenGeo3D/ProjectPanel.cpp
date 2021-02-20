@@ -57,6 +57,5 @@ void ProjectPanel::closeVoxelGridModel() {
 
 void ProjectPanel::onTreeItemSelectionChanged() {
 	QTreeWidgetItem* item = projectTreeCtrl_->currentItem();
-	void* ptr = item->data(0, Qt::ItemDataRole::UserRole).value<void*>();
-	geo3dml::Object* g3dObj = static_cast<geo3dml::Object*>(ptr);
+	projectMetaBook_->setCurrentItem(item);
 }

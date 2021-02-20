@@ -19,6 +19,9 @@ ProjectTreeCtrl::ProjectTreeCtrl(QWidget* parent) : QTreeWidget(parent) {
 	g3dProject_->SetID(geo3dml::Object::NewID());
 	g3dProject_->SetName(Text::nameOfStructureModel().toUtf8().constData());
 
+	rootOfStructureModel_->setData(0, Qt::ItemDataRole::UserRole, QVariant::fromValue<void*>(g3dProject_.get()));
+	rootOfStructureModel_->setText(0, QString::fromUtf8(g3dProject_->GetName().c_str()));
+
 	renderer_ = vtkSmartPointer<vtkRenderer>::New();
 	transform_ = vtkSmartPointer<vtkTransform>::New();
 	transform_->Identity();
