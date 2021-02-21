@@ -139,3 +139,19 @@ QString Text::labelOfLayer() {
 QString Text::labelOfActor() {
 	return QString::fromUtf8("图元/要素");
 }
+
+QString Text::labelOfFeatureClass() {
+	return QString::fromUtf8("要素类");
+}
+
+QString Text::labelOfFeature() {
+	return QString::fromUtf8("要素");
+}
+
+QString Text::labelOfName() {
+	return QString::fromUtf8("名字");
+}
+
+QString Text::labelOfSchema() {
+	return QString::fromUtf8("属性表结构");
+}

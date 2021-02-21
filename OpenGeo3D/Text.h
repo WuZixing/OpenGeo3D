@@ -58,6 +58,10 @@ public:
 	static QString labelOf3DMap();
 	static QString labelOfLayer();
 	static QString labelOfActor();
+	static QString labelOfFeatureClass();
+	static QString labelOfFeature();
+	static QString labelOfName();
+	static QString labelOfSchema();
 	///@}
 
 };
