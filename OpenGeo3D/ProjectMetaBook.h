@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QTabWidget>
 #include "MetadataPage.h"
+#include "RenderOptionPage.h"
 
 class ProjectMetaBook : public QTabWidget {
 	Q_OBJECT
@@ -14,4 +15,5 @@ public:
 
 private:
 	MetadataPage* metadataPage_;
+	RenderOptionPage* renderOptionPage_;
 };

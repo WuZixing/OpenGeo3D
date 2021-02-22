@@ -33,7 +33,10 @@ private:
 
 	void setBasicMetaInfo(const QString& datasetName, const QString& datasetId, int childrenNumber);
 	void setMBRInfo(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
-	void setFieldInfo(QtVariantProperty* parentProp, const geo3dml::Field& field, int index, const QString& namePrefix = QString());
+	void setFieldInfo(QtVariantProperty* parentProp, const geo3dml::Field& field, int index);
+	void setFeatureInfo(geo3dml::Feature* g3dFeature);
+	void setGeometryInfo(geo3dml::Geometry* g3dGeometry);
+	void setShapePropertyOfGeometry(QtVariantProperty* parentProp, geo3dml::ShapeProperty* g3dShapeProperty);
 
 private:
 	QtVariantPropertyManager* propManager_;

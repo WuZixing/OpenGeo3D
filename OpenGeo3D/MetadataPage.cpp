@@ -1,4 +1,11 @@
 #include "MetadataPage.h"
+#include <geo3dml/Annotation.h>
+#include <geo3dml/CornerPointGrid.h>
+#include <geo3dml/LineString.h>
+#include <geo3dml/MultiPoint.h>
+#include <geo3dml/Point.h>
+#include <geo3dml/TIN.h>
+#include <geo3dml/UniformGrid.h>
 #include "BusyCursor.h"
 #include "Text.h"
 
@@ -107,7 +114,6 @@ void MetadataPage::setCurrentItemAsG3DLayer(geo3dml::Layer* g3dLayer) {
 		}
 	}
 	propFeatureClass->addSubProperty(propSchema);
-
 	QtBrowserItem* groupItem = addProperty(propFeatureClass);
 	QList<QtBrowserItem*> children = groupItem->children();
 	auto citor = children.cbegin();
@@ -128,6 +134,10 @@ void MetadataPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 	double minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
 	g3dActor->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
 	setMBRInfo(minX, minY, minZ, maxX, maxY, maxZ);
+	// feature
+	setFeatureInfo(g3dActor->GetBindingFeature());
+	// geometry
+	setGeometryInfo(g3dActor->GetBindingGeometry());
 }
 
 void MetadataPage::setBasicMetaInfo(const QString& datasetName, const QString& datasetId, int childrenNumber) {
@@ -165,7 +175,7 @@ void MetadataPage::setMBRInfo(double minX, double minY, double minZ, double maxX
 	addProperty(propAABB);
 }
 
-void MetadataPage::setFieldInfo(QtVariantProperty* parentProp, const geo3dml::Field& field, int index, const QString& namePrefix) {
+void MetadataPage::setFieldInfo(QtVariantProperty* parentProp, const geo3dml::Field& field, int index) {
 	QtVariantProperty* propField = propManager_->addProperty(QMetaType::Type::QString, QString::number(index + 1));
 	propField->setValue(QString::fromUtf8(field.Name().c_str()));
 	propField->setAttribute(attriReadOnly_, true);
@@ -192,4 +202,217 @@ void MetadataPage::setFieldInfo(QtVariantProperty* parentProp, const geo3dml::Fi
 	propField->setEnabled(false);
 
 	parentProp->addSubProperty(propField);
+}
+
+void MetadataPage::setFeatureInfo(geo3dml::Feature* g3dFeature) {
+	QtVariantProperty* propFeature = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfFeature());
+	addProperty(propFeature);
+	if (g3dFeature == nullptr) {
+		return;
+	}
+
+	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfId());
+	propItem->setValue(QString::fromUtf8(g3dFeature->GetID().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propFeature->addSubProperty(propItem);
+	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfName());
+	propItem->setValue(QString::fromUtf8(g3dFeature->GetName().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propFeature->addSubProperty(propItem);
+	// fields
+	std::vector<std::string>&& fields = g3dFeature->GetFieldNames();
+	for (std::string fieldName : fields) {
+		geo3dml::FieldValue* fieldValue = g3dFeature->GetField(fieldName);
+		if (fieldValue == nullptr) {
+			propItem = propManager_->addProperty(QMetaType::Type::QString, QString::fromUtf8(fieldName.c_str()));
+			propItem->setEnabled(false);
+		} else {
+			switch (fieldValue->ValueType()) {
+			case geo3dml::Field::ValueType::Text: {
+				geo3dml::TextFieldValue* textValue = static_cast<geo3dml::TextFieldValue*>(fieldValue);
+				propItem = propManager_->addProperty(QMetaType::Type::QString, QString::fromUtf8(fieldName.c_str()));
+				propItem->setValue(QString::fromUtf8(textValue->Value().c_str()));
+				propItem->setAttribute(attriReadOnly_, true);
+				break;
+			}
+			case geo3dml::Field::ValueType::Integer: {
+				geo3dml::IntegerFieldValue* intValue = static_cast<geo3dml::IntegerFieldValue*>(fieldValue);
+				propItem = propManager_->addProperty(QMetaType::Type::Int, QString::fromUtf8(fieldName.c_str()));
+				propItem->setValue(intValue->Value());
+				propItem->setAttribute(attriReadOnly_, true);
+				break;
+			}
+			case geo3dml::Field::ValueType::Double: {
+				geo3dml::DoubleFieldValue* doubleValue = static_cast<geo3dml::DoubleFieldValue*>(fieldValue);
+				propItem = propManager_->addProperty(QMetaType::Type::Double, QString::fromUtf8(fieldName.c_str()));
+				propItem->setValue(doubleValue->Value());
+				propItem->setAttribute(attriReadOnly_, true);
+				break;
+			}
+			case geo3dml::Field::ValueType::Boolean: {
+				geo3dml::BooleanFieldValue* boolValue = static_cast<geo3dml::BooleanFieldValue*>(fieldValue);
+				propItem = propManager_->addProperty(QMetaType::Type::Bool, QString::fromUtf8(fieldName.c_str()));
+				propItem->setValue(boolValue->Value());
+				propItem->setAttribute(attriReadOnly_, true);
+				break;
+			}
+			default: {
+				propItem = propManager_->addProperty(QMetaType::Type::QString, QString::fromUtf8(fieldName.c_str()));
+				propItem->setValue(QString::fromUtf8(geo3dml::Field::ValueTypeToName(fieldValue->ValueType()).c_str()));
+			}
+			}
+		}
+		propFeature->addSubProperty(propItem);
+	}
+}
+
+void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
+	QtVariantProperty* propGeometry = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfGeometry());
+	addProperty(propGeometry);
+	if (g3dGeometry == nullptr) {
+		return;
+	}
+
+	QString geoClassName = Text::nameOfClassUnknown();
+	geo3dml::TIN* tin = nullptr;
+	geo3dml::UniformGrid* uniformGrid = nullptr;
+	geo3dml::CornerPointGrid* cornerGrid = nullptr;
+	geo3dml::Point* point = nullptr;
+	geo3dml::LineString* lineString = nullptr;
+	geo3dml::Annotation* annotation = nullptr;
+	geo3dml::MultiPoint* mPoint = nullptr;
+	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
+	if (tin != nullptr) {
+		geoClassName = Text::nameOfClassG3DTIN();
+	} else {
+		uniformGrid = dynamic_cast<geo3dml::UniformGrid*>(g3dGeometry);
+		if (uniformGrid != nullptr) {
+			geoClassName = Text::nameOfClassG3DUniformGrid();
+		} else {
+			cornerGrid = dynamic_cast<geo3dml::CornerPointGrid*>(g3dGeometry);
+			if (cornerGrid != nullptr) {
+				geoClassName = Text::nameOfClassG3DCornerGrid();
+			} else {
+				point = dynamic_cast<geo3dml::Point*>(g3dGeometry);
+				if (point != nullptr) {
+					geoClassName = Text::nameOfClassG3DPoint();
+				} else {
+					lineString = dynamic_cast<geo3dml::LineString*>(g3dGeometry);
+					if (lineString != nullptr) {
+						geoClassName = Text::nameOfClassG3DLineString();
+					} else {
+						annotation = dynamic_cast<geo3dml::Annotation*>(g3dGeometry);
+						if (annotation != nullptr) {
+							geoClassName = Text::nameOfClassG3DAnnotation();
+						} else {
+							mPoint = dynamic_cast<geo3dml::MultiPoint*>(g3dGeometry);
+							if (mPoint != nullptr) {
+								geoClassName = Text::nameOfClassG3DMPoint();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfId());
+	propItem->setValue(QString::fromUtf8(g3dGeometry->GetID().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propGeometry->addSubProperty(propItem);
+	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfName());
+	propItem->setValue(QString::fromUtf8(g3dGeometry->GetName().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propGeometry->addSubProperty(propItem);
+	propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfLOD());
+	propItem->setValue(g3dGeometry->GetLODLevel());
+	propItem->setAttribute(attriReadOnly_, true);
+	propGeometry->addSubProperty(propItem);
+	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfClassName());
+	propItem->setValue(geoClassName);
+	propItem->setAttribute(attriReadOnly_, true);
+	propGeometry->addSubProperty(propItem);
+
+	if (tin != nullptr) {
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfVertices());
+		propItem->setValue(tin->GetVertexCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfTriangles());
+		propItem->setValue(tin->GetTriangleCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (uniformGrid != nullptr) {
+		double x = 0, y = 0, z = 0;
+		uniformGrid->GetOrigin(x, y, z);
+		QString str = QString::asprintf("(%.6f, %.6f, %.6f)", x, y, z);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridOrigin());
+		propItem->setValue(str);
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		uniformGrid->GetSteps(x, y, z);
+		str = QString::asprintf("(%.6f, %.6f, %.6f)", x, y, z);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridCellSize());
+		propItem->setValue(str);
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		int i = 0, j = 0, k = 0;
+		uniformGrid->GetDimensions(i, j, k);
+		str = QString::asprintf("(%d, %d, %d)", i, j, k);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridCellDimension());
+		propItem->setValue(str);
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (cornerGrid != nullptr) {
+		int i = 0, j = 0, k = 0;
+		cornerGrid->GetDimensions(i, j, k);
+		QString str = QString::asprintf("(%d, %d, %d)", i, j, k);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridCellDimension());
+		propItem->setValue(str);
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (lineString != nullptr) {
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfVertices());
+		propItem->setValue(lineString->GetVertexCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (annotation != nullptr) {
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfVertices());
+		propItem->setValue(annotation->GetPointCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (mPoint != nullptr) {
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfVertices());
+		propItem->setValue(mPoint->GetPointCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	}
+	setShapePropertyOfGeometry(propGeometry, g3dGeometry->GetProperty(geo3dml::ShapeProperty::SamplingTarget::Vertex));
+	setShapePropertyOfGeometry(propGeometry, g3dGeometry->GetProperty(geo3dml::ShapeProperty::SamplingTarget::Edge));
+	setShapePropertyOfGeometry(propGeometry, g3dGeometry->GetProperty(geo3dml::ShapeProperty::SamplingTarget::Face));
+	setShapePropertyOfGeometry(propGeometry, g3dGeometry->GetProperty(geo3dml::ShapeProperty::SamplingTarget::Voxel));
+}
+
+void MetadataPage::setShapePropertyOfGeometry(QtVariantProperty* parentProp, geo3dml::ShapeProperty* g3dShapeProperty) {
+	if (g3dShapeProperty == nullptr) {
+		return;
+	}
+	QString targetComponent = QString::fromUtf8(geo3dml::ShapeProperty::SamplingTargetToName(g3dShapeProperty->TargetComponent()).c_str());
+	QtVariantProperty* propGroup = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), targetComponent);
+	parentProp->addSubProperty(propGroup);
+	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfId());
+	propItem->setValue(QString::fromUtf8(g3dShapeProperty->GetID().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propGroup->addSubProperty(propItem);
+	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfName());
+	propItem->setValue(QString::fromUtf8(g3dShapeProperty->Name().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propGroup->addSubProperty(propItem);
+	// schema
+	QtVariantProperty* propSchema = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfSchema());
+	for (int i = 0; i < g3dShapeProperty->GetFieldCount(); ++i) {
+		const geo3dml::Field& field = g3dShapeProperty->GetFieldAt(i);
+		setFieldInfo(propSchema, field, i);
+	}
+	propGroup->addSubProperty(propSchema);
 }

@@ -14,6 +14,14 @@ public:
 	static QString nameOfStructureModel();
 	static QString nameOfVoxelGridModel();
 	static QString nameOfDefaultG3DMap();
+	static QString nameOfClassUnknown();
+	static QString nameOfClassG3DPoint();
+	static QString nameOfClassG3DMPoint();
+	static QString nameOfClassG3DAnnotation();
+	static QString nameOfClassG3DLineString();
+	static QString nameOfClassG3DTIN();
+	static QString nameOfClassG3DUniformGrid();
+	static QString nameOfClassG3DCornerGrid();
 	///@}
 
 	/// @name strings for menu.
@@ -62,6 +70,14 @@ public:
 	static QString labelOfFeature();
 	static QString labelOfName();
 	static QString labelOfSchema();
+	static QString labelOfGeometry();
+	static QString labelOfLOD();
+	static QString labelOfClassName();
+	static QString labelOfNumberOfVertices();
+	static QString labelOfNumberOfTriangles();
+	static QString labelOfGridOrigin();
+	static QString labelOfGridCellSize();
+	static QString labelOfGridCellDimension();
 	///@}
 
 };

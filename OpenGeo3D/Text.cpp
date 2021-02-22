@@ -28,6 +28,38 @@ QString Text::nameOfDefaultG3DMap() {
 	return QString::fromUtf8("默认场景");
 }
 
+QString Text::nameOfClassUnknown() {
+	return QString::fromUtf8("Unknown");
+}
+
+QString Text::nameOfClassG3DPoint() {
+	return QString::fromUtf8("Point");
+}
+
+QString Text::nameOfClassG3DMPoint() {
+	return QString::fromUtf8("Multiple Point");
+}
+
+QString Text::nameOfClassG3DAnnotation() {
+	return QString::fromUtf8("Annotation");
+}
+
+QString Text::nameOfClassG3DLineString() {
+	return QString::fromUtf8("Line String");
+}
+
+QString Text::nameOfClassG3DTIN() {
+	return QString::fromUtf8("TIN");
+}
+
+QString Text::nameOfClassG3DUniformGrid() {
+	return QString::fromUtf8("Uniform Grid");
+}
+
+QString Text::nameOfClassG3DCornerGrid() {
+	return QString::fromUtf8("Corner Grid");
+}
+
 QString Text::menuFile() {
 	return QString::fromUtf8("文件(&F)");
 }
@@ -154,4 +186,36 @@ QString Text::labelOfName() {
 
 QString Text::labelOfSchema() {
 	return QString::fromUtf8("属性表结构");
+}
+
+QString Text::labelOfGeometry() {
+	return QString::fromUtf8("几何对象");
+}
+
+QString Text::labelOfLOD() {
+	return QString::fromUtf8("LOD");
+}
+
+QString Text::labelOfClassName() {
+	return QString::fromUtf8("数据类型");
+}
+
+QString Text::labelOfNumberOfVertices() {
+	return QString::fromUtf8("顶点数");
+}
+
+QString Text::labelOfNumberOfTriangles() {
+	return QString::fromUtf8("三角形数");
+}
+
+QString Text::labelOfGridOrigin() {
+	return QString::fromUtf8("网格原点");
+}
+
+QString Text::labelOfGridCellSize() {
+	return QString::fromUtf8("网格单元大小");
+}
+
+QString Text::labelOfGridCellDimension() {
+	return QString::fromUtf8("网格单元数目");
 }
