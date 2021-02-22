@@ -249,7 +249,7 @@ void MetadataPage::SetGeometryProperty(geo3dml::Geometry* g3dGeometry) {
 		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridCellDimension(), wxS("geometry_grid_cell_dimesion"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
 	} else if (cornerGrid != nullptr) {
 		int i = 0, j = 0, k = 0;
-		uniformGrid->GetDimensions(i, j, k);
+		cornerGrid->GetDimensions(i, j, k);
 		wxString str = wxString::Format("(%d, %d, %d)", i, j, k);
 		AppendIn(categoryGeometry, new wxStringProperty(Strings::MetadataEntryGridCellDimension(), wxS("geometry_grid_cell_dimesion"), str))->ChangeFlag(wxPG_PROP_READONLY, true);
 	} else if (lineString != nullptr) {
