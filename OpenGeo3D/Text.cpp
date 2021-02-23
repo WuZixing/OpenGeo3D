@@ -60,6 +60,18 @@ QString Text::nameOfClassG3DCornerGrid() {
 	return QString::fromUtf8("Corner Grid");
 }
 
+QString Text::nameOfRepresentationModePoints() {
+	return QString::fromUtf8("顶点");
+}
+
+QString Text::nameOfRepresentationModeWireframe() {
+	return QString::fromUtf8("线框");
+}
+
+QString Text::nameOfRepresentationModeSurface() {
+	return QString::fromUtf8("面");
+}
+
 QString Text::menuFile() {
 	return QString::fromUtf8("文件(&F)");
 }
@@ -218,4 +230,20 @@ QString Text::labelOfGridCellSize() {
 
 QString Text::labelOfGridCellDimension() {
 	return QString::fromUtf8("网格单元数目");
+}
+
+QString Text::labelOfRenderOption() {
+	return QString::fromUtf8("绘制参数");
+}
+
+QString Text::labelOfColor() {
+	return QString::fromUtf8("颜色");
+}
+
+QString Text::labelOfRepresentationMode() {
+	return QString::fromUtf8("绘制方式");
+}
+
+QString Text::labelOfDrawEdge() {
+	return QString::fromUtf8("绘制线框");
 }

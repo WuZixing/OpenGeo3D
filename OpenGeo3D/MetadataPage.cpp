@@ -11,11 +11,9 @@
 
 MetadataPage::MetadataPage(QWidget* parent) : QtTreePropertyBrowser(parent) {
 	g3dObject_ = nullptr;
-	itemType_ = ItemType::Unknown;
 	propManager_ = new QtVariantPropertyManager(this);
 	QtVariantEditorFactory* propFactory = new QtVariantEditorFactory(this);
 	setFactoryForManager(propManager_, propFactory);
-	setRootIsDecorated(false);
 	setResizeMode(QtTreePropertyBrowser::ResizeMode::Interactive);
 	setAlternatingRowColors(false);
 	setHeaderVisible(false);
@@ -27,38 +25,30 @@ MetadataPage::~MetadataPage() {
 
 void MetadataPage::setCurrentItem(QTreeWidgetItem* item) {
 	BusyCursor waiting;
+	clear();
 	propManager_->clear();
 	if (item == nullptr) {
 		return;
 	}
 	void* ptr = item->data(0, Qt::ItemDataRole::UserRole).value<void*>();
-	geo3dml::Object* g3dObject = static_cast<geo3dml::Object*>(ptr);
-	if (g3dObject == g3dObject_) {
-	 	return;
-	}
-	g3dObject_ = g3dObject;
-	itemType_ = ItemType::Unknown;
+	g3dObject_ = static_cast<geo3dml::Object*>(ptr);
 	if (g3dObject_ == nullptr) {
 		return;
 	}
 	geo3dml::Project* g3dProject = dynamic_cast<geo3dml::Project*>(g3dObject_);
 	if (g3dProject != nullptr) {
-		itemType_ = ItemType::G3DProject;
 		setCurrentItemAsG3DProject(g3dProject);
 	} else {
 		geo3dml::Map* g3dMap = dynamic_cast<geo3dml::Map*>(g3dObject_);
 		if (g3dMap != nullptr) {
-			itemType_ = ItemType::G3DMap;
 			setCurrentItemAsG3DMap(g3dMap);
 		} else {
 			geo3dml::Layer* g3dLayer = dynamic_cast<geo3dml::Layer*>(g3dObject_);
 			if (g3dLayer != nullptr) {
-				itemType_ = ItemType::G3DLayer;
 				setCurrentItemAsG3DLayer(g3dLayer);
 			} else {
 				geo3dml::Actor* g3dActor = dynamic_cast<geo3dml::Actor*>(g3dObject_);
 				if (g3dActor != nullptr) {
-					itemType_ = ItemType::G3DActor;
 					setCurrentItemAsG3DActor(g3dActor);
 				}
 			}

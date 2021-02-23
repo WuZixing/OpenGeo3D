@@ -4,9 +4,6 @@
 #include <QtTreePropertyBrowser>
 #include <QtVariantPropertyManager>
 #include <geo3dml/Project.h>
-#include <geo3dml/Map.h>
-#include <geo3dml/Layer.h>
-#include <geo3dml/Actor.h>
 
 class MetadataPage : public QtTreePropertyBrowser {
 	Q_OBJECT
@@ -18,14 +15,6 @@ public:
 	void setCurrentItem(QTreeWidgetItem* item);
 
 private:
-	enum class ItemType {
-		Unknown,
-		G3DProject,
-		G3DMap,
-		G3DLayer,
-		G3DActor
-	};
-
 	void setCurrentItemAsG3DProject(geo3dml::Project* g3dProject);
 	void setCurrentItemAsG3DMap(geo3dml::Map* g3dMap);
 	void setCurrentItemAsG3DLayer(geo3dml::Layer* g3dLayer);
@@ -41,7 +30,6 @@ private:
 private:
 	QtVariantPropertyManager* propManager_;
 	geo3dml::Object* g3dObject_;
-	ItemType itemType_;
 
 	const QString attriReadOnly_ = QStringLiteral("readOnly");
 };

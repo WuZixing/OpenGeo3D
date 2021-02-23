@@ -22,6 +22,9 @@ public:
 	static QString nameOfClassG3DTIN();
 	static QString nameOfClassG3DUniformGrid();
 	static QString nameOfClassG3DCornerGrid();
+	static QString nameOfRepresentationModePoints();
+	static QString nameOfRepresentationModeWireframe();
+	static QString nameOfRepresentationModeSurface();
 	///@}
 
 	/// @name strings for menu.
@@ -78,6 +81,10 @@ public:
 	static QString labelOfGridOrigin();
 	static QString labelOfGridCellSize();
 	static QString labelOfGridCellDimension();
+	static QString labelOfRenderOption();
+	static QString labelOfColor();
+	static QString labelOfRepresentationMode();
+	static QString labelOfDrawEdge();
 	///@}
 
 };
