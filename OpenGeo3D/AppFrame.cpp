@@ -1,7 +1,9 @@
 #include "AppFrame.h"
 #include <QtGui/QCloseEvent>
+#include <QtWidgets/QColorDialog>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QInputDialog>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QVBoxLayout>
@@ -39,6 +41,16 @@ void AppFrame::setupMenu() {
 	subMenu->addAction(Text::menuCloseStructureModel(), this, &AppFrame::closeStructureModel);
 	menu->addSeparator();
 	menu->addAction(Text::menuQuit(), this, &AppFrame::quit);
+
+	menu = menuBar()->addMenu(Text::menuWindow());
+	menu->addAction(Text::menuFullView(), this, &AppFrame::fullView, QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_R));
+	menu->addAction(Text::menuBackgroundColor(), this, &AppFrame::changeBackgroundColor, QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_B));
+	menu->addSeparator();
+	menu->addAction(Text::menuScaleZUp(), this, &AppFrame::scaleZUp, QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_Up));
+	menu->addAction(Text::menuScaleZDown(), this, &AppFrame::scaleZDown, QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_Down));
+	menu->addAction(Text::menuCustomizedZScale(), this, &AppFrame::customizedZScale);
+	menu->addAction(Text::menuResetZScale(), this, &AppFrame::resetZScale);
+
 	menu = menuBar()->addMenu(Text::menuHelp());
 	menu->addAction(Text::menuAbout(), this, &AppFrame::about);
 }
@@ -137,4 +149,62 @@ bool AppFrame::event(QEvent* event) {
 		break;
 	}
 	return QMainWindow::event(event);
+}
+
+void AppFrame::fullView() {
+	Events::PostEvent(Events::Type::ResetAndUpdateScene, this);
+}
+
+void AppFrame::changeBackgroundColor() {
+	vtkRenderer* render = projectPanel_->getRenderer();
+	if (render == nullptr) {
+		return;
+	}
+	double r = 0, g = 0, b = 0;
+	render->GetBackground(r, g, b);
+	QColor color = QColorDialog::getColor(QColor::fromRgbF(r, g, b), this);
+	if (color.isValid()) {
+		render->SetBackground(color.redF(), color.greenF(), color.blueF());
+		Events::PostEvent(Events::Type::UpdateScene, this);
+	}
+}
+
+void AppFrame::scaleZUp() {
+	vtkTransform* t = projectPanel_->getTransform();
+	double scales[3] = { 1.0 };
+	t->GetScale(scales);
+	scales[2] = scales[2] * 1.1;
+	t->Identity();
+	t->Scale(scales);
+	Events::PostEvent(Events::Type::UpdateScene, this);
+}
+
+void AppFrame::scaleZDown() {
+	vtkTransform* t = projectPanel_->getTransform();
+	double scales[3] = { 1.0 };
+	t->GetScale(scales);
+	scales[2] = scales[2] / 1.1;
+	t->Identity();
+	t->Scale(scales);
+	Events::PostEvent(Events::Type::UpdateScene, this);
+}
+
+void AppFrame::customizedZScale() {
+	vtkTransform* t = projectPanel_->getTransform();
+	double scales[3] = { 1.0 };
+	t->GetScale(scales);
+	bool status = false;
+	double zScale = QInputDialog::getDouble(this, Text::menuCustomizedZScale(), Text::tipOfCustomizedZScale(), scales[2], 0.01, 1000, 2, &status, Qt::WindowCloseButtonHint);
+	if (status) {
+		scales[2] = zScale;
+		t->Identity();
+		t->Scale(scales);
+		Events::PostEvent(Events::Type::UpdateScene, this);
+	}
+}
+
+void AppFrame::resetZScale() {
+	vtkTransform* t = projectPanel_->getTransform();
+	t->Identity();
+	Events::PostEvent(Events::Type::UpdateScene, this);
 }

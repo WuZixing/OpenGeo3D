@@ -1,4 +1,5 @@
 #include "Text.h"
+#include <QtGui/QKeySequence>
 
 QString Text::appName() {
 	return QString(APP_NAME);
@@ -110,6 +111,34 @@ QString Text::menuAbout() {
 
 QString Text::menuQuit() {
 	return QString::fromUtf8("退出(&Q)");
+}
+
+QString Text::menuWindow() {
+	return QString::fromUtf8("窗口(&W)");
+}
+
+QString Text::menuFullView() {
+	return QString::fromUtf8("全景(&R)\t") + QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_R).toString();
+}
+
+QString Text::menuBackgroundColor() {
+	return QString::fromUtf8("背景颜色(&B)\t") + QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_B).toString();
+}
+
+QString Text::menuScaleZUp() {
+	return QString::fromUtf8("Z轴拉伸(&U)\t") + QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_Up).toString();
+}
+
+QString Text::menuScaleZDown() {
+	return QString::fromUtf8("Z轴压缩(&D)\t") + QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_Down).toString();
+}
+
+QString Text::menuCustomizedZScale() {
+	return QString::fromUtf8("自定义Z轴缩放...");
+}
+
+QString Text::menuResetZScale() {
+	return QString::fromUtf8("取消Z轴缩放");
 }
 
 QString Text::titleOfDlgAbout() {
@@ -246,4 +275,8 @@ QString Text::labelOfRepresentationMode() {
 
 QString Text::labelOfDrawEdge() {
 	return QString::fromUtf8("绘制线框");
+}
+
+QString Text::tipOfCustomizedZScale() {
+	return QString::fromUtf8("请输入Z轴缩放系数（大于0，且小于1000）：");
 }

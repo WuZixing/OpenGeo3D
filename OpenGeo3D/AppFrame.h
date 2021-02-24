@@ -17,6 +17,12 @@ private slots:
 	void closeStructureModel();
 	void about();
 	void quit();
+	void fullView();
+	void changeBackgroundColor();
+	void scaleZUp();
+	void scaleZDown();
+	void customizedZScale();
+	void resetZScale();
 
 protected:
     virtual bool event(QEvent *event) override;

@@ -39,6 +39,13 @@ public:
 	static QString menuHelp();
 	static QString menuAbout();
 	static QString menuQuit();
+	static QString menuWindow();
+	static QString menuFullView();
+	static QString menuBackgroundColor();
+	static QString menuScaleZUp();
+	static QString menuScaleZDown();
+	static QString menuCustomizedZScale();
+	static QString menuResetZScale();
 	///@}
 
 	/// @name titles of dialogs/widgets.
@@ -87,4 +94,5 @@ public:
 	static QString labelOfDrawEdge();
 	///@}
 
+	static QString tipOfCustomizedZScale();
 };
