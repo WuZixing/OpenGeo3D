@@ -141,12 +141,20 @@ QString Text::menuResetZScale() {
 	return QString::fromUtf8("取消Z轴缩放");
 }
 
+QString Text::menuProjectPanel() {
+	return QString::fromUtf8("模型列表");
+}
+
 QString Text::titleOfDlgAbout() {
 	return QString::fromUtf8("关于") + appName();
 }
 
 QString Text::titleOfConfirmingQuit() {
 	return QString::fromUtf8("退出") + appName();
+}
+
+QString Text::titleOfProjectPanel() {
+	return QString::fromUtf8("模型");
 }
 
 QString Text::titleOfMetadataPage() {

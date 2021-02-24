@@ -1,7 +1,9 @@
 #include "ProjectPanel.h"
 #include <QtWidgets/QTextEdit>
+#include "Text.h"
 
 ProjectPanel::ProjectPanel(QWidget* parent) : QSplitter(Qt::Orientation::Vertical, parent) {
+	setWindowTitle(Text::titleOfProjectPanel());
 	projectTreeCtrl_ = new ProjectTreeCtrl(this);
 	projectMetaBook_ = new ProjectMetaBook(this);
 

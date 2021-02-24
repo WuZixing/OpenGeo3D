@@ -19,8 +19,8 @@
 
 AppFrame::AppFrame(QWidget* parent) : QMainWindow(parent) {
 	setWindowIcon(QIcon(QPixmap(xpm_icon)));
-	setupMenu();
 	setupWidgets();
+	setupMenu();
 }
 
 AppFrame::~AppFrame() {
@@ -50,16 +50,21 @@ void AppFrame::setupMenu() {
 	menu->addAction(Text::menuScaleZDown(), this, &AppFrame::scaleZDown, QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_Down));
 	menu->addAction(Text::menuCustomizedZScale(), this, &AppFrame::customizedZScale);
 	menu->addAction(Text::menuResetZScale(), this, &AppFrame::resetZScale);
+	menu->addSeparator();
+	menuProjectPanel_ = menu->addAction(Text::menuProjectPanel(), this, &AppFrame::onProjectPanel);
+	menuProjectPanel_->setCheckable(true);
+	connect(menu, &QMenu::aboutToShow, this, &AppFrame::windowMenuAboutToShow);
 
 	menu = menuBar()->addMenu(Text::menuHelp());
 	menu->addAction(Text::menuAbout(), this, &AppFrame::about);
+
 }
 
 void AppFrame::setupWidgets() {
-	QDockWidget* dockWidget = new QDockWidget(this);
-	projectPanel_ = new ProjectPanel(dockWidget);
-	dockWidget->setWidget(projectPanel_);
-	addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, dockWidget);
+	dockWidget_ = new QDockWidget(Text::titleOfProjectPanel(), this);
+	projectPanel_ = new ProjectPanel(dockWidget_);
+	dockWidget_->setWidget(projectPanel_);
+	addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, dockWidget_);
 	renderWidget_ = new RenderWidget(this, projectPanel_->getRenderer());
 	setCentralWidget(renderWidget_);
 }
@@ -207,4 +212,12 @@ void AppFrame::resetZScale() {
 	vtkTransform* t = projectPanel_->getTransform();
 	t->Identity();
 	Events::PostEvent(Events::Type::UpdateScene, this);
+}
+
+void AppFrame::onProjectPanel() {
+	dockWidget_->setVisible(!dockWidget_->isVisible());
+}
+
+void AppFrame::windowMenuAboutToShow() {
+	menuProjectPanel_->setChecked(dockWidget_->isVisible());
 }

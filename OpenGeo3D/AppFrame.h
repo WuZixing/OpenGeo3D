@@ -23,6 +23,8 @@ private slots:
 	void scaleZDown();
 	void customizedZScale();
 	void resetZScale();
+	void onProjectPanel();
+	void windowMenuAboutToShow();
 
 protected:
     virtual bool event(QEvent *event) override;
@@ -33,6 +35,8 @@ private:
 	void setupWidgets();
 
 private:
+	QDockWidget* dockWidget_;
 	ProjectPanel* projectPanel_;
 	RenderWidget* renderWidget_;
+	QAction* menuProjectPanel_;
 };

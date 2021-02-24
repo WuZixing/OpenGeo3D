@@ -46,12 +46,14 @@ public:
 	static QString menuScaleZDown();
 	static QString menuCustomizedZScale();
 	static QString menuResetZScale();
+	static QString menuProjectPanel();
 	///@}
 
 	/// @name titles of dialogs/widgets.
 	///@{
 	static QString titleOfDlgAbout();
 	static QString titleOfConfirmingQuit();
+	static QString titleOfProjectPanel();
 	static QString titleOfMetadataPage();
 	static QString titleOfRenderOptionPage();
 	static QString confirmToCloseStructureModel();
