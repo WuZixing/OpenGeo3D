@@ -1,5 +1,6 @@
 #include "ProjectTreeCtrl.h"
-#include <QtWidgets/QMessageBox>
+#include <QtGui/QContextMenuEvent>
+#include <QtWidgets/QMenu>
 #include <g3dvtk/Actor.h>
 #include <g3dvtk/ObjectFactory.h>
 #include "Events.h"
@@ -233,4 +234,26 @@ void ProjectTreeCtrl::checkChildrenState(QTreeWidgetItem* item, Qt::CheckState s
 			checkChildrenState(child, state);
 		}
 	}
+}
+
+void ProjectTreeCtrl::contextMenuEvent(QContextMenuEvent* event) {
+	event->accept();
+
+	QTreeWidgetItem* curItem = currentItem();
+	if (curItem == nullptr) {
+		return;
+	}
+	void* ptr = curItem->data(0, Qt::ItemDataRole::UserRole).value<void*>();
+	if (ptr == g3dProject_.get()) {
+		contextMenuOfStructureModel(event->globalPos());
+	}
+}
+
+void ProjectTreeCtrl::contextMenuOfStructureModel(const QPoint& position) {
+	QMenu ctxMenu(Text::labelOfStructureModel(), this);
+	ctxMenu.addAction(Text::menuOpenGeo3DML(), []() { Events::PostEvent(Events::Type::Menu_OpenGeo3DML); });
+	ctxMenu.addAction(Text::menuOpenDrillLog(), []() { Events::PostEvent(Events::Type::Menu_OpenDrillLog); });
+	ctxMenu.addSeparator();
+	ctxMenu.addAction(Text::menuCloseStructureModel(), []() { Events::PostEvent(Events::Type::Menu_CloseStructureModel); });
+	ctxMenu.exec(position);
 }

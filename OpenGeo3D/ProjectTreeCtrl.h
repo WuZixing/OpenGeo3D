@@ -27,6 +27,9 @@ public:
 	void closeStructureModel();
 	void closeVoxelGridModel();
 
+protected:
+	virtual void contextMenuEvent(QContextMenuEvent* event) override;
+
 private slots:
 	void onItemChanged(QTreeWidgetItem* item, int column);
 
@@ -42,6 +45,8 @@ private:
 	void resetVoxelGridModel();
 
 	void checkChildrenState(QTreeWidgetItem* item, Qt::CheckState state);
+
+	void contextMenuOfStructureModel(const QPoint& position);
 
 private:
 	std::unique_ptr<geo3dml::Project> g3dProject_;

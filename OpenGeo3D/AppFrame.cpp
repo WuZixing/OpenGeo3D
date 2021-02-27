@@ -1,4 +1,5 @@
 #include "AppFrame.h"
+#include <QtCore/QDir>
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QColorDialog>
 #include <QtWidgets/QDockWidget>
@@ -80,7 +81,7 @@ void AppFrame::closeEvent(QCloseEvent* event) {
 }
 
 void AppFrame::openGeo3DML() {
-	QString filePath = QFileDialog::getOpenFileName(this, Text::menuOpenGeo3DML(), QString(), Text::filterOfGeo3DMLFiles());
+	QString filePath = selectAFile(Text::menuOpenGeo3DML(), Text::filterOfGeo3DMLFiles());
 	if (filePath.isEmpty()) {
 		return;
 	}
@@ -148,6 +149,18 @@ bool AppFrame::event(QEvent* event) {
 	case Events::Type::ResetAndUpdateScene: {
 		BusyCursor waiting;
 		renderWidget_->resetAndRender();
+		return true;
+	}
+	case Events::Type::Menu_OpenGeo3DML: {
+		openGeo3DML();
+		return true;
+	}
+	case Events::Type::Menu_OpenDrillLog: {
+		openDrillLog();
+		return true;
+	}
+	case Events::Type::Menu_CloseStructureModel: {
+		closeStructureModel();
 		return true;
 	}
 	default:
@@ -220,4 +233,14 @@ void AppFrame::onProjectPanel() {
 
 void AppFrame::windowMenuAboutToShow() {
 	menuProjectPanel_->setChecked(dockWidget_->isVisible());
+}
+
+QString AppFrame::selectAFile(const QString& dialogCaption, const QString& fileFilters) {
+	QString filePath = QFileDialog::getOpenFileName(this, dialogCaption, QDir::currentPath(), fileFilters);
+	if (!filePath.isEmpty()) {
+		QDir dir(filePath);
+		dir.cdUp();
+		QDir::setCurrent(dir.path());
+	}
+	return filePath;
 }

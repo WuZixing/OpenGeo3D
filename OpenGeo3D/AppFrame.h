@@ -34,6 +34,8 @@ private:
 	void setupMenu();
 	void setupWidgets();
 
+	QString selectAFile(const QString& dialogCaption, const QString& fileFilters);
+
 private:
 	QDockWidget* dockWidget_;
 	ProjectPanel* projectPanel_;

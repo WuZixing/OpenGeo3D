@@ -7,7 +7,6 @@
 #include <geo3dml/Point.h>
 #include <geo3dml/TIN.h>
 #include <geo3dml/UniformGrid.h>
-#include "BusyCursor.h"
 #include "Events.h"
 #include "Text.h"
 
@@ -26,7 +25,6 @@ RenderOptionPage::~RenderOptionPage() {
 }
 
 void RenderOptionPage::setCurrentItem(QTreeWidgetItem* item) {
-	BusyCursor waiting;
 	clear();
 	propManager_->clear();
 	if (item == nullptr) {
