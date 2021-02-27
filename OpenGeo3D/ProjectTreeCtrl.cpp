@@ -251,6 +251,8 @@ void ProjectTreeCtrl::contextMenuEvent(QContextMenuEvent* event) {
 
 void ProjectTreeCtrl::contextMenuOfStructureModel(const QPoint& position) {
 	QMenu ctxMenu(Text::labelOfStructureModel(), this);
+	ctxMenu.addAction(Text::labelOfStructureModel());
+	ctxMenu.addSeparator();
 	ctxMenu.addAction(Text::menuOpenGeo3DML(), []() { Events::PostEvent(Events::Type::Menu_OpenGeo3DML); });
 	ctxMenu.addAction(Text::menuOpenDrillLog(), []() { Events::PostEvent(Events::Type::Menu_OpenDrillLog); });
 	ctxMenu.addSeparator();
