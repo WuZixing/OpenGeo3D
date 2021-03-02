@@ -14,6 +14,7 @@
 #include "BusyCursor.h"
 #include "Events.h"
 #include "DlgAbout.h"
+#include "DlgOpenSimpleDrillLog.h"
 #include "ProjectPanel.h"
 #include "RenderWidget.h"
 #include "Text.h"
@@ -52,7 +53,7 @@ void AppFrame::setupMenu() {
 	menu->addAction(Text::menuCustomizedZScale(), this, &AppFrame::customizedZScale);
 	menu->addAction(Text::menuResetZScale(), this, &AppFrame::resetZScale);
 	menu->addSeparator();
-	menuProjectPanel_ = menu->addAction(Text::menuProjectPanel(), this, &AppFrame::onProjectPanel);
+	menuProjectPanel_ = menu->addAction(Text::menuProjectPanel(), this, &AppFrame::toggleProjectPanel);
 	menuProjectPanel_->setCheckable(true);
 	connect(menu, &QMenu::aboutToShow, this, &AppFrame::windowMenuAboutToShow);
 
@@ -121,7 +122,8 @@ void AppFrame::openGeo3DML() {
 }
 
 void AppFrame::openDrillLog() {
-
+	DlgOpenSimpleDrillLog dlg(this);
+	dlg.exec();
 }
 
 void AppFrame::closeStructureModel() {
@@ -212,7 +214,8 @@ void AppFrame::customizedZScale() {
 	double scales[3] = { 1.0 };
 	t->GetScale(scales);
 	bool status = false;
-	double zScale = QInputDialog::getDouble(this, Text::menuCustomizedZScale(), Text::tipOfCustomizedZScale(), scales[2], 0.01, 1000, 2, &status, Qt::WindowCloseButtonHint);
+	double zScale = QInputDialog::getDouble(this, Text::menuCustomizedZScale(), Text::tipOfCustomizedZScale(),
+		scales[2], 0.01, 1000, 2, &status, Qt::WindowCloseButtonHint);
 	if (status) {
 		scales[2] = zScale;
 		t->Identity();
@@ -227,7 +230,7 @@ void AppFrame::resetZScale() {
 	Events::PostEvent(Events::Type::UpdateScene, this);
 }
 
-void AppFrame::onProjectPanel() {
+void AppFrame::toggleProjectPanel() {
 	dockWidget_->setVisible(!dockWidget_->isVisible());
 }
 

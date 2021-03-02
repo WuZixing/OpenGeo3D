@@ -56,7 +56,9 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   AppFrame.h
   BusyCursor.h
   DlgAbout.h
+  DlgOpenSimpleDrillLog.h
   Events.h
+  GroupOfSimpleDrillLogFiles.h
   MetadataPage.h
   OpenApp.h
   ProjectMetaBook.h

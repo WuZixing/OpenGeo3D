@@ -156,6 +156,7 @@ void ProjectTreeCtrl::closeAllModels() {
 void ProjectTreeCtrl::closeStructureModel() {
 	removeChildrenFromScene(rootOfStructureModel_);
 	resetStructureModel();
+	emit itemSelectionChanged();
 }
 
 void ProjectTreeCtrl::closeVoxelGridModel() {

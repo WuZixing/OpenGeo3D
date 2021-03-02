@@ -288,3 +288,15 @@ QString Text::labelOfDrawEdge() {
 QString Text::tipOfCustomizedZScale() {
 	return QString::fromUtf8("请输入Z轴缩放系数（大于0，且小于1000）：");
 }
+
+QString Text::labelOfSimpleDrillLogGroup() {
+	return QString::fromUtf8("钻孔数据");
+}
+
+QString Text::labelOfDrillPositionFilePath() {
+	return QString::fromUtf8("钻孔位置");
+}
+
+QString Text::labelOfOpen() {
+	return QString::fromUtf8("打开...");
+}

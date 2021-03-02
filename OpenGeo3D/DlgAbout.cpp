@@ -6,8 +6,8 @@
 #include "Text.h"
 
 DlgAbout::DlgAbout(QWidget* parent) : QDialog(parent, Qt::Dialog | Qt::WindowCloseButtonHint) {
-	initUI();
 	setWindowTitle(Text::titleOfDlgAbout());
+	initUI();
 }
 
 DlgAbout::~DlgAbout() {
@@ -36,5 +36,5 @@ void DlgAbout::initUI() {
 	vLayout->addWidget(buttonBox, 0, Qt::AlignmentFlag::AlignHCenter);
 
 	setLayout(vLayout);
-    QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 }

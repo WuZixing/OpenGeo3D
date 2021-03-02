@@ -94,6 +94,9 @@ public:
 	static QString labelOfColor();
 	static QString labelOfRepresentationMode();
 	static QString labelOfDrawEdge();
+	static QString labelOfSimpleDrillLogGroup();
+	static QString labelOfDrillPositionFilePath();
+	static QString labelOfOpen();
 	///@}
 
 	static QString tipOfCustomizedZScale();

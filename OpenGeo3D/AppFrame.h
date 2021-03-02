@@ -23,7 +23,7 @@ private slots:
 	void scaleZDown();
 	void customizedZScale();
 	void resetZScale();
-	void onProjectPanel();
+	void toggleProjectPanel();
 	void windowMenuAboutToShow();
 
 protected:

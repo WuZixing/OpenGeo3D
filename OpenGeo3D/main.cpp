@@ -7,6 +7,7 @@
 
 int main(int argc, char* argv[]) {
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     OpenApp app(argc, argv);
 
