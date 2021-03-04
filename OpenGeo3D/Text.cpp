@@ -300,3 +300,55 @@ QString Text::labelOfDrillPositionFilePath() {
 QString Text::labelOfOpen() {
 	return QString::fromUtf8("打开...");
 }
+
+QString Text::labelOfNo() {
+	return QStringLiteral("#");
+}
+
+QString Text::labelOfDrillNo() {
+	return QString::fromUtf8("钻孔编号");
+}
+
+QString Text::labelOfDrillDepth() {
+	return QString::fromUtf8("孔深");
+}
+
+QString Text::labelOfX() {
+	return QStringLiteral("X");
+}
+
+QString Text::labelOfY() {
+	return QStringLiteral("Y");
+}
+
+QString Text::labelOfZ() {
+	return QStringLiteral("Z");
+}
+
+QString Text::labelOfDrillLog() {
+	return QString::fromUtf8("钻孔测试记录");
+}
+
+QString Text::labelOfAppend() {
+	return QString::fromUtf8("添加...");
+}
+
+QString Text::labelOfClear() {
+	return QString::fromUtf8("清除");
+}
+
+QString Text::labelOfFilePath() {
+	return QString::fromUtf8("文件路径");
+}
+
+QString Text::labelOfField() {
+	return QString::fromUtf8("属性字段");
+}
+
+QString Text::labelOfFieldValueType() {
+	return QString::fromUtf8("数据类型");
+}
+
+QString Text::tipOfSpecifyFieldValueType() {
+	return QString::fromUtf8("请为属性字段指定适当的“数据类型”。");
+}

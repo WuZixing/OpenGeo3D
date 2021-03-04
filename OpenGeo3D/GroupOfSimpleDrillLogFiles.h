@@ -11,7 +11,12 @@ public:
 	GroupOfSimpleDrillLogFiles(QWidget* parent = nullptr);
 	virtual ~GroupOfSimpleDrillLogFiles();
 
+private slots:
+	void openDrillPosition();
+	void appendLogs();
+	void clearLogs();
+
 private:
 	QLineEdit* positionFilePath_;
-	QTableWidget* drillList_;
+	QTableWidget *drillList_, *logFileList_, *logFieldList_;
 };

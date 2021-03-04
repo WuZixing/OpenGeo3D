@@ -97,7 +97,20 @@ public:
 	static QString labelOfSimpleDrillLogGroup();
 	static QString labelOfDrillPositionFilePath();
 	static QString labelOfOpen();
+	static QString labelOfNo();
+	static QString labelOfDrillNo();
+	static QString labelOfDrillDepth();
+	static QString labelOfX();
+	static QString labelOfY();
+	static QString labelOfZ();
+	static QString labelOfDrillLog();
+	static QString labelOfAppend();
+	static QString labelOfClear();
+	static QString labelOfFilePath();
+	static QString labelOfField();
+	static QString labelOfFieldValueType();
 	///@}
 
 	static QString tipOfCustomizedZScale();
+	static QString tipOfSpecifyFieldValueType();
 };

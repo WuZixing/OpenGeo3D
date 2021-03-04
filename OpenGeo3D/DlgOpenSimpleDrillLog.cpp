@@ -22,6 +22,6 @@ void DlgOpenSimpleDrillLog::initUI() {
 	layout->addWidget(buttonBox, 0, Qt::AlignmentFlag::AlignHCenter);
 	setLayout(layout);
 
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &DlgOpenSimpleDrillLog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected, this, &DlgOpenSimpleDrillLog::reject);
 }
