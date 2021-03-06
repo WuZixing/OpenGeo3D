@@ -9,7 +9,9 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
+#include <geo3dml/Field.h>
 #include "BusyCursor.h"
+#include "ComboBoxItemDelegate.h"
 #include "Text.h"
 
 GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroupBox(Text::labelOfSimpleDrillLogGroup(), parent) {
@@ -91,8 +93,15 @@ GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroup
 	for (int m = 0; m < logFieldList_->columnCount(); ++m) {
 		width += logFieldList_->columnWidth(m);
 	}
-	logFieldList_->setMaximumWidth(width / 10 * 9);
+	logFieldList_->setMaximumWidth(width);
 	headers.clear();
+	headers << QString::fromUtf8(geo3dml::Field::ValueTypeToName(geo3dml::Field::ValueType::Integer).c_str())
+		<< QString::fromUtf8(geo3dml::Field::ValueTypeToName(geo3dml::Field::ValueType::Double).c_str())
+		<< QString::fromUtf8(geo3dml::Field::ValueTypeToName(geo3dml::Field::ValueType::Boolean).c_str())
+		<< QString::fromUtf8(geo3dml::Field::ValueTypeToName(geo3dml::Field::ValueType::Text).c_str());
+	ComboBoxItemDelegate* itemDelegate = new ComboBoxItemDelegate(this);
+	itemDelegate->setValues(headers);
+	logFieldList_->setItemDelegateForColumn(1, itemDelegate);
 	hBox->addWidget(logFieldList_, 1);
 	widget->setLayout(hBox);
 	layout->addWidget(widget, 1);
@@ -147,6 +156,7 @@ void GroupOfSimpleDrillLogFiles::appendLogs() {
 	if (filePaths.isEmpty()) {
 		return;
 	}
+	auto* ptr = logFieldList_->itemDelegateForColumn(1);
 	BusyCursor waiting;
 	QRegularExpression regExp("[,\\t]");
 	QStringList::const_iterator citor = filePaths.cbegin();
@@ -198,4 +208,29 @@ void GroupOfSimpleDrillLogFiles::clearLogs() {
 	logFieldList_->clearContents();
 	logFieldList_->setRowCount(0);
 	fieldSet_.clear();
+}
+
+bool GroupOfSimpleDrillLogFiles::validate() {
+	if (drillList_->rowCount() < 1) {
+		QMessageBox::warning(this, QString(), Text::tipOfEmptyDrillPosition());
+		return false;
+	}
+	if (logFileList_->rowCount() < 1) {
+		QMessageBox::warning(this, QString(), Text::tipOfEmptyDrillLogFiles());
+		return false;
+	}
+	int fieldCount = logFieldList_->rowCount();
+	for (int r = 0; r < fieldCount; ++r) {
+		QString typeName;
+		QTableWidgetItem* item = logFieldList_->item(r, 1);
+		if (item != nullptr) {
+			typeName = item->text();
+		}
+		if (typeName.isEmpty()) {
+			QMessageBox::warning(this, QString(), Text::tipOfUnknownFieldValueType());
+			return false;
+		}
+	}
+
+	return true;
 }

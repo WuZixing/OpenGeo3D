@@ -114,6 +114,9 @@ public:
 	static QString tipOfCustomizedZScale();
 	static QString tipOfSpecifyFieldValueType();
 	static QString errorOfOpenFile(const QString& filePath, const QString& errorMessage);
+	static QString tipOfEmptyDrillPosition();
+	static QString tipOfEmptyDrillLogFiles();
+	static QString tipOfUnknownFieldValueType();
 
 	static QString confirmToCloseStructureModel();
 	static QString confirmToQuit();

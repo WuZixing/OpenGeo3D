@@ -55,6 +55,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ${CPP_SOURCES}
   AppFrame.h
   BusyCursor.h
+  ComboBoxItemDelegate.h
   DlgAbout.h
   DlgOpenSimpleDrillLog.h
   Events.h

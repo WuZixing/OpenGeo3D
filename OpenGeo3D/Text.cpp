@@ -368,3 +368,15 @@ QString Text::errorOfOpenFile(const QString& filePath, const QString& errorMessa
 QString Text::confirmToClearFileList() {
 	return QString::fromUtf8("确认清空文件列表吗？");
 }
+
+QString Text::tipOfEmptyDrillPosition() {
+	return QString::fromUtf8("请指定钻孔位置文件。");
+}
+
+QString Text::tipOfEmptyDrillLogFiles() {
+	return QString::fromUtf8("请指定钻孔测试记录数据。");
+}
+
+QString Text::tipOfUnknownFieldValueType() {
+	return QString::fromUtf8("请指定属性字段的数据类型。");
+}

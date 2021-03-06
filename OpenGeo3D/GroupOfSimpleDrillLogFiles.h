@@ -12,6 +12,8 @@ public:
 	GroupOfSimpleDrillLogFiles(QWidget* parent = nullptr);
 	virtual ~GroupOfSimpleDrillLogFiles();
 
+	bool validate();
+
 private slots:
 	void openDrillPosition();
 	void appendLogs();
