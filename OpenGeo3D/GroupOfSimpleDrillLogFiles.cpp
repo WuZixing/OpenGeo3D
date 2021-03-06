@@ -104,7 +104,7 @@ GroupOfSimpleDrillLogFiles::~GroupOfSimpleDrillLogFiles() {
 }
 
 void GroupOfSimpleDrillLogFiles::openDrillPosition() {
-	QString filePath = QFileDialog::getOpenFileName(this, QString(), QDir::currentPath(), Text::filterOfDrillPositionFiles());
+	QString filePath = QFileDialog::getOpenFileName(this, QString(), QDir::currentPath(), Text::filterOfDrillPositionFile());
 	if (filePath.isEmpty()) {
 		return;
 	}
@@ -131,9 +131,11 @@ void GroupOfSimpleDrillLogFiles::openDrillPosition() {
 			int row = drillList_->rowCount();
 			drillList_->insertRow(row);
 			QTableWidgetItem* item = new QTableWidgetItem(QString::number(row + 1));
+			item->setFlags(item->flags() ^ Qt::ItemFlag::ItemIsEditable);
 			drillList_->setItem(row, 0, item);
 			for (int c = 0; c < colCount; ++c) {
 				item = new QTableWidgetItem(tokens[c]);
+				item->setFlags(item->flags() ^ Qt::ItemFlag::ItemIsEditable);
 				drillList_->setItem(row, c, item);
 			}
 		}
@@ -141,9 +143,59 @@ void GroupOfSimpleDrillLogFiles::openDrillPosition() {
 }
 
 void GroupOfSimpleDrillLogFiles::appendLogs() {
-
+	QStringList filePaths = QFileDialog::getOpenFileNames(this, QString(), QDir::currentPath(), Text::filterOfDrillLogFile());
+	if (filePaths.isEmpty()) {
+		return;
+	}
+	BusyCursor waiting;
+	QRegularExpression regExp("[,\\t]");
+	QStringList::const_iterator citor = filePaths.cbegin();
+	while (citor != filePaths.cend()) {
+		QString filePath = *citor;
+		QDir dir(filePath);
+		dir.cdUp();
+		QDir::setCurrent(dir.path());
+		QString baseName = QFileInfo(filePath).baseName();
+		int row = logFileList_->rowCount();
+		logFileList_->insertRow(row);
+		QTableWidgetItem* item = new QTableWidgetItem(baseName);
+		logFileList_->setItem(row, 0, item);
+		item->setFlags(item->flags() ^ Qt::ItemFlag::ItemIsEditable);
+		item = new QTableWidgetItem(filePath);
+		item->setFlags(item->flags() ^ Qt::ItemFlag::ItemIsEditable);
+		logFileList_->setItem(row, 1, item);
+		// read field names from the header line.
+		QFile file(filePath);
+		if (file.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text)) {
+			QTextStream textStream(&file);
+			QString header = textStream.readLine();
+			QStringList tokens = header.split(regExp);
+			for (int c = 1; c < tokens.size(); ++c) {	// the first column is depth.
+				QString fieldName = tokens[c];
+				if (!fieldSet_.contains(fieldName)) {
+					fieldSet_.insert(fieldName);
+					row = logFieldList_->rowCount();
+					logFieldList_->insertRow(row);
+					item = new QTableWidgetItem(fieldName);
+					item->setFlags(item->flags() ^ Qt::ItemFlag::ItemIsEditable);
+					logFieldList_->setItem(row, 0, item);
+				}
+			}
+		}
+		++citor;
+	}
 }
 
 void GroupOfSimpleDrillLogFiles::clearLogs() {
-
+	QMessageBox::StandardButton btn = QMessageBox::question(this, QString(), Text::confirmToClearFileList(),
+		QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, QMessageBox::StandardButton::No);
+	if (btn != QMessageBox::StandardButton::Yes) {
+		return;
+	}
+	BusyCursor waiting;
+	logFileList_->clearContents();
+	logFileList_->setRowCount(0);
+	logFieldList_->clearContents();
+	logFieldList_->setRowCount(0);
+	fieldSet_.clear();
 }

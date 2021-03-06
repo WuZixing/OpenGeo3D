@@ -82,7 +82,7 @@ void AppFrame::closeEvent(QCloseEvent* event) {
 }
 
 void AppFrame::openGeo3DML() {
-	QString filePath = selectAFile(Text::menuOpenGeo3DML(), Text::filterOfGeo3DMLFiles());
+	QString filePath = selectAFile(Text::menuOpenGeo3DML(), Text::filterOfGeo3DMLFile());
 	if (filePath.isEmpty()) {
 		return;
 	}

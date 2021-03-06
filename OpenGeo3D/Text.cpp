@@ -173,12 +173,16 @@ QString Text::confirmToQuit() {
 	return QString::fromUtf8("确定退出") + appName() + QString::fromUtf8("吗？未保存的数据将会丢失。");
 }
 
-QString Text::filterOfGeo3DMLFiles() {
+QString Text::filterOfGeo3DMLFile() {
 	return QString::fromUtf8("Geo3DML文件（UTF-8编码）(*.xml)");
 }
 
-QString Text::filterOfDrillPositionFiles() {
-	return QString::fromUtf8("钻孔位置(*.csv)");
+QString Text::filterOfDrillPositionFile() {
+	return QString::fromUtf8("钻孔位置(*.csv;*.prn)");
+}
+
+QString Text::filterOfDrillLogFile() {
+	return QString::fromUtf8("钻孔测试数据(*.csv;*.prn)");
 }
 
 QString Text::labelOfBasicMetaInfo() {
@@ -359,5 +363,8 @@ QString Text::tipOfSpecifyFieldValueType() {
 
 QString Text::errorOfOpenFile(const QString& filePath, const QString& errorMessage) {
 	return QString::fromUtf8("打开文件 %1 失败：\r\n%2").arg(filePath, errorMessage);
+}
 
+QString Text::confirmToClearFileList() {
+	return QString::fromUtf8("确认清空文件列表吗？");
 }

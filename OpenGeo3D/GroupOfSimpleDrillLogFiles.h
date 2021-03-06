@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QtCore/QSet>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QTableWidget>
@@ -19,4 +20,5 @@ private slots:
 private:
 	QLineEdit* positionFilePath_;
 	QTableWidget *drillList_, *logFileList_, *logFieldList_;
+	QSet<QString> fieldSet_;
 };

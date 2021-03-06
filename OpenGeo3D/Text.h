@@ -56,14 +56,13 @@ public:
 	static QString titleOfProjectPanel();
 	static QString titleOfMetadataPage();
 	static QString titleOfRenderOptionPage();
-	static QString confirmToCloseStructureModel();
-	static QString confirmToQuit();
 	///@}
 
 	/// @name file filters
 	///@{
-	static QString filterOfGeo3DMLFiles();
-	static QString filterOfDrillPositionFiles();
+	static QString filterOfGeo3DMLFile();
+	static QString filterOfDrillPositionFile();
+	static QString filterOfDrillLogFile();
 	///@}
 
 	/// @name Labels.
@@ -115,4 +114,8 @@ public:
 	static QString tipOfCustomizedZScale();
 	static QString tipOfSpecifyFieldValueType();
 	static QString errorOfOpenFile(const QString& filePath, const QString& errorMessage);
+
+	static QString confirmToCloseStructureModel();
+	static QString confirmToQuit();
+	static QString confirmToClearFileList();
 };
