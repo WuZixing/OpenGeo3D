@@ -177,6 +177,10 @@ QString Text::filterOfGeo3DMLFiles() {
 	return QString::fromUtf8("Geo3DML文件（UTF-8编码）(*.xml)");
 }
 
+QString Text::filterOfDrillPositionFiles() {
+	return QString::fromUtf8("钻孔位置(*.csv)");
+}
+
 QString Text::labelOfBasicMetaInfo() {
 	return QString::fromUtf8("基本信息");
 }
@@ -351,4 +355,9 @@ QString Text::labelOfFieldValueType() {
 
 QString Text::tipOfSpecifyFieldValueType() {
 	return QString::fromUtf8("请为属性字段指定适当的“数据类型”。");
+}
+
+QString Text::errorOfOpenFile(const QString& filePath, const QString& errorMessage) {
+	return QString::fromUtf8("打开文件 %1 失败：\r\n%2").arg(filePath, errorMessage);
+
 }

@@ -63,6 +63,7 @@ public:
 	/// @name file filters
 	///@{
 	static QString filterOfGeo3DMLFiles();
+	static QString filterOfDrillPositionFiles();
 	///@}
 
 	/// @name Labels.
@@ -113,4 +114,5 @@ public:
 
 	static QString tipOfCustomizedZScale();
 	static QString tipOfSpecifyFieldValueType();
+	static QString errorOfOpenFile(const QString& filePath, const QString& errorMessage);
 };

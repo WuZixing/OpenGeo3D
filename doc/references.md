@@ -1,0 +1,1 @@
++ [S-GeMs软件基本原理及三维地质建模应用](https://wenku.baidu.com/view/3d727400dd36a32d737581ea.html)

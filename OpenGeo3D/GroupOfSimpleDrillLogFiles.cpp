@@ -1,14 +1,20 @@
 #include "GroupOfSimpleDrillLogFiles.h"
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QRegularExpression>
+#include <QtCore/QTextStream>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
+#include "BusyCursor.h"
 #include "Text.h"
 
 GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroupBox(Text::labelOfSimpleDrillLogGroup(), parent) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	QFontMetrics fontMetrics(font());
-	const int widthOfNo = fontMetrics.size(Qt::TextSingleLine, QStringLiteral("1234")).width();
 	const int widthOfDrillNo = fontMetrics.size(Qt::TextSingleLine, QStringLiteral("ABCD-0123456789")).width();
 	const int widthOfCoord = fontMetrics.size(Qt::TextSingleLine, QStringLiteral("0123456789.123456")).width();
 	const int widthOfFilePath = fontMetrics.size(Qt::TextSingleLine, QStringLiteral(" ")).width() * 60;
@@ -29,16 +35,20 @@ GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroup
 	layout->addWidget(widget);
 
 	QStringList headers;
-	headers << Text::labelOfNo() << Text::labelOfDrillNo() << Text::labelOfX() << Text::labelOfY() << Text::labelOfZ() << Text::labelOfDrillDepth();
+	headers << Text::labelOfDrillNo() << Text::labelOfX() << Text::labelOfY() << Text::labelOfZ() << Text::labelOfDrillDepth();
 	drillList_ = new QTableWidget(this);
 	drillList_->setColumnCount(headers.size());
 	drillList_->setHorizontalHeaderLabels(headers);
-	drillList_->setColumnWidth(0, widthOfNo);
-	drillList_->setColumnWidth(1, widthOfDrillNo);
+	drillList_->setColumnWidth(0, widthOfDrillNo);
+	drillList_->setColumnWidth(1, widthOfCoord);
 	drillList_->setColumnWidth(2, widthOfCoord);
 	drillList_->setColumnWidth(3, widthOfCoord);
-	drillList_->setColumnWidth(4, widthOfCoord);
-	drillList_->setColumnWidth(5, widthOfCoord / 2);
+	drillList_->setColumnWidth(4, widthOfCoord / 2);
+	int width = 0;
+	for (int m = 0; m < drillList_->columnCount(); ++m) {
+		width += drillList_->columnWidth(m);
+	}
+	drillList_->setMinimumWidth(width / 10 * 9);
 	headers.clear();
 	layout->addWidget(drillList_, 1);
 
@@ -58,22 +68,30 @@ GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroup
 
 	widget = new QWidget(this);
 	hBox = new QHBoxLayout(widget);
-	headers << Text::labelOfNo() << Text::labelOfDrillNo() << Text::labelOfFilePath();
+	headers << Text::labelOfDrillNo() << Text::labelOfFilePath();
 	logFileList_ = new QTableWidget(widget);
 	logFileList_->setColumnCount(headers.size());
 	logFileList_->setHorizontalHeaderLabels(headers);
-	logFileList_->setColumnWidth(0, widthOfNo);
-	logFileList_->setColumnWidth(1, widthOfDrillNo);
-	logFileList_->setColumnWidth(2, widthOfFilePath);
+	logFileList_->setColumnWidth(0, widthOfDrillNo);
+	logFileList_->setColumnWidth(1, widthOfFilePath);
+	width = 0;
+	for (int m = 0; m < logFileList_->columnCount(); ++m) {
+		width += logFileList_->columnWidth(m);
+	}
+	logFileList_->setMaximumWidth(width / 10 * 9);
 	headers.clear();
 	hBox->addWidget(logFileList_, 1);
-	headers << Text::labelOfNo() << Text::labelOfField() << Text::labelOfFieldValueType();
+	headers << Text::labelOfField() << Text::labelOfFieldValueType();
 	logFieldList_ = new QTableWidget(widget);
-	logFieldList_->setColumnCount(3);
+	logFieldList_->setColumnCount(headers.size());
 	logFieldList_->setHorizontalHeaderLabels(headers);
-	logFieldList_->setColumnWidth(0, widthOfNo);
-	logFieldList_->setColumnWidth(1, widthOfFieldName);
+	logFieldList_->setColumnWidth(0, widthOfFieldName);
 	logFieldList_->setColumnWidth(1, widthOfFieldType);
+	width = 0;
+	for (int m = 0; m < logFieldList_->columnCount(); ++m) {
+		width += logFieldList_->columnWidth(m);
+	}
+	logFieldList_->setMaximumWidth(width / 10 * 9);
 	headers.clear();
 	hBox->addWidget(logFieldList_, 1);
 	widget->setLayout(hBox);
@@ -86,7 +104,40 @@ GroupOfSimpleDrillLogFiles::~GroupOfSimpleDrillLogFiles() {
 }
 
 void GroupOfSimpleDrillLogFiles::openDrillPosition() {
-
+	QString filePath = QFileDialog::getOpenFileName(this, QString(), QDir::currentPath(), Text::filterOfDrillPositionFiles());
+	if (filePath.isEmpty()) {
+		return;
+	}
+	QDir dir(filePath);
+	dir.cdUp();
+	QDir::setCurrent(dir.path());
+	QFile file(filePath);
+	if (!file.open(QIODevice::OpenModeFlag::ReadOnly | QIODevice::OpenModeFlag::Text)) {
+		QMessageBox::warning(this, QString(), Text::errorOfOpenFile(filePath, file.errorString()));
+		return;
+	}
+	BusyCursor waiting;
+	positionFilePath_->setText(filePath);
+	drillList_->clearContents();
+	drillList_->setRowCount(0);
+	int colCount = drillList_->columnCount();
+	QRegularExpression regExp("[,\\t]");
+	QTextStream textStream(&file);
+	QString line = textStream.readLine();	// ignore header line
+	while (!textStream.atEnd()) {
+		line = textStream.readLine();
+		QStringList tokens = line.split(regExp);
+		if (tokens.size() == colCount) {
+			int row = drillList_->rowCount();
+			drillList_->insertRow(row);
+			QTableWidgetItem* item = new QTableWidgetItem(QString::number(row + 1));
+			drillList_->setItem(row, 0, item);
+			for (int c = 0; c < colCount; ++c) {
+				item = new QTableWidgetItem(tokens[c]);
+				drillList_->setItem(row, c, item);
+			}
+		}
+	}
 }
 
 void GroupOfSimpleDrillLogFiles::appendLogs() {
