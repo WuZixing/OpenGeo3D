@@ -58,6 +58,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ComboBoxItemDelegate.h
   DlgAbout.h
   DlgOpenSimpleDrillLog.h
+  DrillLogFile.h
   Events.h
   GroupOfSimpleDrillLogFiles.h
   MetadataPage.h

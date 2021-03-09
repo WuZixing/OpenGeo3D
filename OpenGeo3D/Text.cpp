@@ -73,6 +73,18 @@ QString Text::nameOfRepresentationModeSurface() {
 	return QString::fromUtf8("面");
 }
 
+QString Text::nameOfDrillModel() {
+	return QString::fromUtf8("钻孔");
+}
+
+QString Text::nameOfDrillFeatureClass() {
+	return QString::fromUtf8("钻孔");
+}
+
+QString Text::nameOfDrillPositionFeature() {
+	return QString::fromUtf8("钻孔位置");
+}
+
 QString Text::menuFile() {
 	return QString::fromUtf8("文件(&F)");
 }

@@ -228,9 +228,47 @@ bool GroupOfSimpleDrillLogFiles::validate() {
 		}
 		if (typeName.isEmpty()) {
 			QMessageBox::warning(this, QString(), Text::tipOfUnknownFieldValueType());
+			logFieldList_->selectRow(r);
 			return false;
 		}
 	}
 
 	return true;
+}
+
+DrillPositionMap GroupOfSimpleDrillLogFiles::getDrillPositions() const {
+	DrillPositionMap pos;
+	int count = drillList_->rowCount();
+	for (int i = 0; i < count; ++i) {
+		QString drillNo = drillList_->item(i, 0)->text();
+		double x = drillList_->item(i, 1)->text().toDouble();
+		double y = drillList_->item(i, 2)->text().toDouble();
+		double z = drillList_->item(i, 3)->text().toDouble();
+		pos[drillNo] = geo3dml::Point3D(x, y, z);
+	}
+	return pos;
+}
+
+DrillLogFileMap GroupOfSimpleDrillLogFiles::getDrillLogFiles() const {
+	DrillLogFileMap logFiles;
+	int count = logFileList_->rowCount();
+	for (int i = 0; i < count; ++i) {
+		QString drillNo = logFileList_->item(i, 0)->text();
+		QString filePath = logFileList_->item(i, 1)->text();
+		logFiles[drillNo] = filePath;
+	}
+	return logFiles;
+}
+
+DrillLogFieldMap GroupOfSimpleDrillLogFiles::getDrillLogFields() const {
+	DrillLogFieldMap fields;
+	int count = logFieldList_->rowCount();
+	for (int i = 0; i < count; ++i) {
+		std::string name = logFieldList_->item(i, 0)->text().toUtf8().constData();
+		std::string typeName = logFieldList_->item(i, 1)->text().toUtf8().constData();
+		geo3dml::Field field;
+		field.Name(name).Label(name).DataType(geo3dml::Field::NameToValueType(typeName));
+		fields[name] = field;
+	}
+	return fields;
 }

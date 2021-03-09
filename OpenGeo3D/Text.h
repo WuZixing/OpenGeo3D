@@ -25,6 +25,9 @@ public:
 	static QString nameOfRepresentationModePoints();
 	static QString nameOfRepresentationModeWireframe();
 	static QString nameOfRepresentationModeSurface();
+	static QString nameOfDrillModel();
+	static QString nameOfDrillFeatureClass();
+	static QString nameOfDrillPositionFeature();
 	///@}
 
 	/// @name strings for menu.

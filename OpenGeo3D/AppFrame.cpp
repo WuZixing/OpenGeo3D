@@ -123,7 +123,16 @@ void AppFrame::openGeo3DML() {
 
 void AppFrame::openDrillLog() {
 	DlgOpenSimpleDrillLog dlg(this);
-	dlg.exec();
+	if (dlg.exec() != DlgOpenSimpleDrillLog::DialogCode::Accepted) {
+		return;
+	}
+	BusyCursor waiting;
+	geo3dml::Model* g3dModel = dlg.loadAsG3DModel();
+	if (g3dModel != nullptr) {
+		projectPanel_->appendG3DModel(g3dModel, true);
+		projectPanel_->expandStructureModelTree();
+		Events::PostEvent(Events::Type::ResetAndUpdateScene, this);
+	}
 }
 
 void AppFrame::closeStructureModel() {
