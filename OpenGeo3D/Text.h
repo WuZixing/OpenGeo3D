@@ -50,6 +50,7 @@ public:
 	static QString menuCustomizedZScale();
 	static QString menuResetZScale();
 	static QString menuProjectPanel();
+	static QString menuSaveToGeo3DML();
 	///@}
 
 	/// @name titles of dialogs/widgets.
@@ -64,6 +65,7 @@ public:
 	/// @name file filters
 	///@{
 	static QString filterOfGeo3DMLFile();
+	static QString filterOfGeo3DMLFileWithVersion();
 	static QString filterOfDrillPositionFile();
 	static QString filterOfDrillLogFile();
 	///@}
@@ -120,8 +122,11 @@ public:
 	static QString tipOfEmptyDrillPosition();
 	static QString tipOfEmptyDrillLogFiles();
 	static QString tipOfUnknownFieldValueType();
+	static QString tipOfSucceedInSavingToGeo3DMLFile(const QString& modelName);
+	static QString tipOfErrorInSavingToGeo3DMLFile(const QString& modelName, const QString& error);
 
 	static QString confirmToCloseStructureModel();
+	static QString confirmToCloseAllModels();
 	static QString confirmToQuit();
 	static QString confirmToClearFileList();
 };

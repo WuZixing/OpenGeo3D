@@ -5,7 +5,7 @@ public:
 	BusyCursor();
 	~BusyCursor();
 
-	static void BeginWaiting();
-	static void EndWaiting();
+	static void beginWaiting();
+	static void endWaiting();
 
 };

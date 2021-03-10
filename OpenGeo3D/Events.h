@@ -9,6 +9,7 @@ public:
 		ResetAndUpdateScene,
 		Menu_OpenGeo3DML,
 		Menu_OpenDrillLog,
+		Menu_SaveToGeo3DML,
 		Menu_CloseStructureModel
 	};
 

@@ -10,6 +10,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <g3dvtk/ObjectFactory.h>
 #include <g3dxml/XMLReader.h>
+#include <g3dxml/XMLWriter.h>
 #include "icon.xpm"
 #include "BusyCursor.h"
 #include "Events.h"
@@ -40,8 +41,10 @@ void AppFrame::setupMenu() {
 	subMenu->addAction(Text::menuOpenGeo3DML(), this, &AppFrame::openGeo3DML);
 	subMenu->addAction(Text::menuOpenDrillLog(), this, &AppFrame::openDrillLog);
 	subMenu->addSeparator();
+	subMenu->addAction(Text::menuSaveToGeo3DML(), this, &AppFrame::saveToGeo3DML);
 	subMenu->addAction(Text::menuCloseStructureModel(), this, &AppFrame::closeStructureModel);
 	menu->addSeparator();
+	menu->addAction(Text::menuCloseAllModels(), this, &AppFrame::closeAllModels);
 	menu->addAction(Text::menuQuit(), this, &AppFrame::quit);
 
 	menu = menuBar()->addMenu(Text::menuWindow());
@@ -90,9 +93,9 @@ void AppFrame::openGeo3DML() {
 	geo3dml::Object* g3dObject = nullptr;
 	g3dvtk::ObjectFactory g3dVtkFactory;
 	g3dxml::XMLReader xmlReader(&g3dVtkFactory);
-	BusyCursor::BeginWaiting();
+	BusyCursor::beginWaiting();
 	g3dObject = xmlReader.LoadXMLFile(filePath.toUtf8().constData());
-	BusyCursor::EndWaiting();
+	BusyCursor::endWaiting();
 	if (g3dObject == NULL) {
 		QMessageBox::critical(this, this->windowTitle(), QString::fromUtf8(xmlReader.Error().c_str()));
 	} else {
@@ -146,6 +149,17 @@ void AppFrame::closeStructureModel() {
 	Events::PostEvent(Events::Type::ResetAndUpdateScene, this);
 }
 
+void AppFrame::closeAllModels() {
+	QMessageBox::StandardButton btn = QMessageBox::warning(this, QString(), Text::confirmToCloseAllModels(),
+		QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, QMessageBox::StandardButton::No);
+	if (btn != QMessageBox::StandardButton::Yes) {
+		return;
+	}
+	BusyCursor waiting;
+	projectPanel_->closeAllModels();
+	Events::PostEvent(Events::Type::ResetAndUpdateScene, this);
+}
+
 void AppFrame::quit() {
 	close();
 }
@@ -168,6 +182,10 @@ bool AppFrame::event(QEvent* event) {
 	}
 	case Events::Type::Menu_OpenDrillLog: {
 		openDrillLog();
+		return true;
+	}
+	case Events::Type::Menu_SaveToGeo3DML: {
+		saveToGeo3DML();
 		return true;
 	}
 	case Events::Type::Menu_CloseStructureModel: {
@@ -255,4 +273,28 @@ QString AppFrame::selectAFile(const QString& dialogCaption, const QString& fileF
 		QDir::setCurrent(dir.path());
 	}
 	return filePath;
+}
+
+void AppFrame::saveToGeo3DML() {
+	geo3dml::Project* g3dProject = projectPanel_->getG3DProject();
+	QString projName = QString::fromUtf8(g3dProject->GetName().c_str());
+	QString selectedFilter;
+	QFileInfo fileInfo(QDir::currentPath(), projName);
+	QString filePath = QFileDialog::getSaveFileName(this, Text::menuSaveToGeo3DML(), fileInfo.absoluteFilePath(), Text::filterOfGeo3DMLFileWithVersion(), &selectedFilter);
+	if (filePath.isEmpty()) {
+		return;
+	}
+	BusyCursor::beginWaiting();
+	fileInfo.setFile(filePath);
+	QDir::setCurrent(fileInfo.absolutePath());
+	g3dProject->SetName(fileInfo.baseName().toUtf8().constData());
+	g3dxml::XMLWriter projectWriter;
+	bool isOK = projectWriter.Write(g3dProject, filePath.toUtf8().constData(), 
+		selectedFilter.contains(QStringLiteral("v1.x")) ? g3dxml::SchemaVersion::Schema_1_x : g3dxml::SchemaVersion::Schema_1_0);
+	BusyCursor::endWaiting();
+	if (!isOK) {
+		QMessageBox::information(this, QString(), Text::tipOfSucceedInSavingToGeo3DMLFile(projName));
+	} else {
+		QMessageBox::critical(this, QString(), Text::tipOfErrorInSavingToGeo3DMLFile(projName, QString::fromUtf8(projectWriter.Error().c_str())));
+	}
 }

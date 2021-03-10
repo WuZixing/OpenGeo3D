@@ -25,6 +25,8 @@ private slots:
 	void resetZScale();
 	void toggleProjectPanel();
 	void windowMenuAboutToShow();
+	void saveToGeo3DML();
+	void closeAllModels();
 
 protected:
     virtual bool event(QEvent *event) override;

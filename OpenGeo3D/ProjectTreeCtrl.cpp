@@ -42,6 +42,10 @@ vtkTransform* ProjectTreeCtrl::getTransform() const {
 	return transform_;
 }
 
+geo3dml::Project* ProjectTreeCtrl::getG3DProject() const { 
+	return g3dProject_.get();
+};
+
 void ProjectTreeCtrl::appendG3DModel(geo3dml::Model* model, bool appendToDefaultMap) {
 	g3dProject_->AddModel(model);
 	if (!appendToDefaultMap) {
@@ -150,7 +154,9 @@ QTreeWidgetItem* ProjectTreeCtrl::findOrInsertMapItem(geo3dml::Map* g3dMap) {
 }
 
 void ProjectTreeCtrl::closeAllModels() {
-
+	removeChildrenFromScene(rootOfStructureModel_);
+	resetStructureModel();
+	emit itemSelectionChanged();
 }
 
 void ProjectTreeCtrl::closeStructureModel() {
@@ -257,6 +263,7 @@ void ProjectTreeCtrl::contextMenuOfStructureModel(const QPoint& position) {
 	ctxMenu.addAction(Text::menuOpenGeo3DML(), []() { Events::PostEvent(Events::Type::Menu_OpenGeo3DML); });
 	ctxMenu.addAction(Text::menuOpenDrillLog(), []() { Events::PostEvent(Events::Type::Menu_OpenDrillLog); });
 	ctxMenu.addSeparator();
+	ctxMenu.addAction(Text::menuSaveToGeo3DML(), []() { Events::PostEvent(Events::Type::Menu_SaveToGeo3DML); });
 	ctxMenu.addAction(Text::menuCloseStructureModel(), []() { Events::PostEvent(Events::Type::Menu_CloseStructureModel); });
 	ctxMenu.exec(position);
 }

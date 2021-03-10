@@ -3,17 +3,17 @@
 #include <QtWidgets/QApplication>
 
 BusyCursor::BusyCursor() {
-	BeginWaiting();
+	beginWaiting();
 }
 
 BusyCursor::~BusyCursor() {
-	EndWaiting();
+	endWaiting();
 }
 
-void BusyCursor::BeginWaiting() {
+void BusyCursor::beginWaiting() {
 	QApplication::setOverrideCursor(Qt::CursorShape::WaitCursor);
 }
 
-void BusyCursor::EndWaiting() {
+void BusyCursor::endWaiting() {
 	QApplication::restoreOverrideCursor();
 }

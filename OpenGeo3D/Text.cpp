@@ -157,6 +157,10 @@ QString Text::menuProjectPanel() {
 	return QString::fromUtf8("模型列表");
 }
 
+QString Text::menuSaveToGeo3DML() {
+	return QString::fromUtf8("保存为Geo3DML文件...");
+}
+
 QString Text::titleOfDlgAbout() {
 	return QString::fromUtf8("关于") + appName();
 }
@@ -181,12 +185,20 @@ QString Text::confirmToCloseStructureModel() {
 	return QString::fromUtf8("确定关闭结构模型吗？未保存的数据将会丢失。");
 }
 
+QString Text::confirmToCloseAllModels() {
+	return QString::fromUtf8("确定关闭所有模型吗？未保存的数据将会丢失。");
+}
+
 QString Text::confirmToQuit() {
 	return QString::fromUtf8("确定退出") + appName() + QString::fromUtf8("吗？未保存的数据将会丢失。");
 }
 
 QString Text::filterOfGeo3DMLFile() {
 	return QString::fromUtf8("Geo3DML文件（UTF-8编码）(*.xml)");
+}
+
+QString Text::filterOfGeo3DMLFileWithVersion() {
+	return QString::fromUtf8("Geo3DML（v1.x）文件(*.xml);;Geo3DML（v1.0）文件(*.xml)");
 }
 
 QString Text::filterOfDrillPositionFile() {
@@ -391,4 +403,12 @@ QString Text::tipOfEmptyDrillLogFiles() {
 
 QString Text::tipOfUnknownFieldValueType() {
 	return QString::fromUtf8("请指定属性字段的数据类型。");
+}
+
+QString Text::tipOfSucceedInSavingToGeo3DMLFile(const QString& modelName) {
+	return QString::fromUtf8("导出模型“%1”到Geo3DML文件成功。").arg(modelName);
+}
+
+QString Text::tipOfErrorInSavingToGeo3DMLFile(const QString& modelName, const QString& error) {
+	return QString::fromUtf8("导出模型“%1”到Geo3DML文件出错：%2").arg(modelName).arg(error);
 }
