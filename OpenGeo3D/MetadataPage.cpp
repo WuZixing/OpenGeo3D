@@ -210,43 +210,40 @@ void MetadataPage::setFeatureInfo(geo3dml::Feature* g3dFeature) {
 	// fields
 	std::vector<std::string>&& fields = g3dFeature->GetFieldNames();
 	for (std::string fieldName : fields) {
-		geo3dml::FieldValue* fieldValue = g3dFeature->GetField(fieldName);
+		const geo3dml::FieldValue* fieldValue = g3dFeature->GetField(fieldName);
 		if (fieldValue == nullptr) {
 			propItem = propManager_->addProperty(QMetaType::Type::QString, QString::fromUtf8(fieldName.c_str()));
 			propItem->setEnabled(false);
 		} else {
 			switch (fieldValue->ValueType()) {
 			case geo3dml::Field::ValueType::Text: {
-				geo3dml::TextFieldValue* textValue = static_cast<geo3dml::TextFieldValue*>(fieldValue);
 				propItem = propManager_->addProperty(QMetaType::Type::QString, QString::fromUtf8(fieldName.c_str()));
-				propItem->setValue(QString::fromUtf8(textValue->Value().c_str()));
+				propItem->setValue(QString::fromUtf8(fieldValue->GetString().c_str()));
 				propItem->setAttribute(attriReadOnly_, true);
 				break;
 			}
 			case geo3dml::Field::ValueType::Integer: {
-				geo3dml::IntegerFieldValue* intValue = static_cast<geo3dml::IntegerFieldValue*>(fieldValue);
 				propItem = propManager_->addProperty(QMetaType::Type::Int, QString::fromUtf8(fieldName.c_str()));
-				propItem->setValue(intValue->Value());
+				propItem->setValue(fieldValue->GetInt());
 				propItem->setAttribute(attriReadOnly_, true);
 				break;
 			}
 			case geo3dml::Field::ValueType::Double: {
-				geo3dml::DoubleFieldValue* doubleValue = static_cast<geo3dml::DoubleFieldValue*>(fieldValue);
 				propItem = propManager_->addProperty(QMetaType::Type::Double, QString::fromUtf8(fieldName.c_str()));
-				propItem->setValue(doubleValue->Value());
+				propItem->setValue(fieldValue->GetDouble());
 				propItem->setAttribute(attriReadOnly_, true);
 				break;
 			}
 			case geo3dml::Field::ValueType::Boolean: {
-				geo3dml::BooleanFieldValue* boolValue = static_cast<geo3dml::BooleanFieldValue*>(fieldValue);
 				propItem = propManager_->addProperty(QMetaType::Type::Bool, QString::fromUtf8(fieldName.c_str()));
-				propItem->setValue(boolValue->Value());
+				propItem->setValue(fieldValue->GetBool());
 				propItem->setAttribute(attriReadOnly_, true);
 				break;
 			}
 			default: {
 				propItem = propManager_->addProperty(QMetaType::Type::QString, QString::fromUtf8(fieldName.c_str()));
 				propItem->setValue(QString::fromUtf8(geo3dml::Field::ValueTypeToName(fieldValue->ValueType()).c_str()));
+				propItem->setEnabled(false);
 			}
 			}
 		}

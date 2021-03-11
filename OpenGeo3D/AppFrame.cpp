@@ -292,7 +292,7 @@ void AppFrame::saveToGeo3DML() {
 	bool isOK = projectWriter.Write(g3dProject, filePath.toUtf8().constData(), 
 		selectedFilter.contains(QStringLiteral("v1.x")) ? g3dxml::SchemaVersion::Schema_1_x : g3dxml::SchemaVersion::Schema_1_0);
 	BusyCursor::endWaiting();
-	if (!isOK) {
+	if (isOK) {
 		QMessageBox::information(this, QString(), Text::tipOfSucceedInSavingToGeo3DMLFile(projName));
 	} else {
 		QMessageBox::critical(this, QString(), Text::tipOfErrorInSavingToGeo3DMLFile(projName, QString::fromUtf8(projectWriter.Error().c_str())));
