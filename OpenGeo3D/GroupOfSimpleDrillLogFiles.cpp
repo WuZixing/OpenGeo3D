@@ -334,7 +334,17 @@ bool GroupOfSimpleDrillLogFiles::savePositionToSHP() const {
 	if (poDS == nullptr) {
 		return false;
 	}
-	OGRLayer* poLayer = poDS->CreateLayer(baseName.toUtf8().constData(), nullptr, OGRwkbGeometryType::wkbPointZM);
+	OGRSpatialReference srs;
+	//OGRErr err = srs.SetGeogCS("China Geodetic Coordinate System 2000", "China_2000", "CGCS2000", 6378137, 298.257222101, "Greenwich", 0, "metre", 1);
+	// OGRErr err = srs.SetWellKnownGeogCS("EPSG:4326");
+	// OGRErr err = srs.SetWellKnownGeogCS("China Geodetic Coordinate System 2000");
+	// OGRErr err = srs->importFromEPSG(4490);
+	// OGRErr err = srs.importFromEPSG(4326);
+	// if (err != OGRERR_NONE) {
+	//	int a = 0;
+	//	int b = a + 1;
+	//}
+	OGRLayer* poLayer = poDS->CreateLayer(baseName.toUtf8().constData(), &srs, OGRwkbGeometryType::wkbPointZM);
 	if (poLayer == nullptr) {
 		GDALClose(poDS);
 		return false;
