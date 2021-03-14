@@ -43,6 +43,9 @@ geo3dml::Model* DlgOpenSimpleDrillLog::loadAsG3DModel() const {
 	if (drillFiles.empty()) {
 		return nullptr;
 	}
+	if (group_->isSavingPositionToSHPEnabled()) {
+		group_->savePositionToSHP();
+	}
 	DrillLogFieldMap&& targetFields = group_->getDrillLogFields();
 	// model
 	g3dvtk::ObjectFactory g3dFactory;

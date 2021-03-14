@@ -3,12 +3,13 @@
 #include <QtCore/QFile>
 #include <QtCore/QRegularExpression>
 #include <QtCore/QTextStream>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
+#include <ogrsf_frmts.h>
 #include <geo3dml/Field.h>
 #include "BusyCursor.h"
 #include "ComboBoxItemDelegate.h"
@@ -53,6 +54,23 @@ GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroup
 	drillList_->setMinimumWidth(width / 10 * 9);
 	headers.clear();
 	layout->addWidget(drillList_, 1);
+
+	widget = new QWidget(this);
+	hBox = new QHBoxLayout(widget);
+	QCheckBox* checkBox = new QCheckBox(Text::labelOfSavingDrillPositionToFile(), widget);
+	checkBox->setChecked(false);
+	connect(checkBox, &QCheckBox::stateChanged, this, &GroupOfSimpleDrillLogFiles::shpFileChecked);
+	hBox->addWidget(checkBox);
+	shpFilePath_ = new QLineEdit(widget);
+	shpFilePath_->setReadOnly(true);
+	shpFilePath_->setEnabled(false);
+	hBox->addWidget(shpFilePath_, 1);
+	btnSavePositionToShp_ = new QPushButton(Text::labelOfSave(), this);
+	btnSavePositionToShp_->setEnabled(false);
+	connect(btnSavePositionToShp_, &QPushButton::clicked, this, &GroupOfSimpleDrillLogFiles::saveDrillPositionToFile);
+	hBox->addWidget(btnSavePositionToShp_);
+	widget->setLayout(hBox);
+	layout->addWidget(widget);
 
 	widget = new QWidget(this);
 	hBox = new QHBoxLayout(widget);
@@ -162,10 +180,9 @@ void GroupOfSimpleDrillLogFiles::appendLogs() {
 	QStringList::const_iterator citor = filePaths.cbegin();
 	while (citor != filePaths.cend()) {
 		QString filePath = *citor;
-		QDir dir(filePath);
-		dir.cdUp();
-		QDir::setCurrent(dir.path());
-		QString baseName = QFileInfo(filePath).baseName();
+		QFileInfo fileInfo(filePath);
+		QDir::setCurrent(fileInfo.absolutePath());
+		QString baseName = fileInfo.baseName();
 		int row = logFileList_->rowCount();
 		logFileList_->insertRow(row);
 		QTableWidgetItem* item = new QTableWidgetItem(baseName);
@@ -213,10 +230,17 @@ void GroupOfSimpleDrillLogFiles::clearLogs() {
 bool GroupOfSimpleDrillLogFiles::validate() {
 	if (drillList_->rowCount() < 1) {
 		QMessageBox::warning(this, QString(), Text::tipOfEmptyDrillPosition());
+		drillList_->setFocus();
+		return false;
+	}
+	if (btnSavePositionToShp_->isEnabled() && shpFilePath_->text().isEmpty()) {
+		QMessageBox::warning(this, QString(), Text::tipOfEmptyDrillPositionShpFilePath());
+		btnSavePositionToShp_->setFocus();
 		return false;
 	}
 	if (logFileList_->rowCount() < 1) {
 		QMessageBox::warning(this, QString(), Text::tipOfEmptyDrillLogFiles());
+		logFileList_->setFocus();
 		return false;
 	}
 	int fieldCount = logFieldList_->rowCount();
@@ -229,6 +253,7 @@ bool GroupOfSimpleDrillLogFiles::validate() {
 		if (typeName.isEmpty()) {
 			QMessageBox::warning(this, QString(), Text::tipOfUnknownFieldValueType());
 			logFieldList_->selectRow(r);
+			logFieldList_->setFocus();
 			return false;
 		}
 	}
@@ -271,4 +296,68 @@ DrillLogFieldMap GroupOfSimpleDrillLogFiles::getDrillLogFields() const {
 		fields[name] = field;
 	}
 	return fields;
+}
+
+void GroupOfSimpleDrillLogFiles::shpFileChecked(int state) {
+	bool status = (state == Qt::CheckState::Checked);
+	shpFilePath_->setEnabled(status);
+	btnSavePositionToShp_->setEnabled(status);
+}
+
+void GroupOfSimpleDrillLogFiles::saveDrillPositionToFile() {
+	QString filePath = QFileDialog::getSaveFileName(this, QString(), QDir::currentPath(), Text::filterOfShpFile());
+	if (filePath.isEmpty()) {
+		return;
+	}
+	QFileInfo fileInfo(filePath);
+	QDir::setCurrent(fileInfo.absolutePath());
+	shpFilePath_->setText(filePath);
+}
+
+bool GroupOfSimpleDrillLogFiles::isSavingPositionToSHPEnabled() const {
+	return btnSavePositionToShp_->isEnabled();
+}
+
+bool GroupOfSimpleDrillLogFiles::savePositionToSHP() const {
+	QString filePath = shpFilePath_->text();
+	if (filePath.isEmpty()) {
+		return false;
+	}
+	QString baseName = QFileInfo(filePath).baseName();
+
+	GDALAllRegister();
+	GDALDriver* poDriver = GetGDALDriverManager()->GetDriverByName("ESRI Shapefile");
+	if (poDriver == nullptr) {
+		return false;
+	}
+	GDALDataset* poDS = poDriver->Create(filePath.toUtf8().constData(), 0, 0, 0, GDALDataType::GDT_Unknown, nullptr);
+	if (poDS == nullptr) {
+		return false;
+	}
+	OGRLayer* poLayer = poDS->CreateLayer(baseName.toUtf8().constData(), nullptr, OGRwkbGeometryType::wkbPointZM);
+	if (poLayer == nullptr) {
+		GDALClose(poDS);
+		return false;
+	}
+	OGRFieldDefn oField("DrillNo", OGRFieldType::OFTString);
+	oField.SetWidth(32);
+	if (poLayer->CreateField(&oField) != OGRERR_NONE) {
+		GDALClose(poDS);
+		return false;
+	}
+	DrillPositionMap posMap = getDrillPositions();
+	for (auto citor = posMap.cbegin(); citor != posMap.cend(); ++citor) {
+		OGRFeature* poFeature = OGRFeature::CreateFeature(poLayer->GetLayerDefn());
+		if (poFeature == nullptr) {
+			continue;
+		}
+		poFeature->SetField(oField.GetNameRef(), citor->first.toUtf8().constData());
+		OGRPoint pt(citor->second.x, citor->second.y, citor->second.z);
+		poFeature->SetGeometry(&pt);
+		poLayer->CreateFeature(poFeature);
+		OGRFeature::DestroyFeature(poFeature);
+	}
+
+	GDALClose(poDS);
+	return true;
 }

@@ -68,6 +68,7 @@ public:
 	static QString filterOfGeo3DMLFileWithVersion();
 	static QString filterOfDrillPositionFile();
 	static QString filterOfDrillLogFile();
+	static QString filterOfShpFile();
 	///@}
 
 	/// @name Labels.
@@ -101,7 +102,9 @@ public:
 	static QString labelOfDrawEdge();
 	static QString labelOfSimpleDrillLogGroup();
 	static QString labelOfDrillPositionFilePath();
+	static QString labelOfSavingDrillPositionToFile();
 	static QString labelOfOpen();
+	static QString labelOfSave();
 	static QString labelOfNo();
 	static QString labelOfDrillNo();
 	static QString labelOfDrillDepth();
@@ -120,6 +123,7 @@ public:
 	static QString tipOfSpecifyFieldValueType();
 	static QString errorOfOpenFile(const QString& filePath, const QString& errorMessage);
 	static QString tipOfEmptyDrillPosition();
+	static QString tipOfEmptyDrillPositionShpFilePath();
 	static QString tipOfEmptyDrillLogFiles();
 	static QString tipOfUnknownFieldValueType();
 	static QString tipOfSucceedInSavingToGeo3DMLFile(const QString& modelName);

@@ -209,6 +209,10 @@ QString Text::filterOfDrillLogFile() {
 	return QString::fromUtf8("钻孔测试数据(*.csv;*.prn)");
 }
 
+QString Text::filterOfShpFile() {
+	return QString::fromUtf8("Shape文件(*.shp)");
+}
+
 QString Text::labelOfBasicMetaInfo() {
 	return QString::fromUtf8("基本信息");
 }
@@ -329,8 +333,16 @@ QString Text::labelOfDrillPositionFilePath() {
 	return QString::fromUtf8("钻孔位置");
 }
 
+QString Text::labelOfSavingDrillPositionToFile() {
+	return QString::fromUtf8("保存钻孔位置到Shape文件");
+}
+
 QString Text::labelOfOpen() {
 	return QString::fromUtf8("打开...");
+}
+
+QString Text::labelOfSave() {
+	return QString::fromUtf8("保存...");
 }
 
 QString Text::labelOfNo() {
@@ -395,6 +407,10 @@ QString Text::confirmToClearFileList() {
 
 QString Text::tipOfEmptyDrillPosition() {
 	return QString::fromUtf8("请指定钻孔位置文件。");
+}
+
+QString Text::tipOfEmptyDrillPositionShpFilePath() {
+	return QString::fromUtf8("请指定保存钻孔位子的Shape文件的路径。");
 }
 
 QString Text::tipOfEmptyDrillLogFiles() {

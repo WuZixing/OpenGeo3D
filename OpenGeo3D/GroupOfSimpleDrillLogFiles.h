@@ -4,6 +4,7 @@
 #include <QtCore/QSet>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QTableWidget>
 #include <geo3dml/Field.h>
 #include <geo3dml/Point3D.h>
@@ -25,13 +26,19 @@ public:
 	DrillLogFileMap getDrillLogFiles() const;
 	DrillLogFieldMap getDrillLogFields() const;
 
+	bool isSavingPositionToSHPEnabled() const;
+	bool savePositionToSHP() const;
+
 private slots:
 	void openDrillPosition();
 	void appendLogs();
 	void clearLogs();
+	void shpFileChecked(int state);
+	void saveDrillPositionToFile();
 
 private:
-	QLineEdit* positionFilePath_;
+	QLineEdit* positionFilePath_, *shpFilePath_;
 	QTableWidget *drillList_, *logFileList_, *logFieldList_;
 	QSet<QString> fieldSet_;
+	QPushButton* btnSavePositionToShp_;
 };

@@ -32,6 +32,10 @@ include_directories(${QtPropertyBrowser_INCLUDE_DIRS})
 # VTK
 find_package(VTK 9.0 REQUIRED)
 
+# GDAL
+find_package(GDAL 3.1 REQUIRED)
+
+include_directories(${GDAL_INCLUDE_DIRS})
 include_directories(${GEO3DML_INCLUDE_DIRS})
 include_directories(${G3DXML_INCLUDE_DIRS})
 include_directories(${G3DVTK_INCLUDE_DIRS})
@@ -79,7 +83,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
 #qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 target_link_libraries(${APP_NAME} 
-  PRIVATE Qt5::Widgets ${VTK_LIBRARIES} 
+  PRIVATE Qt5::Widgets ${VTK_LIBRARIES} ${GDAL_LIBRARIES}
   ${GEO3DML_LIBRARIES} ${G3DXML_LIBRARIES} ${G3DVTK_LIBRARIES} ${G3DGRID_LIBRARIES}
   debug ${QtPropertyBrowser_LIBRARY_DEBUG} optimized ${QtPropertyBrowser_LIBRARY_NODEBUG}
 )
