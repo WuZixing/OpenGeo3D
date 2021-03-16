@@ -13,6 +13,7 @@
 #include <ogrsf_frmts.h>
 #include <geo3dml/Field.h>
 #include "BusyCursor.h"
+#include "CRSSet.h"
 #include "ComboBoxItemDelegate.h"
 #include "Text.h"
 
@@ -123,11 +124,9 @@ GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroup
 	gridLayout->addWidget(btnSavePositionToShp_, 0, 2);
 	gridLayout->addWidget(new QLabel(Text::labelOfCRS(), this), 1, 0, Qt::AlignmentFlag::AlignRight);
 	crsList_ = new QComboBox(this);
-	QStringList crsCodes;
-	crsCodes << QStringLiteral("EPSG:4479 (China Geodetic Coordinate System 2000)")
-		<< QStringLiteral("EPSG:4490 (China Geodetic Coordinate System 2000)")
-		<< QStringLiteral("EPSG:4326 (WGS 84)");
+	QStringList crsCodes = CRSSet::availableCRSNames();
 	crsList_->addItems(crsCodes);
+	crsList_->setCurrentIndex(0);
 	crsList_->setEnabled(false);
 	gridLayout->addWidget(crsList_, 1, 1);
 	layout->addLayout(gridLayout);
@@ -352,18 +351,9 @@ bool GroupOfSimpleDrillLogFiles::savePositionToSHP() const {
 		return false;
 	}
 	OGRSpatialReference srs;
-	QString crsCode = crsList_->currentText();
-	QRegularExpression regExp(QStringLiteral("^EPSG:(?<code>\\d+)"));
-	QRegularExpressionMatch match = regExp.match(crsCode);
-	if (match.hasMatch()) {
-		bool status = false;
-		int code = 0;
-		code = match.captured(1).toInt(&status);
-		if (status) {
-			if (srs.importFromEPSG(code) != OGRERR_NONE) {
-				srs.Clear();
-			}
-		}
+	QString crsName = crsList_->currentText();
+	if (!CRSSet::loadCRS(srs, crsName)) {
+		srs.Clear();
 	}
 	OGRLayer* poLayer = poDS->CreateLayer(baseName.toUtf8().constData(), &srs, OGRwkbGeometryType::wkbPointZM);
 	if (poLayer == nullptr) {

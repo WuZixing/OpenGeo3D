@@ -60,6 +60,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   AppFrame.h
   BusyCursor.h
   ComboBoxItemDelegate.h
+  CRSSet.h
   DlgAbout.h
   DlgOpenSimpleDrillLog.h
   DrillLogFile.h
