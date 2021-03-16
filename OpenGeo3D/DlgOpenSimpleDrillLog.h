@@ -1,19 +1,25 @@
 #pragma once
 
-#include "wxWidgets.h"
+#include <QtWidgets/QDialog>
 #include <geo3dml/Model.h>
-#include "SizerOfSimpleDrillLogFiles.h"
+#include "GroupOfSimpleDrillLogFiles.h"
 
-class DlgOpenSimpleDrillLog : public wxDialog {
+class DlgOpenSimpleDrillLog : public QDialog {
+	Q_OBJECT
+
 public:
-	DlgOpenSimpleDrillLog(wxWindow* parent);
+	DlgOpenSimpleDrillLog(QWidget* parent = nullptr);
 	virtual ~DlgOpenSimpleDrillLog();
 
-	geo3dml::Model* LoadAsG3DModel() const;
+	geo3dml::Model* loadAsG3DModel() const;
+
+public slots:
+	virtual void accept() override;
 
 private:
-	void OnButtonOK(wxCommandEvent& event);
+	void initUI();
+
 
 private:
-	SizerOfSimpleDrillLogFiles* sizerOfDrillFiles_;
+	GroupOfSimpleDrillLogFiles* group_;
 };

@@ -110,7 +110,7 @@ bool DrillLogFile::ToMultiPoinit(const std::map<std::string, geo3dml::Field>& sh
 				break;
 			}
 			case geo3dml::Field::ValueType::Boolean: {
-				shapeProp->BooleanValue(f, ptIndex, geo3dml::BooleanFieldValue::IsTrue(*token));
+				shapeProp->BooleanValue(f, ptIndex, geo3dml::FieldValue::IsTrue(*token));
 				break;
 			}
 			default:

@@ -1,89 +1,87 @@
 #include "DlgOpenSimpleDrillLog.h"
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QVBoxLayout>
 #include <g3dvtk/ObjectFactory.h>
 #include "DrillLogFile.h"
-#include "Strings.h"
+#include "Text.h"
 
-DlgOpenSimpleDrillLog::DlgOpenSimpleDrillLog(wxWindow* parent) : wxDialog(parent, wxID_ANY, Strings::TitleOfMenuItemOpenSimpleDrillLog()) {
-	sizerOfDrillFiles_ = new SizerOfSimpleDrillLogFiles(this, Strings::TitleOfSizerOfSimpleDrillLog());
-
-	wxSizer* btnSizer = wxDialog::CreateSeparatedButtonSizer(wxOK | wxCANCEL);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DlgOpenSimpleDrillLog::OnButtonOK, this, wxID_OK);
-
-	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(sizerOfDrillFiles_, wxSizerFlags(1).Expand().Border(wxALL, 10));
-	mainSizer->Add(btnSizer, wxSizerFlags(0).Expand().Border(wxLEFT | wxRIGHT | wxBOTTOM, 10));
-
-	SetSizerAndFit(mainSizer);
+DlgOpenSimpleDrillLog::DlgOpenSimpleDrillLog(QWidget* parent) : QDialog(parent, Qt::WindowType::Dialog | Qt::WindowType::WindowCloseButtonHint) {
+	setWindowTitle(Text::menuOpenDrillLog());
+	initUI();
 }
 
 DlgOpenSimpleDrillLog::~DlgOpenSimpleDrillLog() {
 
 }
 
-void DlgOpenSimpleDrillLog::OnButtonOK(wxCommandEvent& event) {
-	// check drill position
-	wxString pathOfDrillPosFile = sizerOfDrillFiles_->GetDrillPositionFilePath();
-	if (pathOfDrillPosFile.IsEmpty() || sizerOfDrillFiles_->CountDrillPositins() < 1) {
-		wxMessageBox(Strings::TipOfInvalidDrillPositionData(), Strings::AppName(), wxICON_ERROR);
-		sizerOfDrillFiles_->GetDrillPositionFilePathCtrl()->SetFocus();
-		return;
-	}
-	// check drill log data
-	if (sizerOfDrillFiles_->CountDrillLogFiles() < 1 || sizerOfDrillFiles_->CountDrillLogFields() < 1) {
-		wxMessageBox(Strings::TipOfInvalidDrillLogData(), Strings::AppName(), wxICON_ERROR);
-		sizerOfDrillFiles_->GetDrillLogListCtrl()->SetFocus();
-		return;
-	}
-	EndModal(wxID_OK);
+void DlgOpenSimpleDrillLog::initUI() {
+	group_ = new GroupOfSimpleDrillLogFiles(this);
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, Qt::Orientation::Horizontal);
+
+	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(group_, 1, Qt::AlignmentFlag::AlignLeft);
+	layout->addWidget(buttonBox, 0, Qt::AlignmentFlag::AlignHCenter);
+	setLayout(layout);
+
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &DlgOpenSimpleDrillLog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected, this, &DlgOpenSimpleDrillLog::reject);
 }
 
-geo3dml::Model* DlgOpenSimpleDrillLog::LoadAsG3DModel() const {
-	DrillPositionMap&& drillPositions = sizerOfDrillFiles_->GetDrillPositions();
+void DlgOpenSimpleDrillLog::accept() {
+	if (!group_->validate()) {
+		return;
+	}
+	QDialog::accept();
+}
+
+geo3dml::Model* DlgOpenSimpleDrillLog::loadAsG3DModel() const {
+	DrillPositionMap&& drillPositions = group_->getDrillPositions();
 	if (drillPositions.empty()) {
 		return nullptr;
 	}
-	DrillLogFileMap&& drillFiles = sizerOfDrillFiles_->GetDrillLogFiles();
+	DrillLogFileMap&& drillFiles = group_->getDrillLogFiles();
 	if (drillFiles.empty()) {
 		return nullptr;
 	}
-	DrillLogFieldMap&& targetFields = sizerOfDrillFiles_->GetDrillLogFields();
+	if (group_->isSavingPositionToSHPEnabled()) {
+		group_->savePositionToSHP();
+	}
+	DrillLogFieldMap&& targetFields = group_->getDrillLogFields();
 	// model
 	g3dvtk::ObjectFactory g3dFactory;
 	geo3dml::Model* model = g3dFactory.NewModel();
 	model->SetID("Drills");
-	model->SetName(Strings::NameOfDrillModel().ToUTF8().data());
+	model->SetName(Text::nameOfDrillModel().toUtf8().constData());
 	model->SetType(geo3dml::Model::ModelType::Model3D);
 	// feature class of drill
 	geo3dml::Field fieldPath;
 	fieldPath.Name("file").Label("File Path").DataType(geo3dml::Field::Text);
 	geo3dml::FeatureClass* fcDrills = g3dFactory.NewFeatureClass();
 	fcDrills->SetID("Drills");
-	fcDrills->SetName(Strings::NameOfDrillFeatureClass().ToUTF8().data());
+	fcDrills->SetName(Text::nameOfDrillFeatureClass().toUtf8().constData());
 	fcDrills->AddField(fieldPath);
 	model->AddFeatureClass(fcDrills);
 	// features of drill
 	geo3dml::Feature* featurePos = g3dFactory.NewFeature();
 	featurePos->SetID("DrillPosition");
-	featurePos->SetName(Strings::NameOfDrillPositionFeature().ToUTF8().data());
-	geo3dml::TextFieldValue* textValue = new geo3dml::TextFieldValue(fieldPath.Name());
-	textValue->Value("");
+	featurePos->SetName(Text::nameOfDrillPositionFeature().toUtf8().constData());
+	geo3dml::FieldValue textValue(fieldPath.Name(), std::string());
 	featurePos->SetField(textValue);
 	geo3dml::Annotation* annotation = g3dFactory.NewAnnotation();
 	featurePos->AddGeometry(annotation);
 	fcDrills->AddFeature(featurePos);
-	for (auto drillFile = drillFiles.begin(); drillFile != drillFiles.end(); ++drillFile) {
-		if (drillPositions.find(drillFile->first) == drillPositions.end()) {
+	for (auto drillFile = drillFiles.cbegin(); drillFile != drillFiles.cend(); ++drillFile) {
+		if (drillPositions.find(drillFile->first) == drillPositions.cend()) {
 			continue;
 		}
 		geo3dml::Point3D drillPos = drillPositions[drillFile->first];
 		annotation->AddPoint(drillPos.x, drillPos.y, drillPos.z);
-		annotation->SetLabelOfPointAt(annotation->GetPointCount() - 1, drillFile->first.ToUTF8().data());
-		DrillLogFile drillLog(drillFile->first.ToUTF8().data(), drillPos, drillFile->second.ToUTF8().data());
+		annotation->SetLabelOfPointAt(annotation->GetPointCount() - 1, drillFile->first.toUtf8().constData());
+		DrillLogFile drillLog(drillFile->first.toUtf8().constData(), drillPos, drillFile->second.toUtf8().constData());
 		geo3dml::Feature* feature = g3dFactory.NewFeature();
 		feature->SetID(drillLog.GetDrillNo());
 		feature->SetName(drillLog.GetDrillNo());
-		geo3dml::TextFieldValue* textValue = new geo3dml::TextFieldValue(fieldPath.Name());
-		textValue->Value(drillLog.GetFilePath());
+		textValue.SetString(drillLog.GetFilePath());
 		feature->SetField(textValue);
 		g3dvtk::MultiPoint* mPt = drillLog.ToMultiPoint(targetFields);
 		feature->AddGeometry(mPt);

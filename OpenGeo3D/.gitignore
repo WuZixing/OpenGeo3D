@@ -3,5 +3,8 @@
 !CMakeLists.txt
 !*.h
 !*.cpp
+!*.ico
+!*.rc
+!*.ts
 !*.xpm
-!*.cxx
+!*.ui

@@ -1,45 +1,17 @@
 #pragma once
 
-#include "wxWidgets.h"
+#include <QtCore/QEvent>
 
 class Events {
 public:
-	enum ID {
-		Window_Frame = wxID_HIGHEST + 1,
-
+	enum Type {
+		UpdateScene = QEvent::Type::User + 1,
+		ResetAndUpdateScene,
 		Menu_OpenGeo3DML,
-		Menu_OpenSimpleDrillLog,
-		Menu_OpenSGeMSGrid,
-		Menu_FullView,
-		Menu_BackgroundColor,
-		Menu_ScaleUpZ,
-		Menu_ScaleDownZ,
-		Menu_CustomizedZScale,
-		Menu_ResetZScale,
-		Menu_ProjectPanel,
-		Menu_LogWindow,
-		Menu_EditVoxelGrid,
-		Menu_DeleteGridLOD,
-		Menu_AppendGridLOD,
-		Menu_CloseAllModels,
-		Menu_CloseStructureModel,
-		Menu_CloseVoxelGridModel,
+		Menu_OpenDrillLog,
 		Menu_SaveToGeo3DML,
-		Menu_SaveToVoxelGrid,
-		Menu_StructureModelGridding,
-		Menu_StopStructureModelGridding,
-
-		// general notifications
-		Notify_ResetAndRefreshRenderWindow,
-		Notify_RefreshRenderWindow,
-		// project panel notifications
-		Notify_ProjectTreeItemSelected,
-		// gridding thread events
-		Thread_GriddingThreadFinished,
-		Thread_GriddingThreadQuit
+		Menu_CloseStructureModel
 	};
 
-public:
-	static void Notify(ID id);	///< not thread-safe
-	static void QueueThreadEvent(wxEvent* evt);	///< thread-safe
+	static void PostEvent(Events::Type evtType, QObject* receiver = nullptr);
 };
