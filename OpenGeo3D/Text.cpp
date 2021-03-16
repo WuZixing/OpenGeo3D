@@ -393,6 +393,10 @@ QString Text::labelOfFieldValueType() {
 	return QString::fromUtf8("数据类型");
 }
 
+QString Text::labelOfCRS() {
+	return QString::fromUtf8("坐标参照系");
+}
+
 QString Text::tipOfSpecifyFieldValueType() {
 	return QString::fromUtf8("请为属性字段指定适当的“数据类型”。");
 }
@@ -415,6 +419,10 @@ QString Text::tipOfEmptyDrillPositionShpFilePath() {
 
 QString Text::tipOfEmptyDrillLogFiles() {
 	return QString::fromUtf8("请指定钻孔测试记录数据。");
+}
+
+QString Text::tipOfEmptyCRS() {
+	return QString::fromUtf8("请指定坐标参照系。");
 }
 
 QString Text::tipOfUnknownFieldValueType() {

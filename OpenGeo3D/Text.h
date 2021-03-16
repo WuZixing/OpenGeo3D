@@ -117,6 +117,7 @@ public:
 	static QString labelOfFilePath();
 	static QString labelOfField();
 	static QString labelOfFieldValueType();
+	static QString labelOfCRS();
 	///@}
 
 	static QString tipOfCustomizedZScale();
@@ -125,6 +126,7 @@ public:
 	static QString tipOfEmptyDrillPosition();
 	static QString tipOfEmptyDrillPositionShpFilePath();
 	static QString tipOfEmptyDrillLogFiles();
+	static QString tipOfEmptyCRS();
 	static QString tipOfUnknownFieldValueType();
 	static QString tipOfSucceedInSavingToGeo3DMLFile(const QString& modelName);
 	static QString tipOfErrorInSavingToGeo3DMLFile(const QString& modelName, const QString& error);

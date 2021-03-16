@@ -2,6 +2,7 @@
 
 #include <map>
 #include <QtCore/QSet>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
@@ -41,4 +42,5 @@ private:
 	QTableWidget *drillList_, *logFileList_, *logFieldList_;
 	QSet<QString> fieldSet_;
 	QPushButton* btnSavePositionToShp_;
+	QComboBox* crsList_;
 };

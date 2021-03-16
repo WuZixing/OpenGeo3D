@@ -4,6 +4,7 @@
 #include <QtCore/QRegularExpression>
 #include <QtCore/QTextStream>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QFileDialog>
@@ -57,23 +58,6 @@ GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroup
 
 	widget = new QWidget(this);
 	hBox = new QHBoxLayout(widget);
-	QCheckBox* checkBox = new QCheckBox(Text::labelOfSavingDrillPositionToFile(), widget);
-	checkBox->setChecked(false);
-	connect(checkBox, &QCheckBox::stateChanged, this, &GroupOfSimpleDrillLogFiles::shpFileChecked);
-	hBox->addWidget(checkBox);
-	shpFilePath_ = new QLineEdit(widget);
-	shpFilePath_->setReadOnly(true);
-	shpFilePath_->setEnabled(false);
-	hBox->addWidget(shpFilePath_, 1);
-	btnSavePositionToShp_ = new QPushButton(Text::labelOfSave(), this);
-	btnSavePositionToShp_->setEnabled(false);
-	connect(btnSavePositionToShp_, &QPushButton::clicked, this, &GroupOfSimpleDrillLogFiles::saveDrillPositionToFile);
-	hBox->addWidget(btnSavePositionToShp_);
-	widget->setLayout(hBox);
-	layout->addWidget(widget);
-
-	widget = new QWidget(this);
-	hBox = new QHBoxLayout(widget);
 	hBox->addWidget(new QLabel(Text::labelOfDrillLog(), widget));
 	btn = new QPushButton(Text::labelOfAppend(), widget);
 	connect(btn, &QPushButton::clicked, this, &GroupOfSimpleDrillLogFiles::appendLogs);
@@ -123,6 +107,31 @@ GroupOfSimpleDrillLogFiles::GroupOfSimpleDrillLogFiles(QWidget* parent) : QGroup
 	hBox->addWidget(logFieldList_, 1);
 	widget->setLayout(hBox);
 	layout->addWidget(widget, 1);
+
+	QGridLayout* gridLayout = new QGridLayout(this);
+	QCheckBox* checkBox = new QCheckBox(Text::labelOfSavingDrillPositionToFile(), this);
+	checkBox->setChecked(false);
+	connect(checkBox, &QCheckBox::stateChanged, this, &GroupOfSimpleDrillLogFiles::shpFileChecked);
+	gridLayout->addWidget(checkBox, 0, 0);
+	shpFilePath_ = new QLineEdit(this);
+	shpFilePath_->setReadOnly(true);
+	shpFilePath_->setEnabled(false);
+	gridLayout->addWidget(shpFilePath_, 0, 1);
+	btnSavePositionToShp_ = new QPushButton(Text::labelOfSave(), this);
+	btnSavePositionToShp_->setEnabled(false);
+	connect(btnSavePositionToShp_, &QPushButton::clicked, this, &GroupOfSimpleDrillLogFiles::saveDrillPositionToFile);
+	gridLayout->addWidget(btnSavePositionToShp_, 0, 2);
+	gridLayout->addWidget(new QLabel(Text::labelOfCRS(), this), 1, 0, Qt::AlignmentFlag::AlignRight);
+	crsList_ = new QComboBox(this);
+	QStringList crsCodes;
+	crsCodes << QStringLiteral("EPSG:4479 (China Geodetic Coordinate System 2000)")
+		<< QStringLiteral("EPSG:4490 (China Geodetic Coordinate System 2000)")
+		<< QStringLiteral("EPSG:4326 (WGS 84)");
+	crsList_->addItems(crsCodes);
+	crsList_->setEnabled(false);
+	gridLayout->addWidget(crsList_, 1, 1);
+	layout->addLayout(gridLayout);
+
 	setLayout(layout);
 }
 
@@ -233,11 +242,6 @@ bool GroupOfSimpleDrillLogFiles::validate() {
 		drillList_->setFocus();
 		return false;
 	}
-	if (btnSavePositionToShp_->isEnabled() && shpFilePath_->text().isEmpty()) {
-		QMessageBox::warning(this, QString(), Text::tipOfEmptyDrillPositionShpFilePath());
-		btnSavePositionToShp_->setFocus();
-		return false;
-	}
 	if (logFileList_->rowCount() < 1) {
 		QMessageBox::warning(this, QString(), Text::tipOfEmptyDrillLogFiles());
 		logFileList_->setFocus();
@@ -254,6 +258,18 @@ bool GroupOfSimpleDrillLogFiles::validate() {
 			QMessageBox::warning(this, QString(), Text::tipOfUnknownFieldValueType());
 			logFieldList_->selectRow(r);
 			logFieldList_->setFocus();
+			return false;
+		}
+	}
+	if (btnSavePositionToShp_->isEnabled()) {
+		if (shpFilePath_->text().isEmpty()) {
+			QMessageBox::warning(this, QString(), Text::tipOfEmptyDrillPositionShpFilePath());
+			btnSavePositionToShp_->setFocus();
+			return false;
+		}
+		if (crsList_->currentText().isEmpty()) {
+			QMessageBox::warning(this, QString(), Text::tipOfEmptyCRS());
+			crsList_->setFocus();
 			return false;
 		}
 	}
@@ -302,6 +318,7 @@ void GroupOfSimpleDrillLogFiles::shpFileChecked(int state) {
 	bool status = (state == Qt::CheckState::Checked);
 	shpFilePath_->setEnabled(status);
 	btnSavePositionToShp_->setEnabled(status);
+	crsList_->setEnabled(status);
 }
 
 void GroupOfSimpleDrillLogFiles::saveDrillPositionToFile() {
@@ -335,15 +352,19 @@ bool GroupOfSimpleDrillLogFiles::savePositionToSHP() const {
 		return false;
 	}
 	OGRSpatialReference srs;
-	//OGRErr err = srs.SetGeogCS("China Geodetic Coordinate System 2000", "China_2000", "CGCS2000", 6378137, 298.257222101, "Greenwich", 0, "metre", 1);
-	// OGRErr err = srs.SetWellKnownGeogCS("EPSG:4326");
-	// OGRErr err = srs.SetWellKnownGeogCS("China Geodetic Coordinate System 2000");
-	// OGRErr err = srs->importFromEPSG(4490);
-	// OGRErr err = srs.importFromEPSG(4326);
-	// if (err != OGRERR_NONE) {
-	//	int a = 0;
-	//	int b = a + 1;
-	//}
+	QString crsCode = crsList_->currentText();
+	QRegularExpression regExp(QStringLiteral("^EPSG:(?<code>\\d+)"));
+	QRegularExpressionMatch match = regExp.match(crsCode);
+	if (match.hasMatch()) {
+		bool status = false;
+		int code = 0;
+		code = match.captured(1).toInt(&status);
+		if (status) {
+			if (srs.importFromEPSG(code) != OGRERR_NONE) {
+				srs.Clear();
+			}
+		}
+	}
 	OGRLayer* poLayer = poDS->CreateLayer(baseName.toUtf8().constData(), &srs, OGRwkbGeometryType::wkbPointZM);
 	if (poLayer == nullptr) {
 		GDALClose(poDS);
