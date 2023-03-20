@@ -73,7 +73,7 @@
 
 + [VTK](https://vtk.org/)
 
-	数据可视化。建议版本：v9.0或更新版本。
+	数据可视化。建议版本：v9.2或更新版本。
 
 + [Geo3DML-CPP](https://github.com/WuZixing/Geo3DML-CPP)
 
@@ -106,10 +106,10 @@
 
 	+ 参照[官方说明](https://github.com/microsoft/vcpkg#quick-start-windows)安装`vcpkg`。
 
-		```console
-		> git clone https://github.com/microsoft/vcpkg
-		> .\vcpkg\bootstrap-vcpkg.bat
-		```
+	```console
+	> git clone https://github.com/microsoft/vcpkg
+	> .\vcpkg\bootstrap-vcpkg.bat
+	```
 
 	+ 对于64位开发环境，可在操作系统中添加名为`VCPKG_DEFAULT_TRIPLET`的环境变量，其值为`x64-windows`。使得`vcpkg`缺省配置64位的开发库。
 
@@ -121,11 +121,12 @@
 
 	+ 指定Qt仓库镜像安装SDK
 
-		```console
-		# 命令行执行命令，选择清华大学镜像服务器。
-		> qt-unified-windows-x64-online.exe --mirror https://mirrors.tuna.tsinghua.edu.cn/qt
-		```
-		自定义安装，选择LTS版本过滤条件，安装6.2版本及Creator、Designer等开发工具，并且去掉MINGWIN开发包及源码等占用很大磁盘空间的选。
+	```console
+	# 命令行执行命令，选择清华大学镜像服务器。
+	> qt-unified-windows-x64-online.exe --mirror https://mirrors.tuna.tsinghua.edu.cn/qt
+	```
+	
+	自定义安装，选择LTS版本过滤条件，安装6.2版本及Creator、Designer等开发工具，并且去掉MINGWIN开发包及源码等占用很大磁盘空间的选。
 
 (5) [GDAL](https://gdal.org/)
 
@@ -155,6 +156,7 @@
 		(3) 完成编译后，以管理员权限运行Visual Studio，然后对`INSTALL`项目运行`Build`，将编译好的库安装至系统目录（缺省为：C/Program Files/VTK）。
 
 	- 备注：通过`vcpkg`安装
+	
 	```console
 	> # vcpkg 安装 VTK 的指令。注意：需额外安装 vtk[qt]
 	> cd vcpkg/
