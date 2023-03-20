@@ -4,20 +4,21 @@
 #include <geo3dml/Field.h>
 #include <geo3dml/Point3D.h>
 #include <g3dvtk/MultiPoint.h>
+#include <QString>
 
 class DrillLogFile {
 public:
-	DrillLogFile(const std::string& no, const geo3dml::Point3D& headPos, const std::string& filePath);
+	DrillLogFile(const QString& no, const geo3dml::Point3D& headPos, const QString& filePath);
 	virtual ~DrillLogFile();
 
-	std::string GetDrillNo() const;
-	std::string GetFilePath() const;
+	const QString& GetDrillNo() const;
+	const QString& GetFilePath() const;
 	geo3dml::Point3D GetHeadPosition() const;
 
 	g3dvtk::MultiPoint* ToMultiPoint(const std::map<std::string, geo3dml::Field>& shapeProperties) const;
 	bool ToMultiPoinit(const std::map<std::string, geo3dml::Field>& shapeProperties, g3dvtk::MultiPoint* pts) const;
 
 private:
-	std::string drillNo_, filePath_;
+	QString drillNo_, filePath_;
 	geo3dml::Point3D headPos_;
 };

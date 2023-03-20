@@ -8,34 +8,15 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-# Qt5
-#find_package(Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+# Qt6
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
-# QtPropertyBrowser
-set(QtPropertyBrowser_INCLUDE_DIRS "" CACHE PATH "Qt-Solutions/QtPropertyBrowser include directory.")
-set(QtPropertyBrowser_LIBRARY_DEBUG "" CACHE FILEPATH "Qt-Solutions/QtPropertyBrowser DEBUG library file.")
-set(QtPropertyBrowser_LIBRARY_NODEBUG "" CACHE FILEPATH "Qt-Solutions/QtPropertyBrowser NODEBUG library file.")
-find_file(QTPROPERTYBROWSER_HEADER "qttreepropertybrowser.h" PATHS ${QtPropertyBrowser_INCLUDE_DIRS})
-if(NOT QTPROPERTYBROWSER_HEADER)
-  message(SEND_ERROR "Can not find QtTreePropertyBrowser headers. Please set QtPropertyBrowser_INCLUDE_DIRS to the directory that contains file qttreepropertybrowser.h.")
-endif()
-if(NOT QtPropertyBrowser_LIBRARY_DEBUG)
-  message(SEND_ERROR "Can not find QtTreePropertyBrowser library. Please set QtPropertyBrowser_LIBRARY_DEBUG to the DEBUG library file of QtPropertyBrowser.")
-endif()
-if(NOT QtPropertyBrowser_LIBRARY_NODEBUG)
-  message(SEND_ERROR "Can not find QtTreePropertyBrowser library. Please set QtPropertyBrowser_LIBRARY_NODEBUG to the NODEBUG library file of QtPropertyBrowser.")
-endif()
-add_definitions(-DQT_QTPROPERTYBROWSER_IMPORT)
-include_directories(${QtPropertyBrowser_INCLUDE_DIRS})
-
-# VTK
-find_package(VTK 9.0 REQUIRED)
+# VTK 9.2
+find_package(VTK 9.2 CONFIG REQUIRED)
 
 # GDAL
-find_package(GDAL 3.1 REQUIRED)
+find_package(GDAL 3.6 CONFIG REQUIRED)
 
-include_directories(${GDAL_INCLUDE_DIRS})
 include_directories(${GEO3DML_INCLUDE_DIRS})
 include_directories(${G3DXML_INCLUDE_DIRS})
 include_directories(${G3DVTK_INCLUDE_DIRS})
@@ -48,11 +29,6 @@ else()
   set(TARGET_PROPERTY "")
 endif(MSVC)
 
-#set(TS_FILES OpenApp_zh_CN.ts)
-#list(APPEND UI_Files
-#  DlgAbout.ui
-#)
-#qt5_wrap_ui(UI_SOURCES ${UI_Files})
 aux_source_directory(. CPP_SOURCES)
 
 add_executable(${APP_NAME} ${TARGET_PROPERTY}
@@ -76,16 +52,39 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   Text.h
   icon.xpm
   icon.ico
+  QtPropertyBrowser/qtbuttonpropertybrowser.h
+  QtPropertyBrowser/qtbuttonpropertybrowser.cpp
+  QtPropertyBrowser/qteditorfactory.h
+  QtPropertyBrowser/qteditorfactory.cpp
+  QtPropertyBrowser/qtgroupboxpropertybrowser.h
+  QtPropertyBrowser/qtgroupboxpropertybrowser.cpp
+  QtPropertyBrowser/qtpropertybrowser.h
+  QtPropertyBrowser/qtpropertybrowser.cpp
+  QtPropertyBrowser/qtpropertybrowserutils_p.h
+  QtPropertyBrowser/qtpropertybrowserutils.cpp
+  QtPropertyBrowser/qtpropertymanager.h
+  QtPropertyBrowser/qtpropertymanager.cpp
+  QtPropertyBrowser/qttreepropertybrowser.h
+  QtPropertyBrowser/qttreepropertybrowser.cpp
+  QtPropertyBrowser/qtvariantproperty.h
+  QtPropertyBrowser/qtvariantproperty.cpp
   ${APP_RC}
-  #${UI_SOURCES}
-  #${UI_Files}
-  #${TS_FILES}
 )
-#qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 target_link_libraries(${APP_NAME} 
-  PRIVATE Qt5::Widgets ${VTK_LIBRARIES} ${GDAL_LIBRARIES}
+  PRIVATE Qt::Widgets ${VTK_LIBRARIES} GDAL::GDAL
   ${GEO3DML_LIBRARIES} ${G3DXML_LIBRARIES} ${G3DVTK_LIBRARIES} ${G3DGRID_LIBRARIES}
-  debug ${QtPropertyBrowser_LIBRARY_DEBUG} optimized ${QtPropertyBrowser_LIBRARY_NODEBUG}
 )
-vtk_module_autoinit(TARGETS ${APP_NAME} MODULES ${VTK_LIBRARIES})
+
+set_target_properties(${APP_NAME} PROPERTIES
+  RESOURCE "${APP_RC}"
+)
+
+# Qt resources
+file(GLOB QT_PROPERTY_BROWSER_IMAGES LIST_DIRECTORIES FALSE RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" QtPropertyBrowser/images/*.*)
+qt_add_resources(${APP_NAME} "qt-property-browser"
+  PREFIX "/qt-property-browser/images"
+  BASE "QtPropertyBrowser/images"
+  FILES ${QT_PROPERTY_BROWSER_IMAGES} 
+)
+

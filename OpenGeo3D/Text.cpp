@@ -1,3 +1,4 @@
+// UTF-8编码
 #include "Text.h"
 #include <QtGui/QKeySequence>
 
@@ -130,19 +131,19 @@ QString Text::menuWindow() {
 }
 
 QString Text::menuFullView() {
-	return QStringLiteral("全景(&R)\t") + QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_R).toString();
+	return QStringLiteral("全景(&R)\t") + QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_R).toString();
 }
 
 QString Text::menuBackgroundColor() {
-	return QStringLiteral("背景颜色(&B)\t") + QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_B).toString();
+	return QStringLiteral("背景颜色(&B)\t") + QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B).toString();
 }
 
 QString Text::menuScaleZUp() {
-	return QStringLiteral("Z轴拉伸(&U)\t") + QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_Up).toString();
+	return QStringLiteral("Z轴拉伸(&U)\t") + QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Up).toString();
 }
 
 QString Text::menuScaleZDown() {
-	return QStringLiteral("Z轴压缩(&D)\t") + QKeySequence(Qt::Modifier::CTRL + Qt::Key::Key_Down).toString();
+	return QStringLiteral("Z轴压缩(&D)\t") + QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Down).toString();
 }
 
 QString Text::menuCustomizedZScale() {
