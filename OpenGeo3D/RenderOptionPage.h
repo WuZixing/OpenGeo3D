@@ -1,10 +1,10 @@
 #pragma once
 
 #include <QtWidgets/QTreeWidget>
-#include <QtTreePropertyBrowser>
-#include <QtVariantPropertyManager>
 #include <geo3dml/Project.h>
 #include <g3dvtk/Actor.h>
+#include "QtPropertyBrowser/qttreepropertybrowser.h"
+#include "QtPropertyBrowser/qtvariantproperty.h"
 
 class RenderOptionPage : public QtTreePropertyBrowser {
 	Q_OBJECT

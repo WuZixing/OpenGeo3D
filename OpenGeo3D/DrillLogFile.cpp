@@ -4,7 +4,7 @@
 #include <regex>
 #include <g3dvtk/ObjectFactory.h>
 
-DrillLogFile::DrillLogFile(const std::string& no, const geo3dml::Point3D& headPos, const std::string& filePath) {
+DrillLogFile::DrillLogFile(const QString& no, const geo3dml::Point3D& headPos, const QString& filePath) {
 	drillNo_ = no;
 	headPos_ = headPos;
 	filePath_ = filePath;
@@ -14,11 +14,11 @@ DrillLogFile::~DrillLogFile() {
 
 }
 
-std::string DrillLogFile::GetDrillNo() const {
+const QString& DrillLogFile::GetDrillNo() const {
 	return drillNo_;
 }
 
-std::string DrillLogFile::GetFilePath() const {
+const QString& DrillLogFile::GetFilePath() const {
 	return filePath_;
 }
 
@@ -40,11 +40,9 @@ g3dvtk::MultiPoint* DrillLogFile::ToMultiPoint(const std::map<std::string, geo3d
 }
 
 bool DrillLogFile::ToMultiPoinit(const std::map<std::string, geo3dml::Field>& shapeProperties, g3dvtk::MultiPoint* pts) const {
-	std::ifstream logFile(filePath_);
+	std::ifstream logFile(filePath_.toStdString());
 	if (!logFile.is_open()) {
-		std::wstring_convert<std::codecvt_utf8<wchar_t>> strConverter;
-		std::wstring wFilePath = strConverter.from_bytes(filePath_);
-		logFile.open(wFilePath.c_str());
+		logFile.open(filePath_.toStdWString().c_str());
 		if (!logFile.is_open()) {
 			return false;
 		}
