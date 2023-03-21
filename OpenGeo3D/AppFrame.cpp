@@ -96,16 +96,16 @@ void AppFrame::openGeo3DML() {
 	BusyCursor::beginWaiting();
 	g3dObject = xmlReader.LoadXMLFile(filePath.toUtf8().constData());
 	BusyCursor::endWaiting();
-	if (g3dObject == NULL) {
+	if (g3dObject == nullptr) {
 		QMessageBox::critical(this, this->windowTitle(), QString::fromUtf8(xmlReader.Error().c_str()));
 	} else {
 		BusyCursor waiting;
 		geo3dml::Model* model = dynamic_cast<geo3dml::Model*>(g3dObject);
-		if (model != NULL) {
+		if (model != nullptr) {
 			projectPanel_->appendG3DModel(model, true);
 		} else {
 			geo3dml::Project* project = dynamic_cast<geo3dml::Project*>(g3dObject);
-			if (project != NULL) {
+			if (project != nullptr) {
 				project->BindFeatureClassesToLayers(&g3dVtkFactory);
 				int numOfMaps = project->GetMapCount();
 				while (project->GetModelCount() > 0) {
