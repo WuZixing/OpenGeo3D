@@ -12,6 +12,7 @@
 #include <QStandardPaths>
 #include <vtkXMLImageDataWriter.h>
 #include <g3dvtk/ObjectFactory.h>
+#include <g3dvtk/TIN.h>
 #include <g3dvtk/UniformGrid.h>
 #include <g3dxml/XMLReader.h>
 #include <g3dxml/XMLWriter.h>
@@ -23,6 +24,11 @@
 #include "ProjectPanel.h"
 #include "RenderWidget.h"
 #include "Text.h"
+#include <vtkDiscreteMarchingCubes.h>
+#include <vtkCellData.h>
+#include <vtkPointData.h>
+#include <vtkWindowedSincPolyDataFilter.h>
+#include <set>
 
 AppFrame::AppFrame(QWidget* parent) : QMainWindow(parent) {
     setWindowIcon(QIcon(QPixmap(xpm_icon)));
@@ -129,12 +135,12 @@ void AppFrame::openGeo3DML() {
 }
 
 void AppFrame::openDrillLog() {
-    /*
     DlgOpenSimpleDrillLog dlg(this);
     if (dlg.exec() != DlgOpenSimpleDrillLog::DialogCode::Accepted) {
         return;
     }
     BusyCursor waiting;
+    /*
     geo3dml::Model* g3dModel = dlg.loadAsG3DModel();
     if (g3dModel != nullptr) {
         projectPanel_->appendG3DModel(g3dModel, true);
@@ -147,83 +153,127 @@ void AppFrame::openDrillLog() {
     //     return;
     // }
     // QFile dataFile(filePath);
-    QFile dataFile(QStringLiteral("C:/Users/WuZixing/Data/离散MarchingCube/4_48_45.dat"));
+    QFile dataFile(dlg.getDataFilePath());
     if (!dataFile.open(QIODeviceBase::ReadOnly)) {
         return;
     }
     QByteArray fileData = dataFile.readAll();
     dataFile.close();
+    int dimI = 64, dimJ = 64, dimK = 160;
+    dlg.getGridDim(dimI, dimJ, dimK);
+    double stepI = 0, stepJ = 0, stepK = 0;
+    dlg.getGridStep(stepI, stepJ, stepK);
+    int noData = -99;
+    dlg.getNoDataValue(noData);
     // 构造网格数据，并添加到项目中。
-    BusyCursor waiting;
     g3dvtk::ObjectFactory g3dFactory;
-    geo3dml::ShapeProperty* cellProp = g3dFactory.NewShapeProperty();//uniGrid->GetProperty(geo3dml::ShapeProperty::Voxel);
+    geo3dml::ShapeProperty* cellProp = g3dFactory.NewShapeProperty();
     if (cellProp == nullptr) {
         return;
     }
     geo3dml::Field field;
-    field.Name("lab").Label("lab").DataType(geo3dml::Field::Integer);
+    field.Name("category").Label("Category").DataType(geo3dml::Field::Integer).NoDataValue(std::to_string(noData));
     cellProp->SetID(geo3dml::Object::NewID());
     cellProp->Name(field.Name());
     cellProp->AddField(field);
-    const int dimI = 64, dimJ = 64, dimK = 160;
-    // 在有效数据点的外围增加一圈无效数据点。NewUniformGrid方法是在输入的dim参数上再加1构造点集。
-    geo3dml::UniformGrid* grid = g3dFactory.NewUniformGrid(-2.0, -2.0, -0.25, 2.0, 2.0, 0.25, dimI + 1, dimJ + 1, dimK + 1);
+    geo3dml::UniformGrid* grid = g3dFactory.NewUniformGrid(0, 0, 0, stepI, stepJ, stepK, dimI, dimJ, dimK);
     g3dvtk::UniformGrid* uniGrid = dynamic_cast<g3dvtk::UniformGrid*>(grid);
     if (uniGrid == nullptr) {
         delete cellProp;
         return;
     }
-    vtkUniformGrid* vtkGrid = uniGrid->GetUniformGrid();
-    uniGrid->SetProperty(cellProp, geo3dml::ShapeProperty::Vertex);
+    uniGrid->SetProperty(cellProp, geo3dml::ShapeProperty::Voxel);
     int valueIndex = 0;
     const int valueSize = sizeof(int);
     const char* data = fileData.constData();
-    qsizetype dataSize = fileData.length();
-    for (int i = -1; i <= dimI; ++i) {
-        for (int j = -1; j <= dimJ; ++j) {
-            for (int k = dimK; k >= -1; --k) {
-                int cellValue = -99;
-                const int cellIndex = (k + 1) * (dimJ + 2) * (dimI + 2) + (j + 1) * (dimI + 2) + (i + 1);
-                if (i < 0 || i == dimI || j < 0 || j == dimJ || k < 0 || k == dimK) {
-                    // 外增特意增加的无效点。
-                    cellProp->IntValue(0, cellIndex, cellValue);
-                    vtkGrid->BlankPoint(cellIndex);
-                    continue;
-                }
-                if (dataSize < valueSize * (valueIndex + 1)) {
+    const qsizetype dataSize = fileData.length();
+    for (int i = 0; i < dimI; ++i) {
+        for (int j = 0; j < dimJ; ++j) {
+            for (int k = dimK - 1; k >= 0; --k) {
+                int cellValue = noData;
+                const int cellIndex = k * dimJ * dimI + j * dimI + i;
+               if (dataSize < valueSize * (valueIndex + 1)) {
                     break;
                 }
                 memcpy_s(&cellValue, valueSize, &data[valueIndex * valueSize], valueSize);
                 ++valueIndex;
                 cellProp->IntValue(0, cellIndex, cellValue);
-                if (cellValue < 0) {
-                    // uniGrid->SetCellValidation(i, j, k, false);
-                    vtkGrid->BlankPoint(cellIndex);
-
+                if (cellValue == noData) {
+                    uniGrid->SetCellValidation(i, j, k, false);
                 }
             }
         }
     }
-    // vtkSmartPointer<vtkXMLImageDataWriter> writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-    // writer->SetFileName("C:/Users/WuZixing/Data/离散MarchingCube/4_48_45-cell.vti");
-    // writer->SetInputData(vtkGrid);
-    // writer->Write();
     // 要素
-    geo3dml::Feature* feature = new geo3dml::Feature();
-    if (feature == nullptr) {
+    geo3dml::Feature* featureCellGrid = new geo3dml::Feature();
+    if (featureCellGrid == nullptr) {
         delete uniGrid;
         return;
     }
-    feature->AddGeometry(uniGrid);
-    feature->SetName(QStringLiteral("网格").toUtf8().constData()).SetID("Grid");
-    // 要素类
+    featureCellGrid->AddGeometry(uniGrid);
+    featureCellGrid->SetName(QStringLiteral("网格整体").toUtf8().constData()).SetID("Grid-Whole");
+    // 基于点集的“网格”：点位于网格的中间
+    geo3dml::ShapeProperty* ptProp = g3dFactory.NewShapeProperty();
+    if (ptProp == nullptr) {
+        delete featureCellGrid;
+        return;
+    }
+    ptProp->AddField(field);
+    // 在有效数据点的外围增加一圈无效数据点。NewUniformGrid方法是在输入的dim参数上再加1构造点集。
+    geo3dml::UniformGrid* ptGrid = g3dFactory.NewUniformGrid(-stepI / 2, -stepJ / 2, -stepK / 2, stepI, stepJ, stepK, dimI + 1, dimJ + 1, dimK + 1);
+    g3dvtk::UniformGrid* uniPtGrid = dynamic_cast<g3dvtk::UniformGrid*>(ptGrid);
+    if (uniPtGrid == nullptr) {
+        delete ptProp;
+        delete featureCellGrid;
+        return;
+    }
+    uniPtGrid->SetProperty(ptProp, geo3dml::ShapeProperty::Vertex);
+    std::set<int> attributes;
+    vtkUniformGrid* vtkGrid = uniPtGrid->GetUniformGrid();
+    valueIndex = 0;
+    for (int i = -1; i <= dimI; ++i) {
+        for (int j = -1; j <= dimJ; ++j) {
+            for (int k = dimK; k >= -1; --k) {
+                int ptValue = noData;
+                const int ptIndex = (k + 1) * (dimJ + 2) * (dimI + 2) + (j + 1) * (dimI + 2) + (i + 1);
+                if (i < 0 || i == dimI || j < 0 || j == dimJ || k < 0 || k == dimK) {
+                    // 外增特意增加的无效点。
+                    ptProp->IntValue(0, ptIndex, ptValue);
+                    vtkGrid->BlankPoint(ptIndex);
+                    continue;
+                }
+                if (dataSize < valueSize * (valueIndex + 1)) {
+                    break;
+                }
+                memcpy_s(&ptValue, valueSize, &data[valueIndex * valueSize], valueSize);
+                ++valueIndex;
+                ptProp->IntValue(0, ptIndex, ptValue);
+                if (ptValue == noData) {
+                    vtkGrid->BlankPoint(ptIndex);
+                } else {
+                    attributes.insert(ptValue);
+                }
+            }
+        }
+    }
+    geo3dml::Feature* featurePointGrid = new geo3dml::Feature();
+    if (featurePointGrid == nullptr) {
+        delete uniPtGrid;
+        delete featureCellGrid;
+        return;
+    }
+    featurePointGrid->AddGeometry(uniPtGrid);
+    featurePointGrid->SetName(QStringLiteral("网格整体-点集").toUtf8().constData()).SetID("Grid-Whole-Point");
+    // 要素类：网格
     geo3dml::FeatureClass* featureClass = new geo3dml::FeatureClass();
     if (featureClass == nullptr) {
-        delete feature;
+        delete featureCellGrid;
+        delete featurePointGrid;
         return;
     }
     featureClass->SetName(QStringLiteral("网格").toUtf8().constData()).SetID("Grid");
-    featureClass->AddFeature(feature);
+    featureClass->AddFeature(featureCellGrid);
+    featureClass->AddFeature(featurePointGrid);
     // 模型
     geo3dml::Model* model = new geo3dml::Model();
     if (model == nullptr) {
@@ -233,6 +283,88 @@ void AppFrame::openDrillLog() {
     model->SetName(QStringLiteral("模型").toUtf8().constData());
     model->SetID("Model");
     model->AddFeatureClass(featureClass);
+    // 等值面要素和要素类。基于点集网格构造等值面。
+    {
+        geo3dml::FeatureClass* featureClassISO = new geo3dml::FeatureClass();
+        featureClassISO->AddField(field).SetName(QStringLiteral("原始等值面").toUtf8().constData()).SetID("ISO");
+        geo3dml::FeatureClass* featureClassSmoothedISOOff = new geo3dml::FeatureClass();
+        featureClassSmoothedISOOff->AddField(field).SetName(QStringLiteral("光滑的等值面-边界参数Off").toUtf8().constData()).SetID("Smoothed-ISO-Off");
+        geo3dml::FeatureClass* featureClassSmoothedISOOn = new geo3dml::FeatureClass();
+        featureClassSmoothedISOOn->AddField(field).SetName(QStringLiteral("光滑的等值面-边界参数On").toUtf8().constData()).SetID("Smoothed-ISO-On");
+        vtkPointData* ptData = vtkGrid->GetPointData();
+        vtkDataArray* da = ptData->GetArray(field.Name().c_str());
+        ptData->SetScalars(da);
+        // 追踪等值面
+        vtkSmartPointer<vtkDiscreteMarchingCubes> marchingCube = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
+        marchingCube->SetInputData(vtkGrid);
+        vtkSmartPointer<vtkWindowedSincPolyDataFilter> smoother = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
+        smoother->SetNumberOfIterations(8);
+        smoother->BoundarySmoothingOff();
+        smoother->FeatureEdgeSmoothingOff();
+        smoother->SetFeatureAngle(120);
+        smoother->SetEdgeAngle(120);
+        smoother->SetPassBand(0.001);
+        smoother->NonManifoldSmoothingOn();
+        smoother->NormalizeCoordinatesOn();
+        smoother->SetInputConnection(marchingCube->GetOutputPort());
+        for (auto citor = attributes.cbegin(); citor != attributes.cend(); ++citor) {
+            marchingCube->GenerateValues(1, *citor, *citor);
+            marchingCube->Update();
+            vtkPolyData* polyData = marchingCube->GetOutput();
+            if (polyData != nullptr) {
+                // 原始等值面
+                geo3dml::TIN* tin = g3dFactory.NewTIN();
+                if (tin != nullptr) {
+                    g3dvtk::TIN* vtkTin = dynamic_cast<g3dvtk::TIN*>(tin);
+                    if (vtkTin != nullptr) {
+                        vtkTin->GetPolyData()->DeepCopy(polyData);
+                    }
+                    geo3dml::Feature* featureISO = new geo3dml::Feature();
+                    featureISO->AddGeometry(tin).SetField(geo3dml::FieldValue(field.Name(), *citor));
+                    featureISO->SetName(QStringLiteral("等值面-%1").arg(*citor).toUtf8().constData()).SetID(QStringLiteral("ISO-%1").arg(*citor).toUtf8().constData());
+                    featureClassISO->AddFeature(featureISO);
+                }
+                // 光滑后的等值面
+                smoother->BoundarySmoothingOff();
+                smoother->FeatureEdgeSmoothingOff();
+                smoother->Update();
+                vtkPolyData* smoothedPolyData = smoother->GetOutput();
+                if (smoothedPolyData != nullptr) {
+                    geo3dml::TIN* tin = g3dFactory.NewTIN();
+                    if (tin != nullptr) {
+                        g3dvtk::TIN* vtkTin = dynamic_cast<g3dvtk::TIN*>(tin);
+                        if (vtkTin != nullptr) {
+                            vtkTin->GetPolyData()->DeepCopy(smoothedPolyData);
+                        }
+                        geo3dml::Feature* featureISO = new geo3dml::Feature();
+                        featureISO->AddGeometry(tin).SetField(geo3dml::FieldValue(field.Name(), *citor));
+                        featureISO->SetName(QStringLiteral("等值面-%1").arg(*citor).toUtf8().constData()).SetID(QStringLiteral("ISO-%1").arg(*citor).toUtf8().constData());
+                        featureClassSmoothedISOOff->AddFeature(featureISO);
+                    }
+                }
+                smoother->BoundarySmoothingOn();
+                smoother->FeatureEdgeSmoothingOn();
+                smoother->Update();
+                smoothedPolyData = smoother->GetOutput();
+                if (smoothedPolyData != nullptr) {
+                    geo3dml::TIN* tin = g3dFactory.NewTIN();
+                    if (tin != nullptr) {
+                        g3dvtk::TIN* vtkTin = dynamic_cast<g3dvtk::TIN*>(tin);
+                        if (vtkTin != nullptr) {
+                            vtkTin->GetPolyData()->DeepCopy(smoothedPolyData);
+                        }
+                        geo3dml::Feature* featureISO = new geo3dml::Feature();
+                        featureISO->AddGeometry(tin).SetField(geo3dml::FieldValue(field.Name(), *citor));
+                        featureISO->SetName(QStringLiteral("等值面-%1").arg(*citor).toUtf8().constData()).SetID(QStringLiteral("ISO-%1").arg(*citor).toUtf8().constData());
+                        featureClassSmoothedISOOn->AddFeature(featureISO);
+                    }
+                }
+            }
+        }
+        model->AddFeatureClass(featureClassISO);
+        model->AddFeatureClass(featureClassSmoothedISOOff);
+        model->AddFeatureClass(featureClassSmoothedISOOn);
+    }
     this->projectPanel_->appendG3DModel(model, true);
     this->projectPanel_->expandStructureModelTree();
     Events::PostEvent(Events::Type::ResetAndUpdateScene, this);

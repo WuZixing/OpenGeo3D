@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QDialog>
-#include <geo3dml/Model.h>
+#include <QtWidgets/QLineEdit>
 #include "GroupOfSimpleDrillLogFiles.h"
 
 class DlgOpenSimpleDrillLog : public QDialog {
@@ -11,10 +11,14 @@ public:
 	DlgOpenSimpleDrillLog(QWidget* parent = nullptr);
 	virtual ~DlgOpenSimpleDrillLog();
 
-	geo3dml::Model* loadAsG3DModel() const;
+	QString getDataFilePath() const;
+	bool getGridDim(int& dimX, int& dimY, int& dimZ) const;
+	bool getGridStep(double& stepX, double& stepY, double& stepZ) const;
+	bool getNoDataValue(int& value) const;
 
 public slots:
 	virtual void accept() override;
+	void openDataFile();
 
 private:
 	void initUI();
@@ -22,4 +26,7 @@ private:
 
 private:
 	GroupOfSimpleDrillLogFiles* group_;
+	QLineEdit* dataFilePath_, * editNoData_;
+	QLineEdit* editDimX_, * editDimY_, * editDimZ_;
+	QLineEdit* editStepX_, * editStepY_, * editStepZ_;
 };

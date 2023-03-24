@@ -99,7 +99,7 @@ QString Text::menuOpenGeo3DML() {
 }
 
 QString Text::menuOpenDrillLog() {
-	return QStringLiteral("打开简单钻孔记录...");
+	return QStringLiteral("打开网格数据...");
 }
 
 QString Text::menuGridModel() {
