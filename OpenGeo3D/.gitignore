@@ -1,5 +1,6 @@
 /*
 !.gitignore
+!QtPropertyBrowser/
 !CMakeLists.txt
 !*.h
 !*.cpp
