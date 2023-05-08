@@ -1,3 +1,4 @@
+// UTF-8编码
 #include "MetadataPage.h"
 #include <geo3dml/Annotation.h>
 #include <geo3dml/CornerPointGrid.h>
@@ -6,6 +7,7 @@
 #include <geo3dml/Point.h>
 #include <geo3dml/TIN.h>
 #include <geo3dml/UniformGrid.h>
+#include <geo3dml/GTPVolume.h>
 #include "Text.h"
 
 MetadataPage::MetadataPage(QWidget* parent) : QtTreePropertyBrowser(parent) {
@@ -13,7 +15,7 @@ MetadataPage::MetadataPage(QWidget* parent) : QtTreePropertyBrowser(parent) {
 	propManager_ = new QtVariantPropertyManager(this);
 	QtVariantEditorFactory* propFactory = new QtVariantEditorFactory(this);
 	setFactoryForManager(propManager_, propFactory);
-	setResizeMode(QtTreePropertyBrowser::ResizeMode::Interactive);
+	setResizeMode(QtTreePropertyBrowser::ResizeMode::Stretch);
 	setAlternatingRowColors(false);
 	setHeaderVisible(false);
 }
@@ -167,27 +169,26 @@ void MetadataPage::setFieldInfo(QtVariantProperty* parentProp, const geo3dml::Fi
 	QtVariantProperty* propField = propManager_->addProperty(QMetaType::Type::QString, QString::number(index + 1));
 	propField->setValue(QString::fromUtf8(field.Name().c_str()));
 	propField->setAttribute(attriReadOnly_, true);
-	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("Label"));
+	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("名字"));
 	propItem->setValue(QString::fromUtf8(field.Label().c_str()));
 	propItem->setAttribute(attriReadOnly_, true);
 	propField->addSubProperty(propItem);
-	propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("DataType"));
+	propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("数据类型"));
 	propItem->setValue(QString::fromUtf8(geo3dml::Field::ValueTypeToName(field.DataType()).c_str()));
 	propItem->setAttribute(attriReadOnly_, true);
 	propField->addSubProperty(propItem);
-	propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("UOM"));
+	propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("计量单位"));
 	propItem->setValue(QString::fromUtf8(field.Uom().c_str()));
 	propItem->setAttribute(attriReadOnly_, true);
 	propField->addSubProperty(propItem);
-	propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("Definition"));
+	propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("定义"));
 	propItem->setValue(QString::fromUtf8(field.Definition().c_str()));
 	propItem->setAttribute(attriReadOnly_, true);
 	propField->addSubProperty(propItem);
-	propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("Descriptoin"));
+	propItem = propManager_->addProperty(QMetaType::Type::QString, QStringLiteral("说明"));
 	propItem->setValue(QString::fromUtf8(field.Description().c_str()));
 	propItem->setAttribute(attriReadOnly_, true);
 	propField->addSubProperty(propItem);
-	propField->setEnabled(false);
 
 	parentProp->addSubProperty(propField);
 }
@@ -266,6 +267,7 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 	geo3dml::LineString* lineString = nullptr;
 	geo3dml::Annotation* annotation = nullptr;
 	geo3dml::MultiPoint* mPoint = nullptr;
+	geo3dml::GTPVolume* gtpGrid = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
@@ -293,6 +295,11 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 							mPoint = dynamic_cast<geo3dml::MultiPoint*>(g3dGeometry);
 							if (mPoint != nullptr) {
 								geoClassName = Text::nameOfClassG3DMPoint();
+							} else {
+								gtpGrid = dynamic_cast<geo3dml::GTPVolume*>(g3dGeometry);
+								if (gtpGrid != nullptr) {
+									geoClassName = Text::nameOfClassG3DGTPVolume();
+								}
 							}
 						}
 					}
@@ -369,6 +376,15 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 	} else if (mPoint != nullptr) {
 		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfVertices());
 		propItem->setValue(mPoint->GetPointCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (gtpGrid != nullptr) {
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfVertices());
+		propItem->setValue(gtpGrid->GetVertexCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfPrisms());
+		propItem->setValue(gtpGrid->GetPrismCount());
 		propItem->setAttribute(attriReadOnly_, true);
 		propGeometry->addSubProperty(propItem);
 	}
