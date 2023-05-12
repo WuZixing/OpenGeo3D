@@ -22,6 +22,7 @@ public:
 	static QString nameOfClassG3DTIN();
 	static QString nameOfClassG3DUniformGrid();
 	static QString nameOfClassG3DCornerGrid();
+	static QString nameOfClassG3DGTPVolume();
 	static QString nameOfRepresentationModePoints();
 	static QString nameOfRepresentationModeWireframe();
 	static QString nameOfRepresentationModeSurface();
@@ -93,6 +94,7 @@ public:
 	static QString labelOfClassName();
 	static QString labelOfNumberOfVertices();
 	static QString labelOfNumberOfTriangles();
+	static QString labelOfNumberOfPrisms();
 	static QString labelOfGridOrigin();
 	static QString labelOfGridCellSize();
 	static QString labelOfGridCellDimension();

@@ -62,6 +62,10 @@ QString Text::nameOfClassG3DCornerGrid() {
 	return QStringLiteral("Corner Grid");
 }
 
+QString Text::nameOfClassG3DGTPVolume() {
+	return QStringLiteral("GTP Grid");
+}
+
 QString Text::nameOfRepresentationModePoints() {
 	return QStringLiteral("顶点");
 }
@@ -292,6 +296,10 @@ QString Text::labelOfNumberOfVertices() {
 
 QString Text::labelOfNumberOfTriangles() {
 	return QStringLiteral("三角形数");
+}
+
+QString Text::labelOfNumberOfPrisms() {
+	return QStringLiteral("三棱柱数");
 }
 
 QString Text::labelOfGridOrigin() {
