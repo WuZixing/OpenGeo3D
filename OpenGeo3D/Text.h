@@ -96,9 +96,15 @@ public:
 	static QString labelOfNumberOfVertices();
 	static QString labelOfNumberOfTriangles();
 	static QString labelOfNumberOfPrisms();
+	static QString labelOfAxisVectorI();
+	static QString labelOfAxisVectorJ();
+	static QString labelOfAxisVectorK();
 	static QString labelOfGridOrigin();
 	static QString labelOfGridCellSize();
 	static QString labelOfGridCellDimension();
+	static QString labelOfGridCellEnvelope();
+	static QString labelOfGridCellEnvelopeLow();
+	static QString labelOfGridCellEnvelopeHigh();
 	static QString labelOfRenderOption();
 	static QString labelOfColor();
 	static QString labelOfRepresentationMode();

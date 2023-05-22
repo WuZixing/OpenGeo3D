@@ -306,6 +306,18 @@ QString Text::labelOfNumberOfPrisms() {
 	return QStringLiteral("三棱柱数");
 }
 
+QString Text::labelOfAxisVectorI() {
+	return QStringLiteral("I轴向量");
+}
+
+QString Text::labelOfAxisVectorJ() {
+	return QStringLiteral("J轴向量");
+}
+
+QString Text::labelOfAxisVectorK() {
+	return QStringLiteral("K轴向量");
+}
+
 QString Text::labelOfGridOrigin() {
 	return QStringLiteral("网格原点");
 }
@@ -316,6 +328,18 @@ QString Text::labelOfGridCellSize() {
 
 QString Text::labelOfGridCellDimension() {
 	return QStringLiteral("网格单元数目");
+}
+
+QString Text::labelOfGridCellEnvelope() {
+	return QStringLiteral("网格范围");
+}
+
+QString Text::labelOfGridCellEnvelopeLow() {
+	return QStringLiteral("最小坐标");
+}
+
+QString Text::labelOfGridCellEnvelopeHigh() {
+	return QStringLiteral("最大坐标");
 }
 
 QString Text::labelOfRenderOption() {

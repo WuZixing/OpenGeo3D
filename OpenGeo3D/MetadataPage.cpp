@@ -145,13 +145,13 @@ void MetadataPage::setBasicMetaInfo(const QString& datasetName, const QString& d
 
 void MetadataPage::setMBRInfo(const geo3dml::Box3D& box) {
 	QtVariantProperty* propAABB = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfAABB());
-	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAABBMinPoint());
-	propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(box.min.x, 'f')).arg(QString::number(box.min.y, 'f')).arg(QString::number(box.min.z, 'f')));
+
+	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAABBMaxPoint());
+	propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(box.max.x, 'f')).arg(QString::number(box.max.y, 'f')).arg(QString::number(box.max.z, 'f')));
 	propItem->setAttribute(attriReadOnly_, true);
 	propAABB->addSubProperty(propItem);
-
-	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAABBMaxPoint());
-	propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(box.max.x, 'f')).arg(QString::number(box.max.y, 'f')).arg(QString::number(box.max.z, 'f')));
+	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAABBMinPoint());
+	propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(box.min.x, 'f')).arg(QString::number(box.min.y, 'f')).arg(QString::number(box.min.z, 'f')));
 	propItem->setAttribute(attriReadOnly_, true);
 	propAABB->addSubProperty(propItem);
 
@@ -261,7 +261,7 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 	geo3dml::Annotation* annotation = nullptr;
 	geo3dml::MultiPoint* mPoint = nullptr;
 	geo3dml::GTPVolume* gtpGrid = nullptr;
-	geo3dml::RectifiedGrid* rectGird = nullptr;
+	geo3dml::RectifiedGrid* rectGrid = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
@@ -294,8 +294,8 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 								if (gtpGrid != nullptr) {
 									geoClassName = Text::nameOfClassG3DGTPVolume();
 								} else {
-									rectGird = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
-									if (rectGird != nullptr) {
+									rectGrid = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
+									if (rectGrid != nullptr) {
 										geoClassName = Text::nameOfClassRectifiedGrid();
 									}
 								}
@@ -384,6 +384,43 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 		propGeometry->addSubProperty(propItem);
 		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfPrisms());
 		propItem->setValue(gtpGrid->GetPrismCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (rectGrid != nullptr) {
+		QtVariantProperty* propCellEnvelope = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfGridCellEnvelope());
+		// 网格范围
+		int lowI = 0, lowJ = 0, lowK = 0, highI = 0, highJ = 0, highK = 0;
+		rectGrid->GetCellRange(lowI, lowJ, lowK, highI, highJ, highK);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridCellEnvelopeHigh());
+		propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(highI)).arg(QString::number(highJ)).arg(QString::number(highK)));
+		propItem->setAttribute(attriReadOnly_, true);
+		propCellEnvelope->addSubProperty(propItem);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridCellEnvelopeLow());
+		propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(lowI)).arg(QString::number(lowJ)).arg(QString::number(lowK)));
+		propItem->setAttribute(attriReadOnly_, true);
+		propCellEnvelope->addSubProperty(propItem);
+		propGeometry->addSubProperty(propCellEnvelope);
+		// 网格原点
+		const geo3dml::Point3D& origin = rectGrid->Origin();
+		QString str = QString::asprintf("(%.6f, %.6f, %.6f)", origin.x, origin.y, origin.z);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridOrigin());
+		propItem->setValue(str);
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		// 坐标轴向量
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAxisVectorI());
+		const geo3dml::Vector3D& vecI = rectGrid->AxisI();
+		propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(vecI.X(), 'f')).arg(QString::number(vecI.Y(), 'f')).arg(QString::number(vecI.Z(), 'f')));
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAxisVectorJ());
+		const geo3dml::Vector3D& vecJ = rectGrid->AxisJ();
+		propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(vecJ.X(), 'f')).arg(QString::number(vecJ.Y(), 'f')).arg(QString::number(vecJ.Z(), 'f')));
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAxisVectorK());
+		const geo3dml::Vector3D& vecK = rectGrid->AxisK();
+		propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(vecK.X(), 'f')).arg(QString::number(vecK.Y(), 'f')).arg(QString::number(vecK.Z(), 'f')));
 		propItem->setAttribute(attriReadOnly_, true);
 		propGeometry->addSubProperty(propItem);
 	}
