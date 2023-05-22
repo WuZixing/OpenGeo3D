@@ -21,7 +21,7 @@ private:
 	void setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor);
 
 	void setBasicMetaInfo(const QString& datasetName, const QString& datasetId, int childrenNumber);
-	void setMBRInfo(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
+	void setMBRInfo(const geo3dml::Box3D& box);
 	void setFieldInfo(QtVariantProperty* parentProp, const geo3dml::Field& field, int index);
 	void setFeatureInfo(geo3dml::Feature* g3dFeature);
 	void setGeometryInfo(geo3dml::Geometry* g3dGeometry);

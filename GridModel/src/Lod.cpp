@@ -50,13 +50,11 @@ int LOD::GetVoxelCount() const {
 }
 
 geo3dml::Box3D LOD::GetExtent() const {
-	if (g3dUniformGrid_ == nullptr) {
-		return geo3dml::Box3D();
-	} else {
-		geo3dml::Box3D box;
-		g3dUniformGrid_->GetMinimumBoundingRectangle(box.min.x, box.min.y, box.min.z, box.max.x, box.max.y, box.max.z);
-		return box;
-	}
+	geo3dml::Box3D box;
+	if (g3dUniformGrid_ != nullptr) {
+		box = g3dUniformGrid_->GetMinimumBoundingRectangle();
+	} 
+	return box;
 }
 
 void LOD::Extend(const geo3dml::Box3D& range) {

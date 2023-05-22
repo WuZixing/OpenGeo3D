@@ -66,6 +66,10 @@ QString Text::nameOfClassG3DGTPVolume() {
 	return QStringLiteral("GTP Grid");
 }
 
+QString Text::nameOfClassRectifiedGrid() {
+	return QStringLiteral("Rectified Grid");
+}
+
 QString Text::nameOfRepresentationModePoints() {
 	return QStringLiteral("顶点");
 }

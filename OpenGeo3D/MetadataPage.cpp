@@ -8,6 +8,7 @@
 #include <geo3dml/TIN.h>
 #include <geo3dml/UniformGrid.h>
 #include <geo3dml/GTPVolume.h>
+#include <geo3dml/RectifiedGrid.h>
 #include "Text.h"
 
 MetadataPage::MetadataPage(QWidget* parent) : QtTreePropertyBrowser(parent) {
@@ -60,23 +61,17 @@ void MetadataPage::setCurrentItem(QTreeWidgetItem* item) {
 
 void MetadataPage::setCurrentItemAsG3DProject(geo3dml::Project* g3dProject) {
 	setBasicMetaInfo(Text::labelOfStructureModel(), QString::fromUtf8(g3dProject->GetID().c_str()), g3dProject->GetMapCount());
-	double minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-	g3dProject->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
-	setMBRInfo(minX, minY, minZ, maxX, maxY, maxZ);
+	setMBRInfo(g3dProject->GetMinimumBoundingRectangle());
 }
 
 void MetadataPage::setCurrentItemAsG3DMap(geo3dml::Map* g3dMap) {
 	setBasicMetaInfo(Text::labelOf3DMap(), QString::fromUtf8(g3dMap->GetID().c_str()), g3dMap->GetLayerCount());
-	double minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-	g3dMap->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
-	setMBRInfo(minX, minY, minZ, maxX, maxY, maxZ);
+	setMBRInfo(g3dMap->GetMinimumBoundingRectangle());
 }
 
 void MetadataPage::setCurrentItemAsG3DLayer(geo3dml::Layer* g3dLayer) {
 	setBasicMetaInfo(Text::labelOfLayer(), QString::fromUtf8(g3dLayer->GetID().c_str()), g3dLayer->GetActorCount());
-	double minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-	g3dLayer->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
-	setMBRInfo(minX, minY, minZ, maxX, maxY, maxZ);
+	setMBRInfo(g3dLayer->GetMinimumBoundingRectangle());
 	// feature class
 	geo3dml::FeatureClass* g3dFeatureClass = g3dLayer->GetBindingFeatureClass();
 	QtVariantProperty* propFeatureClass = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfFeatureClass());
@@ -121,9 +116,7 @@ void MetadataPage::setCurrentItemAsG3DLayer(geo3dml::Layer* g3dLayer) {
 
 void MetadataPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 	setBasicMetaInfo(Text::labelOfActor(), QString::fromUtf8(g3dActor->GetID().c_str()), 0);
-	double minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-	g3dActor->GetMinimumBoundingRectangle(minX, minY, minZ, maxX, maxY, maxZ);
-	setMBRInfo(minX, minY, minZ, maxX, maxY, maxZ);
+	setMBRInfo(g3dActor->GetMinimumBoundingRectangle());
 	// feature
 	setFeatureInfo(g3dActor->GetBindingFeature());
 	// geometry
@@ -150,15 +143,15 @@ void MetadataPage::setBasicMetaInfo(const QString& datasetName, const QString& d
 	addProperty(propBasicInfo);
 }
 
-void MetadataPage::setMBRInfo(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+void MetadataPage::setMBRInfo(const geo3dml::Box3D& box) {
 	QtVariantProperty* propAABB = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfAABB());
 	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAABBMinPoint());
-	propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(minX, 'f')).arg(QString::number(minY, 'f')).arg(QString::number(minZ, 'f')));
+	propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(box.min.x, 'f')).arg(QString::number(box.min.y, 'f')).arg(QString::number(box.min.z, 'f')));
 	propItem->setAttribute(attriReadOnly_, true);
 	propAABB->addSubProperty(propItem);
 
 	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAABBMaxPoint());
-	propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(maxX, 'f')).arg(QString::number(maxY, 'f')).arg(QString::number(maxZ, 'f')));
+	propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(box.max.x, 'f')).arg(QString::number(box.max.y, 'f')).arg(QString::number(box.max.z, 'f')));
 	propItem->setAttribute(attriReadOnly_, true);
 	propAABB->addSubProperty(propItem);
 
@@ -268,6 +261,7 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 	geo3dml::Annotation* annotation = nullptr;
 	geo3dml::MultiPoint* mPoint = nullptr;
 	geo3dml::GTPVolume* gtpGrid = nullptr;
+	geo3dml::RectifiedGrid* rectGird = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
@@ -299,6 +293,11 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 								gtpGrid = dynamic_cast<geo3dml::GTPVolume*>(g3dGeometry);
 								if (gtpGrid != nullptr) {
 									geoClassName = Text::nameOfClassG3DGTPVolume();
+								} else {
+									rectGird = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
+									if (rectGird != nullptr) {
+										geoClassName = Text::nameOfClassRectifiedGrid();
+									}
 								}
 							}
 						}

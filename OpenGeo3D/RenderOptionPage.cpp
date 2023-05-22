@@ -8,6 +8,7 @@
 #include <geo3dml/TIN.h>
 #include <geo3dml/UniformGrid.h>
 #include <geo3dml/GTPVolume.h>
+#include <geo3dml/RectifiedGrid.h>
 #include "Events.h"
 #include "Text.h"
 
@@ -91,6 +92,7 @@ void RenderOptionPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 	geo3dml::Annotation* annotation = nullptr;
 	geo3dml::MultiPoint* mPoint = nullptr;
 	geo3dml::GTPVolume* gtpGrid = nullptr;
+	geo3dml::RectifiedGrid* rectGrid = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
@@ -122,6 +124,11 @@ void RenderOptionPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 								gtpGrid = dynamic_cast<geo3dml::GTPVolume*>(g3dGeometry);
 								if (gtpGrid != nullptr) {
 									geoClassName = Text::nameOfClassG3DGTPVolume();
+								} else {
+									rectGrid = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
+									if (rectGrid != nullptr) {
+										geoClassName = Text::nameOfClassRectifiedGrid();
+									}
 								}
 							}
 						}

@@ -23,6 +23,7 @@ public:
 	static QString nameOfClassG3DUniformGrid();
 	static QString nameOfClassG3DCornerGrid();
 	static QString nameOfClassG3DGTPVolume();
+	static QString nameOfClassRectifiedGrid();
 	static QString nameOfRepresentationModePoints();
 	static QString nameOfRepresentationModeWireframe();
 	static QString nameOfRepresentationModeSurface();
