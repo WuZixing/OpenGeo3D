@@ -255,15 +255,15 @@ QString Text::labelOfStructureModel() {
 }
 
 QString Text::labelOf3DMap() {
-	return QStringLiteral("地质图/模型");
+	return QStringLiteral("地质图|模型");
 }
 
 QString Text::labelOfLayer() {
-	return QStringLiteral("图层/要素类");
+	return QStringLiteral("图层|要素类");
 }
 
 QString Text::labelOfActor() {
-	return QStringLiteral("图元/要素");
+	return QStringLiteral("图元|要素");
 }
 
 QString Text::labelOfFeatureClass() {
