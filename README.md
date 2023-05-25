@@ -168,7 +168,10 @@
 
 ```shell
 # 下载代码
+# 从github
 git clone https://github.com/WuZixing/OpenGeo3D.git
+# 从gitee
+git clone https://gitee.com/zhizhi-link/OpenGeo3D.git
 
 # 更新子模块
 cd OpenGeo3D
