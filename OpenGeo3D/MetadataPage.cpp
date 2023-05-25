@@ -9,6 +9,7 @@
 #include <geo3dml/UniformGrid.h>
 #include <geo3dml/GTPVolume.h>
 #include <geo3dml/RectifiedGrid.h>
+#include <geo3dml/TetrahedronVolume.h>
 #include "Text.h"
 
 MetadataPage::MetadataPage(QWidget* parent) : QtTreePropertyBrowser(parent) {
@@ -262,6 +263,7 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 	geo3dml::MultiPoint* mPoint = nullptr;
 	geo3dml::GTPVolume* gtpGrid = nullptr;
 	geo3dml::RectifiedGrid* rectGrid = nullptr;
+	geo3dml::TetrahedronVolume* tetraGrid = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
@@ -297,6 +299,11 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 									rectGrid = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
 									if (rectGrid != nullptr) {
 										geoClassName = Text::nameOfClassRectifiedGrid();
+									} else {
+										tetraGrid = dynamic_cast<geo3dml::TetrahedronVolume*>(g3dGeometry);
+										if (tetraGrid != nullptr) {
+											geoClassName = Text::nameOfClassTetrahedronVolume();
+										}
 									}
 								}
 							}
@@ -421,6 +428,15 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfAxisVectorK());
 		const geo3dml::Vector3D& vecK = rectGrid->AxisK();
 		propItem->setValue(QStringLiteral("(%1, %2, %3)").arg(QString::number(vecK.X(), 'f')).arg(QString::number(vecK.Y(), 'f')).arg(QString::number(vecK.Z(), 'f')));
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (tetraGrid != nullptr) {
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfVertices());
+		propItem->setValue(tetraGrid->GetVertexCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfTetrahedrons());
+		propItem->setValue(tetraGrid->GetTetrahedronCount());
 		propItem->setAttribute(attriReadOnly_, true);
 		propGeometry->addSubProperty(propItem);
 	}

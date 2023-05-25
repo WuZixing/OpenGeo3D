@@ -70,6 +70,10 @@ QString Text::nameOfClassRectifiedGrid() {
 	return QStringLiteral("Rectified Grid");
 }
 
+QString Text::nameOfClassTetrahedronVolume() {
+	return QStringLiteral("Tetrahedron Grid");
+}
+
 QString Text::nameOfRepresentationModePoints() {
 	return QStringLiteral("顶点");
 }
@@ -304,6 +308,10 @@ QString Text::labelOfNumberOfTriangles() {
 
 QString Text::labelOfNumberOfPrisms() {
 	return QStringLiteral("三棱柱数");
+}
+
+QString Text::labelOfNumberOfTetrahedrons() {
+	return QStringLiteral("四面体数");
 }
 
 QString Text::labelOfAxisVectorI() {
