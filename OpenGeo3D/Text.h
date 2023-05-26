@@ -25,6 +25,7 @@ public:
 	static QString nameOfClassG3DGTPVolume();
 	static QString nameOfClassRectifiedGrid();
 	static QString nameOfClassTetrahedronVolume();
+	static QString nameOfClassCuboidVolume();
 	static QString nameOfRepresentationModePoints();
 	static QString nameOfRepresentationModeWireframe();
 	static QString nameOfRepresentationModeSurface();
@@ -98,6 +99,7 @@ public:
 	static QString labelOfNumberOfTriangles();
 	static QString labelOfNumberOfPrisms();
 	static QString labelOfNumberOfTetrahedrons();
+	static QString labelOfNumberOfHexahedrons();
 	static QString labelOfAxisVectorI();
 	static QString labelOfAxisVectorJ();
 	static QString labelOfAxisVectorK();

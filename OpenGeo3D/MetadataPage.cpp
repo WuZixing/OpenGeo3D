@@ -10,6 +10,7 @@
 #include <geo3dml/GTPVolume.h>
 #include <geo3dml/RectifiedGrid.h>
 #include <geo3dml/TetrahedronVolume.h>
+#include <geo3dml/CuboidVolume.h>
 #include "Text.h"
 
 MetadataPage::MetadataPage(QWidget* parent) : QtTreePropertyBrowser(parent) {
@@ -264,6 +265,7 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 	geo3dml::GTPVolume* gtpGrid = nullptr;
 	geo3dml::RectifiedGrid* rectGrid = nullptr;
 	geo3dml::TetrahedronVolume* tetraGrid = nullptr;
+	geo3dml::CuboidVolume* cuboidGrid = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
@@ -303,6 +305,11 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 										tetraGrid = dynamic_cast<geo3dml::TetrahedronVolume*>(g3dGeometry);
 										if (tetraGrid != nullptr) {
 											geoClassName = Text::nameOfClassTetrahedronVolume();
+										} else {
+											cuboidGrid = dynamic_cast<geo3dml::CuboidVolume*>(g3dGeometry);
+											if (cuboidGrid != nullptr) {
+												geoClassName = Text::nameOfClassCuboidVolume();
+											}
 										}
 									}
 								}
@@ -437,6 +444,15 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 		propGeometry->addSubProperty(propItem);
 		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfTetrahedrons());
 		propItem->setValue(tetraGrid->GetTetrahedronCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+	} else if (cuboidGrid != nullptr) {
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfVertices());
+		propItem->setValue(cuboidGrid->GetVertexCount());
+		propItem->setAttribute(attriReadOnly_, true);
+		propGeometry->addSubProperty(propItem);
+		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfHexahedrons());
+		propItem->setValue(cuboidGrid->GetCuboidCount());
 		propItem->setAttribute(attriReadOnly_, true);
 		propGeometry->addSubProperty(propItem);
 	}

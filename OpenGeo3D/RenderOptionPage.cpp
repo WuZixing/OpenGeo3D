@@ -10,6 +10,7 @@
 #include <geo3dml/GTPVolume.h>
 #include <geo3dml/RectifiedGrid.h>
 #include <geo3dml/TetrahedronVolume.h>
+#include <geo3dml/CuboidVolume.h>
 #include "Events.h"
 #include "Text.h"
 
@@ -95,6 +96,7 @@ void RenderOptionPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 	geo3dml::GTPVolume* gtpGrid = nullptr;
 	geo3dml::RectifiedGrid* rectGrid = nullptr;
 	geo3dml::TetrahedronVolume* tetraGrid = nullptr;
+	geo3dml::CuboidVolume* cuboidGrid = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
@@ -134,6 +136,11 @@ void RenderOptionPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 										tetraGrid = dynamic_cast<geo3dml::TetrahedronVolume*>(g3dGeometry);
 										if (tetraGrid != nullptr) {
 											geoClassName = Text::nameOfClassTetrahedronVolume();
+										} else {
+											cuboidGrid = dynamic_cast<geo3dml::CuboidVolume*>(g3dGeometry);
+											if (cuboidGrid != nullptr) {
+												geoClassName = Text::nameOfClassCuboidVolume();
+											}
 										}
 									}
 								}

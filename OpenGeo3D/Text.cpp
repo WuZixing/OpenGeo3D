@@ -74,6 +74,10 @@ QString Text::nameOfClassTetrahedronVolume() {
 	return QStringLiteral("Tetrahedron Grid");
 }
 
+QString Text::nameOfClassCuboidVolume() {
+	return QStringLiteral("Hexahedron Grid");
+}
+
 QString Text::nameOfRepresentationModePoints() {
 	return QStringLiteral("顶点");
 }
@@ -312,6 +316,10 @@ QString Text::labelOfNumberOfPrisms() {
 
 QString Text::labelOfNumberOfTetrahedrons() {
 	return QStringLiteral("四面体数");
+}
+
+QString Text::labelOfNumberOfHexahedrons() {
+	return QStringLiteral("六面体数");
 }
 
 QString Text::labelOfAxisVectorI() {
