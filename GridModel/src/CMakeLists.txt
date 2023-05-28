@@ -1,4 +1,6 @@
-add_compile_options(/utf-8)
+if(MSVC)
+  add_compile_options(/utf-8)
+endif()
 # Geo3DML SDK
 find_file(GEO3DML_HEADER "geo3dml/ObjectFactory.h" PATHS ${GEO3DML_INCLUDE_DIRS})
 if(NOT GEO3DML_HEADER)

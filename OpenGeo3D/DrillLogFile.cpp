@@ -41,12 +41,6 @@ g3dvtk::MultiPoint* DrillLogFile::ToMultiPoint(const std::map<std::string, geo3d
 
 bool DrillLogFile::ToMultiPoinit(const std::map<std::string, geo3dml::Field>& shapeProperties, g3dvtk::MultiPoint* pts) const {
 	std::ifstream logFile(filePath_.toStdString());
-	if (!logFile.is_open()) {
-		logFile.open(filePath_.toStdWString().c_str());
-		if (!logFile.is_open()) {
-			return false;
-		}
-	}
 	geo3dml::ShapeProperty* shapeProp = pts->GetProperty(geo3dml::ShapeProperty::Vertex);
 	if (shapeProp == NULL) {
 		g3dvtk::ObjectFactory g3dFactory;

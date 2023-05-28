@@ -1,11 +1,12 @@
 #include <g3dgrid/VoxelGrid.h>
+#include <cmath>
 
 using namespace g3dgrid;
 
 Voxel VoxelGrid::PointToVoxel(const geo3dml::Point3D& origin, const geo3dml::Point3D& step, const geo3dml::Point3D& point) {
-	int i = (int)floor((point.x - origin.x) / step.x + 1e-6);
-	int j = (int)floor((point.y - origin.y) / step.y + 1e-6);
-	int k = (int)floor((point.z - origin.z) / step.z + 1e-6);
+	int i = (int)std::floor((point.x - origin.x) / step.x + 1e-6);
+	int j = (int)std::floor((point.y - origin.y) / step.y + 1e-6);
+	int k = (int)std::floor((point.z - origin.z) / step.z + 1e-6);
 	return Voxel(i, j, k);
 }
 
@@ -18,12 +19,12 @@ geo3dml::Point3D VoxelGrid::VoxelAnchor(const geo3dml::Point3D& origin, const ge
 
 VoxelBox VoxelGrid::BoxToVoxelBox(const geo3dml::Point3D& origin, const geo3dml::Point3D& step, const geo3dml::Box3D& box) {
 	Voxel min, max;
-	min.i = (int)floor((box.min.x - origin.x) / step.x + 1e-6);
-	min.j = (int)floor((box.min.y - origin.y) / step.y + 1e-6);
-	min.k = (int)floor((box.min.z - origin.z) / step.z + 1e-6);
-	max.i = (int)floor((box.max.x - origin.x) / step.x - 1e-6);
-	max.j = (int)floor((box.max.y - origin.y) / step.y - 1e-6);
-	max.k = (int)floor((box.max.z - origin.z) / step.z - 1e-6);
+	min.i = (int)std::floor((box.min.x - origin.x) / step.x + 1e-6);
+	min.j = (int)std::floor((box.min.y - origin.y) / step.y + 1e-6);
+	min.k = (int)std::floor((box.min.z - origin.z) / step.z + 1e-6);
+	max.i = (int)std::floor((box.max.x - origin.x) / step.x - 1e-6);
+	max.j = (int)std::floor((box.max.y - origin.y) / step.y - 1e-6);
+	max.k = (int)std::floor((box.max.z - origin.z) / step.z - 1e-6);
 	return VoxelBox(min, max);
 }
 
