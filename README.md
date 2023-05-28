@@ -97,6 +97,8 @@
 
   下载和安装最新版本：[https://cmake.org/download/](https://cmake.org/download/)。安装时选择将安装路径添加到系统环境变量中。
 
+对于Linux，可选择Linux x86_64安装程序（cmake-x.x.x-linux-x86_64.sh）。安装时注意使用参数*--prefix=</path/to/install/cmake>*指定安装的路径，如*/usr/local/etc/CMake*。
+
 (3) [vcpkg](https://github.com/microsoft/vcpkg)
 
   该工具用于配置第三方开发库。
@@ -117,7 +119,7 @@
 
 (4) [Qt SDK](https://www.qt.io/)
 
-  + 下载在线安装程序：[qt-unified-windows-online-installer](https://download.qt.io/official_releases/online_installers/qt-unified-windows-x64-online.exe)
+  + 下载在线安装程序：[qt-unified-windows-online-installer](https://download.qt.io/official_releases/online_installers/qt-unified-windows-x64-online.exe)。对Linux，下载：[qt-unified-linux-x64-online.run](https://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run)。
 
   + 指定Qt仓库镜像安装SDK
 
@@ -139,6 +141,13 @@
 
   安装时，对于下载失败的依赖项，可根据展示的URL自行下载后保存至 `vkpgk/downloads/` 目录下。注意保存的文件名需与`vcpkg`日志中展示的文件名一致。来自github.com的依赖项下载失败时，可以尝试通过网站[https://ghproxy.com](https://ghproxy.com)手动下载。
 
+  在Linux下，通过系统的包管理器安装GDAL库。如：
+
+  ```console
+  > # Ubuntu 23.04 的源已包含libgdal 3.6。
+  > sudo apt-get install libgdal-dev
+  ```
+
 (6) [Geo3DML-CPP](https://github.com/WuZixing/Geo3DML-CPP)
 
   该库是通过子模块嵌入本项目中的，无需额外配置。
@@ -147,7 +156,7 @@
 
   通过`vcpkg`能安装`VTK`开发库，但不能使用用于指定版本的`Qt`库。故而仍旧使用下载源码自己编译的方式配置`VTK`。
 
-  - 下载源码编译安装
+  - 下载源码编译安装(Windows操作系统)
 
     (1) 源码下载地址：[https://vtk.org/download/](https://vtk.org/download/)。当前最新版本为v9.2.6：[VTK-9.2.6.tar.gz](https://www.vtk.org/files/release/9.2/VTK-9.2.6.tar.gz)。
 
@@ -162,6 +171,36 @@
     > cd vcpkg/
     > ./vcpkg.exe install --clean-buildtrees-after-build vtk
     > ./vcpkg.exe install --clean-buildtrees-after-build --recurse vtk[qt]
+    ```
+
+  - Linux系统下载源码编译安装
+
+    (1) 先准备好编译工具。参考[Qt for Linux/X11](https://doc.qt.io/qt-6/linux.html)：
+
+    ```console
+    > # Debian/Ubuntu (apt-get)。DeepIn也是属于该类。
+    > sudo apt-get install build-essential libgl1-mesa-dev
+    ```
+
+    此外，可能会提示找不到X11::Xcursor和XKB库。则安装X11:Xcursor和libxkb：
+
+    ```console
+    > sudo apt-get install libxcursor-dev
+    > sudo apt-get install libxkbcommon-dev
+    ```
+
+    (2) 如前，下载VTK源代码。
+
+    (3) 使用**CMake**配置编译参数。生成的目标是*Unix Makefiles*。
+
+    (4) 在配置的编译目录下使用Make编译，并安装：
+
+    ```console
+    > cd Build/
+    > # 编译
+    > make
+    > # 安装
+    > sudo make install
     ```
 
 ### 编译
@@ -185,7 +224,22 @@ git submodule update --init --recursive
 (1) 部署`Qt`依赖项
 
 ```console
+> # 对Windows操作系统
 > ./Qt/bin/windeployqt.exe --[debug|release] --translations en,zh_CN </path/to/the/directory/of/OpenGeo3D.exe>
+```
+
+在Linux系统中，需要把Qt动态库文件（\*.so）所在路径配置到环境变量`LD_LIBRARY_PATH`中，或者系统可自动加载动态库的其它目录下：
+
+```console
+> # 编辑文件 .profile
+> export LD_LIBRARY_PATH=/path/to/qt/lib/direcotry:$LD_LIBRARY_PATH
+```
+
+若运行`OpenGeo3D`提示不成初始化Qt的基础平台，如（`platforms/libqxcb`），则可通过`ldd`工具检查相应动态库文件（`platforms/libqxcb.so`）的依赖项是否齐备，补充安装缺少的依赖项。
+
+```console
+> # 针对缺少依赖项 libxcb-cursor.so
+> sudo apt install libxcb-cursor-dev
 ```
 
 (2) 运行`OpenGeo3D`可执行程序，按提示缺少的`VTK`动态库拷贝对应的DLL文件到程序目录。
