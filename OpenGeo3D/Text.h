@@ -84,10 +84,14 @@ public:
 	static QString labelOfAABB();
 	static QString labelOfAABBMinPoint();
 	static QString labelOfAABBMaxPoint();
+	static QString labelOfProject();
 	static QString labelOfStructureModel();
-	static QString labelOf3DMap();
+	static QString labelOfMap();
+	static QString labelOfMapOrModel();
 	static QString labelOfLayer();
+	static QString labelOfLayerOrFeatureClass();
 	static QString labelOfActor();
+	static QString labelOfModel();
 	static QString labelOfFeatureClass();
 	static QString labelOfFeature();
 	static QString labelOfName();
@@ -131,6 +135,7 @@ public:
 	static QString labelOfField();
 	static QString labelOfFieldValueType();
 	static QString labelOfCRS();
+	static QString labelOfDescription();
 	///@}
 
 	static QString tipOfCustomizedZScale();

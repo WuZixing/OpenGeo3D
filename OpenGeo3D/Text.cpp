@@ -258,20 +258,36 @@ QString Text::labelOfAABBMaxPoint() {
 	return QStringLiteral("最大坐标");
 }
 
+QString Text::labelOfProject() {
+	return QStringLiteral("工程");
+}
+
 QString Text::labelOfStructureModel() {
 	return QStringLiteral("结构模型");
 }
 
-QString Text::labelOf3DMap() {
+QString Text::labelOfMap() {
+	return QStringLiteral("地质图");
+}
+
+QString Text::labelOfMapOrModel() {
 	return QStringLiteral("地质图|模型");
 }
 
 QString Text::labelOfLayer() {
+	return QStringLiteral("图层");
+}
+
+QString Text::labelOfLayerOrFeatureClass() {
 	return QStringLiteral("图层|要素类");
 }
 
 QString Text::labelOfActor() {
 	return QStringLiteral("图元|要素");
+}
+
+QString Text::labelOfModel() {
+	return QStringLiteral("模型");
 }
 
 QString Text::labelOfFeatureClass() {
@@ -448,6 +464,10 @@ QString Text::labelOfFieldValueType() {
 
 QString Text::labelOfCRS() {
 	return QStringLiteral("坐标参照系");
+}
+
+QString Text::labelOfDescription() {
+	return QStringLiteral("说明");
 }
 
 QString Text::tipOfSpecifyFieldValueType() {

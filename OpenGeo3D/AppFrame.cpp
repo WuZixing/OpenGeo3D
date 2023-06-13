@@ -1,3 +1,4 @@
+// UTF-8编码
 #include "AppFrame.h"
 #include <QtCore/QDir>
 #include <QtGui/QCloseEvent>
@@ -116,6 +117,10 @@ void AppFrame::openGeo3DML() {
 					geo3dml::Map* map = project->RemoveMapAt(0);
 					projectPanel_->appendG3DMap(map);
 				}
+				// 工程的基本信息
+				geo3dml::Project* innerProject = projectPanel_->getG3DProject();
+				innerProject->SetName(project->GetName());
+				innerProject->SetDescription(project->GetDescription());
 			}
 			delete g3dObject;
 		}

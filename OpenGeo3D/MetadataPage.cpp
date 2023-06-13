@@ -62,17 +62,39 @@ void MetadataPage::setCurrentItem(QTreeWidgetItem* item) {
 }
 
 void MetadataPage::setCurrentItemAsG3DProject(geo3dml::Project* g3dProject) {
-	setBasicMetaInfo(Text::labelOfStructureModel(), QString::fromUtf8(g3dProject->GetID().c_str()), g3dProject->GetMapCount());
+	setBasicMetaInfo(Text::labelOfProject(), QString::fromUtf8(g3dProject->GetID().c_str()), g3dProject->GetMapCount());
 	setMBRInfo(g3dProject->GetMinimumBoundingRectangle());
+	// project
+	QtVariantProperty* propProject = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfProject());
+	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfName());
+	propItem->setValue(QString::fromUtf8(g3dProject->GetName().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propProject->addSubProperty(propItem);
+	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfDescription());
+	propItem->setValue(QString::fromUtf8(g3dProject->GetDescription().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propProject->addSubProperty(propItem);
+	addProperty(propProject);
 }
 
 void MetadataPage::setCurrentItemAsG3DMap(geo3dml::Map* g3dMap) {
-	setBasicMetaInfo(Text::labelOf3DMap(), QString::fromUtf8(g3dMap->GetID().c_str()), g3dMap->GetLayerCount());
+	setBasicMetaInfo(Text::labelOfMapOrModel(), QString::fromUtf8(g3dMap->GetID().c_str()), g3dMap->GetLayerCount());
 	setMBRInfo(g3dMap->GetMinimumBoundingRectangle());
+	// map
+	QtVariantProperty* propMap = propManager_->addProperty(QtVariantPropertyManager::groupTypeId(), Text::labelOfMap());
+	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfName());
+	propItem->setValue(QString::fromUtf8(g3dMap->GetName().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propMap->addSubProperty(propItem);
+	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfDescription());
+	propItem->setValue(QString::fromUtf8(g3dMap->GetDescription().c_str()));
+	propItem->setAttribute(attriReadOnly_, true);
+	propMap->addSubProperty(propItem);
+	addProperty(propMap);
 }
 
 void MetadataPage::setCurrentItemAsG3DLayer(geo3dml::Layer* g3dLayer) {
-	setBasicMetaInfo(Text::labelOfLayer(), QString::fromUtf8(g3dLayer->GetID().c_str()), g3dLayer->GetActorCount());
+	setBasicMetaInfo(Text::labelOfLayerOrFeatureClass(), QString::fromUtf8(g3dLayer->GetID().c_str()), g3dLayer->GetActorCount());
 	setMBRInfo(g3dLayer->GetMinimumBoundingRectangle());
 	// feature class
 	geo3dml::FeatureClass* g3dFeatureClass = g3dLayer->GetBindingFeatureClass();
