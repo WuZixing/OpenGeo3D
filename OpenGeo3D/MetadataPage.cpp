@@ -11,6 +11,7 @@
 #include <geo3dml/RectifiedGrid.h>
 #include <geo3dml/TetrahedronVolume.h>
 #include <geo3dml/CuboidVolume.h>
+#include <geo3dml/SGrid.h>
 #include "Text.h"
 
 MetadataPage::MetadataPage(QWidget* parent) : QtTreePropertyBrowser(parent) {
@@ -288,6 +289,7 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 	geo3dml::RectifiedGrid* rectGrid = nullptr;
 	geo3dml::TetrahedronVolume* tetraGrid = nullptr;
 	geo3dml::CuboidVolume* cuboidGrid = nullptr;
+	geo3dml::SGrid* sGrid = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
@@ -331,6 +333,11 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 											cuboidGrid = dynamic_cast<geo3dml::CuboidVolume*>(g3dGeometry);
 											if (cuboidGrid != nullptr) {
 												geoClassName = Text::nameOfClassCuboidVolume();
+											} else {
+												sGrid = dynamic_cast<geo3dml::SGrid*>(g3dGeometry);
+												if (sGrid != nullptr) {
+													geoClassName = Text::nameOfClassSGrid();
+												}
 											}
 										}
 									}

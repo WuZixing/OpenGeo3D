@@ -26,6 +26,7 @@ public:
 	static QString nameOfClassRectifiedGrid();
 	static QString nameOfClassTetrahedronVolume();
 	static QString nameOfClassCuboidVolume();
+	static QString nameOfClassSGrid();
 	static QString nameOfRepresentationModePoints();
 	static QString nameOfRepresentationModeWireframe();
 	static QString nameOfRepresentationModeSurface();

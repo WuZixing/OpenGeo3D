@@ -78,6 +78,10 @@ QString Text::nameOfClassCuboidVolume() {
 	return QStringLiteral("Hexahedron Grid");
 }
 
+QString Text::nameOfClassSGrid() {
+	return QStringLiteral("SGrid");
+}
+
 QString Text::nameOfRepresentationModePoints() {
 	return QStringLiteral("顶点");
 }
