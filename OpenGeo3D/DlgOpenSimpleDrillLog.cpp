@@ -68,7 +68,7 @@ geo3dml::Model* DlgOpenSimpleDrillLog::loadAsG3DModel() const {
 	geo3dml::FieldValue textValue(fieldPath.Name(), std::string());
 	featurePos->SetField(textValue);
 	geo3dml::Annotation* annotation = g3dFactory.NewAnnotation();
-	featurePos->AddGeometry(annotation);
+	featurePos->SetGeometry(annotation);
 	fcDrills->AddFeature(featurePos);
 	for (auto drillFile = drillFiles.cbegin(); drillFile != drillFiles.cend(); ++drillFile) {
 		if (drillPositions.find(drillFile->first) == drillPositions.cend()) {
@@ -84,7 +84,7 @@ geo3dml::Model* DlgOpenSimpleDrillLog::loadAsG3DModel() const {
 		textValue.SetString(drillLog.GetFilePath().toUtf8().constData());
 		feature->SetField(textValue);
 		g3dvtk::MultiPoint* mPt = drillLog.ToMultiPoint(targetFields);
-		feature->AddGeometry(mPt);
+		feature->SetGeometry(mPt);
 		fcDrills->AddFeature(feature);
 	}
 	return model;
