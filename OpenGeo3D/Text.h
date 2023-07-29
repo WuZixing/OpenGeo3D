@@ -20,13 +20,12 @@ public:
 	static QString nameOfClassG3DAnnotation();
 	static QString nameOfClassG3DLineString();
 	static QString nameOfClassG3DTIN();
-	static QString nameOfClassG3DUniformGrid();
 	static QString nameOfClassG3DCornerGrid();
 	static QString nameOfClassG3DGTPVolume();
 	static QString nameOfClassRectifiedGrid();
 	static QString nameOfClassTetrahedronVolume();
 	static QString nameOfClassCuboidVolume();
-	static QString nameOfClassSGrid();
+	static QString nameOfClassTruncatedRegularGrid();
 	static QString nameOfRepresentationModePoints();
 	static QString nameOfRepresentationModeWireframe();
 	static QString nameOfRepresentationModeSurface();

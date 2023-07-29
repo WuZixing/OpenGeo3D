@@ -54,10 +54,6 @@ QString Text::nameOfClassG3DTIN() {
 	return QStringLiteral("TIN");
 }
 
-QString Text::nameOfClassG3DUniformGrid() {
-	return QStringLiteral("Uniform Grid");
-}
-
 QString Text::nameOfClassG3DCornerGrid() {
 	return QStringLiteral("Corner Grid");
 }
@@ -78,8 +74,8 @@ QString Text::nameOfClassCuboidVolume() {
 	return QStringLiteral("Hexahedron Grid");
 }
 
-QString Text::nameOfClassSGrid() {
-	return QStringLiteral("SGrid");
+QString Text::nameOfClassTruncatedRegularGrid() {
+	return QStringLiteral("TruncatedRegular Grid");
 }
 
 QString Text::nameOfRepresentationModePoints() {

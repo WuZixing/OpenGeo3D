@@ -1266,7 +1266,7 @@ public:
 
     struct Data
     {
-        Data() : regExp(QRegularExpression::wildcardToRegularExpression(QString(QLatin1Char('*')))),
+        Data() : //regExp(QRegularExpression::wildcardToRegularExpression("*")), // 不过滤字符串。
                     echoMode(QLineEdit::Normal), readOnly(false)
         {
         }

@@ -3,7 +3,6 @@
 #include <geo3dml/Geo3DML.h>
 #include <geo3dml/Box3D.h>
 #include <geo3dml/Point3D.h>
-#include <geo3dml/UniformGrid.h>
 #include "VoxelCell.h"
 
 namespace g3dgrid {
@@ -28,7 +27,6 @@ namespace g3dgrid {
 		int level_;
 		int voxelScaleX_, voxelScaleY_, voxelScaleZ_;
 		geo3dml::Point3D gridOrigin_, voxelSize_;
-		geo3dml::UniformGrid* g3dUniformGrid_;
 		Voxel voxelOffset_;
 	};
 }

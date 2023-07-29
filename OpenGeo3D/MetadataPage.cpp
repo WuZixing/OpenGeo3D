@@ -6,12 +6,11 @@
 #include <geo3dml/MultiPoint.h>
 #include <geo3dml/Point.h>
 #include <geo3dml/TIN.h>
-#include <geo3dml/UniformGrid.h>
-#include <geo3dml/GTPVolume.h>
+#include <geo3dml/TriangularPrismVolume.h>
 #include <geo3dml/RectifiedGrid.h>
 #include <geo3dml/TetrahedronVolume.h>
 #include <geo3dml/CuboidVolume.h>
-#include <geo3dml/SGrid.h>
+#include <geo3dml/TruncatedRegularGrid.h>
 #include "Text.h"
 
 MetadataPage::MetadataPage(QWidget* parent) : QtTreePropertyBrowser(parent) {
@@ -279,65 +278,59 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 
 	QString geoClassName = Text::nameOfClassUnknown();
 	geo3dml::TIN* tin = nullptr;
-	geo3dml::UniformGrid* uniformGrid = nullptr;
 	geo3dml::CornerPointGrid* cornerGrid = nullptr;
 	geo3dml::Point* point = nullptr;
 	geo3dml::LineString* lineString = nullptr;
 	geo3dml::Annotation* annotation = nullptr;
 	geo3dml::MultiPoint* mPoint = nullptr;
-	geo3dml::GTPVolume* gtpGrid = nullptr;
+	geo3dml::TriangularPrismVolume* gtpGrid = nullptr;
 	geo3dml::RectifiedGrid* rectGrid = nullptr;
 	geo3dml::TetrahedronVolume* tetraGrid = nullptr;
 	geo3dml::CuboidVolume* cuboidGrid = nullptr;
-	geo3dml::SGrid* sGrid = nullptr;
+	geo3dml::TruncatedRegularGrid* trGrid = nullptr;
 	tin = dynamic_cast<geo3dml::TIN*>(g3dGeometry);
 	if (tin != nullptr) {
 		geoClassName = Text::nameOfClassG3DTIN();
 	} else {
-		uniformGrid = dynamic_cast<geo3dml::UniformGrid*>(g3dGeometry);
-		if (uniformGrid != nullptr) {
-			geoClassName = Text::nameOfClassG3DUniformGrid();
+		cornerGrid = dynamic_cast<geo3dml::CornerPointGrid*>(g3dGeometry);
+		if (cornerGrid != nullptr) {
+			geoClassName = Text::nameOfClassG3DCornerGrid();
 		} else {
-			cornerGrid = dynamic_cast<geo3dml::CornerPointGrid*>(g3dGeometry);
-			if (cornerGrid != nullptr) {
-				geoClassName = Text::nameOfClassG3DCornerGrid();
+			point = dynamic_cast<geo3dml::Point*>(g3dGeometry);
+			if (point != nullptr) {
+				geoClassName = Text::nameOfClassG3DPoint();
 			} else {
-				point = dynamic_cast<geo3dml::Point*>(g3dGeometry);
-				if (point != nullptr) {
-					geoClassName = Text::nameOfClassG3DPoint();
+				lineString = dynamic_cast<geo3dml::LineString*>(g3dGeometry);
+				if (lineString != nullptr) {
+					geoClassName = Text::nameOfClassG3DLineString();
 				} else {
-					lineString = dynamic_cast<geo3dml::LineString*>(g3dGeometry);
-					if (lineString != nullptr) {
-						geoClassName = Text::nameOfClassG3DLineString();
+					annotation = dynamic_cast<geo3dml::Annotation*>(g3dGeometry);
+					if (annotation != nullptr) {
+						geoClassName = Text::nameOfClassG3DAnnotation();
 					} else {
-						annotation = dynamic_cast<geo3dml::Annotation*>(g3dGeometry);
-						if (annotation != nullptr) {
-							geoClassName = Text::nameOfClassG3DAnnotation();
+						mPoint = dynamic_cast<geo3dml::MultiPoint*>(g3dGeometry);
+						if (mPoint != nullptr) {
+							geoClassName = Text::nameOfClassG3DMPoint();
 						} else {
-							mPoint = dynamic_cast<geo3dml::MultiPoint*>(g3dGeometry);
-							if (mPoint != nullptr) {
-								geoClassName = Text::nameOfClassG3DMPoint();
+							gtpGrid = dynamic_cast<geo3dml::TriangularPrismVolume*>(g3dGeometry);
+							if (gtpGrid != nullptr) {
+								geoClassName = Text::nameOfClassG3DGTPVolume();
 							} else {
-								gtpGrid = dynamic_cast<geo3dml::GTPVolume*>(g3dGeometry);
-								if (gtpGrid != nullptr) {
-									geoClassName = Text::nameOfClassG3DGTPVolume();
+								rectGrid = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
+								if (rectGrid != nullptr) {
+									geoClassName = Text::nameOfClassRectifiedGrid();
 								} else {
-									rectGrid = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
-									if (rectGrid != nullptr) {
-										geoClassName = Text::nameOfClassRectifiedGrid();
+									tetraGrid = dynamic_cast<geo3dml::TetrahedronVolume*>(g3dGeometry);
+									if (tetraGrid != nullptr) {
+										geoClassName = Text::nameOfClassTetrahedronVolume();
 									} else {
-										tetraGrid = dynamic_cast<geo3dml::TetrahedronVolume*>(g3dGeometry);
-										if (tetraGrid != nullptr) {
-											geoClassName = Text::nameOfClassTetrahedronVolume();
+										cuboidGrid = dynamic_cast<geo3dml::CuboidVolume*>(g3dGeometry);
+										if (cuboidGrid != nullptr) {
+											geoClassName = Text::nameOfClassCuboidVolume();
 										} else {
-											cuboidGrid = dynamic_cast<geo3dml::CuboidVolume*>(g3dGeometry);
-											if (cuboidGrid != nullptr) {
-												geoClassName = Text::nameOfClassCuboidVolume();
-											} else {
-												sGrid = dynamic_cast<geo3dml::SGrid*>(g3dGeometry);
-												if (sGrid != nullptr) {
-													geoClassName = Text::nameOfClassSGrid();
-												}
+											trGrid = dynamic_cast<geo3dml::TruncatedRegularGrid*>(g3dGeometry);
+											if (trGrid != nullptr) {
+												geoClassName = Text::nameOfClassTruncatedRegularGrid();
 											}
 										}
 									}
@@ -374,27 +367,6 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 		propGeometry->addSubProperty(propItem);
 		propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfNumberOfTriangles());
 		propItem->setValue(tin->GetTriangleCount());
-		propItem->setAttribute(attriReadOnly_, true);
-		propGeometry->addSubProperty(propItem);
-	} else if (uniformGrid != nullptr) {
-		double x = 0, y = 0, z = 0;
-		uniformGrid->GetOrigin(x, y, z);
-		QString str = QString::asprintf("(%.6f, %.6f, %.6f)", x, y, z);
-		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridOrigin());
-		propItem->setValue(str);
-		propItem->setAttribute(attriReadOnly_, true);
-		propGeometry->addSubProperty(propItem);
-		uniformGrid->GetSteps(x, y, z);
-		str = QString::asprintf("(%.6f, %.6f, %.6f)", x, y, z);
-		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridCellSize());
-		propItem->setValue(str);
-		propItem->setAttribute(attriReadOnly_, true);
-		propGeometry->addSubProperty(propItem);
-		int i = 0, j = 0, k = 0;
-		uniformGrid->GetDimensions(i, j, k);
-		str = QString::asprintf("(%d, %d, %d)", i, j, k);
-		propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfGridCellDimension());
-		propItem->setValue(str);
 		propItem->setAttribute(attriReadOnly_, true);
 		propGeometry->addSubProperty(propItem);
 	} else if (cornerGrid != nullptr) {
@@ -513,4 +485,11 @@ void MetadataPage::setShapePropertyOfGeometry(QtVariantProperty* parentProp, geo
 		setFieldInfo(propSchema, field, i);
 	}
 	propGroup->addSubProperty(propSchema);
+	QList<QtBrowserItem*> itemList = items(propSchema);
+	for (QtBrowserItem* item : itemList) {
+		QList<QtBrowserItem*> subItems = item->children();
+		for (QtBrowserItem* subItem : subItems) {
+			setExpanded(subItem, false);
+		}
+	}
 }
