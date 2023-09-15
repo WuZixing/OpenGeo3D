@@ -14,10 +14,10 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 # VTK 9.2
-find_package(VTK 9.2 CONFIG REQUIRED)
+find_package(VTK CONFIG REQUIRED)
 
 # GDAL
-find_package(GDAL 3.6 CONFIG REQUIRED)
+find_package(GDAL CONFIG REQUIRED)
 
 include_directories(${GEO3DML_INCLUDE_DIRS})
 include_directories(${G3DXML_INCLUDE_DIRS})

@@ -104,7 +104,7 @@
   该工具用于配置第三方开发库。
 
   + 先安装[Microsoft Visual Studio](https://visualstudio.microsoft.com/)。要求Visual Studio 2015 Update 3或更新版本（建议Visual Studio Community 2022），并且使用英语语言包。
-  安装Qt扩展工具：`Qt VS Tools`。从Visual Studio的`Extensions`-`Manager Extension`菜单安装，或者从Qt官方安装。Qt官网下载地址：[https://download.qt.io/official_releases/vsaddin/2.9.1/](https://download.qt.io/official_releases/vsaddin/2.9.1/)。
+  安装Qt扩展工具：`Qt VS Tools`。从Visual Studio的`Extensions`-`Manager Extension`菜单安装，或者从Qt官方安装。Qt官网下载地址：[https://download.qt.io/official_releases/vsaddin/](https://download.qt.io/official_releases/vsaddin/)。
 
   + 参照[官方说明](https://github.com/microsoft/vcpkg#quick-start-windows)安装`vcpkg`。
 
