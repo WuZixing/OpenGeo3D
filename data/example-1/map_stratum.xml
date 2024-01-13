@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<geo3dml:Geo3DMap xmlns:geo3dml="http://www.cgs.gov.cn/geo3dml" xmlns="http://www.cgs.gov.cn/geo3dml"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:se="http://www.opengis.net/se"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.cgs.gov.cn/geo3dml"
+  ID="efc39f1c-5e47-4b67-b123-254f9f0a6055">
+  <Name>地层</Name>
+  <Description>地层的说明信息：示例地层。</Description>
+  <Layers>
+    <Layer gml:id="stratum-TIN">
+      <gml:name>地层</gml:name>
+      <FeatureClass xlink:type="simple" xlink:href="#4c654ddd-b574-4bbc-81e9-7b5b7be8bd7d" />
+      <Styles>
+        <Style>
+          <Geo3DStyle gml:id="c5819767-0197-4d30-b4f9-1b9fb6ea8471">
+            <gml:name>地层</gml:name>
+            <se:FeatureTypeStyle>
+              <se:Rule>
+                <ogc:Filter>
+                  <ogc:PropertyIsEqualTo>
+                    <ogc:PropertyName>gml:id</ogc:PropertyName>
+                    <ogc:Literal>64a35c7c-1e87-4ef2-bcfe-2315bae0213a</ogc:Literal>
+                  </ogc:PropertyIsEqualTo>
+                </ogc:Filter>
+                <GeoSurfaceSymbolizer>
+                  <Front>
+                    <Material>
+                      <AmbientIntensity>0.250000</AmbientIntensity>
+                      <DiffuseColor>0.800000 0.843137 0.941176</DiffuseColor>
+                      <EmissiveColor>0.000000 0.000000 0.000000</EmissiveColor>
+                      <Shininess>0.200000</Shininess>
+                      <SpecularColor>0.800000 0.843137 0.941176</SpecularColor>
+                      <Transparency>0.000000</Transparency>
+                      <Texture>
+                        <ParameterizedTexture>
+                          <ImageURI>岩石.jpg</ImageURI>
+                          <MimeType>image/jpeg</MimeType>
+                          <WrapMode>Border</WrapMode>
+                          <BorderColor>0 1 0 0</BorderColor>
+                        </ParameterizedTexture>
+                      </Texture>
+                    </Material>
+                  </Front>
+                </GeoSurfaceSymbolizer>
+              </se:Rule>
+            </se:FeatureTypeStyle>
+          </Geo3DStyle>
+        </Style>
+      </Styles>
+    </Layer>
+    <Layer gml:id="stratum-Volume">
+      <gml:name>地层-体数据</gml:name>
+      <FeatureClass xlink:type="simple" xlink:href="#92911658-7ef6-4905-bda5-b2c53a4a1e03" />
+    </Layer>
+  </Layers>
+</geo3dml:Geo3DMap>

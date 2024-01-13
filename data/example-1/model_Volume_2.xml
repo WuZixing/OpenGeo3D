@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<geo3dml:Geo3DModel xmlns:geo3dml="http://www.cgs.gov.cn/geo3dml" xmlns="http://www.cgs.gov.cn/geo3dml"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0"
+  xmlns:swe="http://www.opengis.net/swe/2.0"
+  xmlns:gco="http://www.isotc211.org/2005/gco"
+  xmlns:gmd="http://www.isotc211.org/2005/gmd"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.cgs.gov.cn/geo3dml file:///C:/Users/wliang/Workspace/Geo3DML/xsd/Geo3DML.xsd"
+  ID="c3607415-fa31-4b07-97fc-b22638050315">
+  <Name>体数据示例模型-2</Name>
+  <Type>3DModel</Type>
+  <Metadata>
+    <!-- 联系方式 -->
+    <gmd:contact>
+      <gmd:CI_ResponsibleParty>
+        <!-- 责任人名字 -->
+        <gmd:individualName>
+          <gco:CharacterString>模型创建人的名字</gco:CharacterString>
+        </gmd:individualName>
+        <!-- 所在机构名 -->
+        <gmd:organisationName>
+          <gco:CharacterString>单位名</gco:CharacterString>
+        </gmd:organisationName>
+        <!-- 职务 -->
+        <gmd:positionName></gmd:positionName>
+        <!-- 具体的联系信息 -->
+        <gmd:contactInfo>
+          <gmd:CI_Contact>
+            <gmd:phone>
+              <gmd:CI_Telephone>
+                <gmd:voice>
+                  <gco:CharacterString>010-87654321</gco:CharacterString>
+                </gmd:voice>
+              </gmd:CI_Telephone>
+            </gmd:phone>
+            <!-- 联系地址 -->
+            <gmd:address>
+              <gmd:CI_Address></gmd:CI_Address>
+            </gmd:address>
+          </gmd:CI_Contact>
+        </gmd:contactInfo>
+        <gmd:role></gmd:role>
+      </gmd:CI_ResponsibleParty>
+    </gmd:contact>
+    <gmd:dateStamp>
+      <gco:Date>2013-11-13</gco:Date>
+    </gmd:dateStamp>
+    <!-- 数据的描述信息，如标题，摘要等。 -->
+    <gmd:identificationInfo>
+    </gmd:identificationInfo>
+    <!-- 扩展的元数据项 -->
+    <Description>
+      关于矢栅一体化模型的示例。模型包括TIN面描述的封闭地质体、截断规则网格地质体，以及广义三棱柱地质体。
+    </Description>
+    <Version>1.0.0</Version>
+    <ToolName>XX软件</ToolName>
+    <ToolVersion>vX.X.X</ToolVersion>
+  </Metadata>
+  <FeatureClasses>
+    <FeatureClass>
+      <GeoFeatureClass gml:id="4c654ddd-b574-4bbc-81e9-7b5b7be8bd7d">
+        <gml:name>地层</gml:name>
+        <Schema>
+          <swe:field name="stratigraphic_name">
+            <swe:Text />
+          </swe:field>
+          <swe:field name="lithology">
+            <swe:Text />
+          </swe:field>
+          <swe:field name="density">
+            <swe:Quantity>
+              <swe:uom code="t/m3" />
+            </swe:Quantity>
+          </swe:field>
+        </Schema>
+        <Features>
+          <Feature>
+            <GeoFeature gml:id="64a35c7c-1e87-4ef2-bcfe-2315bae0213a">
+              <gml:name>地层A</gml:name>
+              <Fields>
+                <Field Name="stratigraphic_name">
+                  <swe:Text><swe:value>蓟县组</swe:value></swe:Text>
+                </Field>
+                <Field Name="lithology">
+                  <swe:Text><swe:value>灰岩</swe:value></swe:Text>
+                </Field>
+                <Field Name="density">
+                  <swe:Quantity>
+                    <swe:uom code="t/m3" />
+                    <swe:value>2.3</swe:value>
+                  </swe:Quantity>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="TIN" LOD="0">
+                  <Shape>
+                    <GeoTin gml:id="111ba61a-5412-439e-bd9b-2cd4181eb4c4">
+                      <Vertices>
+                        <Vertex gml:srsDimension="3" IndexNo="0">0 0 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="1">0 100 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="2">200 0 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="3">200 100 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="4">200 0 100</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="5">200 100 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="6">0 0 100</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="7">0 100 110</Vertex>
+                      </Vertices>
+                      <Triangles>
+                        <Triangle IndexNo="0">
+                          <VertexList>0 1 2</VertexList>
+                          <NeighborList>1 8 7</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="1">
+                          <VertexList>2 1 3</VertexList>
+                          <NeighborList>10 2 0</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="2">
+                          <VertexList>2 3 4</VertexList>
+                          <NeighborList>3 9 1</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="3">
+                          <VertexList>4 3 5</VertexList>
+                          <NeighborList>11 4 2</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="4">
+                          <VertexList>4 5 6</VertexList>
+                          <NeighborList>5 9 3</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="5">
+                          <VertexList>6 5 7</VertexList>
+                          <NeighborList>11 6 4</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="6">
+                          <VertexList>6 7 0</VertexList>
+                          <NeighborList>7 8 5</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="7">
+                          <VertexList>0 7 1</VertexList>
+                          <NeighborList>10 0 6</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="8">
+                          <VertexList>0 2 6</VertexList>
+                          <NeighborList>9 6 0</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="9">
+                          <VertexList>6 2 4</VertexList>
+                          <NeighborList>2 4 8</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="10">
+                          <VertexList>1 7 3</VertexList>
+                          <NeighborList>11 1 7</NeighborList>
+                        </Triangle>
+                        <Triangle IndexNo="11">
+                          <VertexList>3 7 5</VertexList>
+                          <NeighborList>5 3 10</NeighborList>
+                        </Triangle>
+                      </Triangles>
+                    </GeoTin>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="8373b01e-8988-43e7-8d8b-64e884ffb579">
+              <gml:name>地层B</gml:name>
+              <Fields>
+                <Field Name="stratigraphic_name">
+                  <swe:Text><swe:value>蓟县组-2</swe:value></swe:Text>
+                </Field>
+                <Field Name="lithology">
+                  <swe:Text><swe:value>灰岩</swe:value></swe:Text>
+                </Field>
+                <Field Name="density">
+                  <swe:Quantity>
+                    <swe:uom code="t/m3" />
+                    <swe:value>2.3</swe:value>
+                  </swe:Quantity>
+                </Field>
+              </Fields>
+              <Geometry Name="截断规则网格-1">
+                <Shape>
+                  <GeoTruncatedRegularGrid gml:id="1a044aa4-989d-4c48-8172-b5410817e685">
+                    <PlaneGrid>
+                      <Origin gml:srsDimension="2">0 0</Origin>
+                      <Azimuth>0</Azimuth>
+                      <Steps>50 50</Steps>
+                      <Dimension>4 2</Dimension>
+                    </PlaneGrid>
+                    <Vertices>
+                      <Vertex gml:srsDimension="3" IndexNo="0">250 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="1">300 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="2">350 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="3">400 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="4">450 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="5">250 50 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="6">300 50 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="7">350 50 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="8">400 50 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="9">450 50 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="10">250 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="11">300 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="12">350 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="13">400 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="14">450 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="15">250 0 50</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="16">300 0 50</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="17">350 0 50</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="18">400 0 50</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="19">450 0 50</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="20">250 50 55</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="21">300 50 55</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="22">350 50 55</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="23">400 50 55</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="24">450 50 55</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="25">250 100 60</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="26">300 100 60</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="27">350 100 60</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="28">400 100 60</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="29">450 100 60</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="30">250 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="31">300 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="32">350 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="33">400 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="34">450 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="35">250 50 105</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="36">300 50 105</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="37">350 50 105</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="38">400 50 105</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="39">450 50 105</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="40">250 100 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="41">300 100 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="42">350 100 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="43">400 100 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="44">450 100 110</Vertex>
+                    </Vertices>
+                    <Faces>
+                      <Face IndexNo="0">
+                        <VertexList Length="4">0 1 6 5</VertexList>
+                      </Face>
+                      <Face IndexNo="1">
+                        <VertexList Length="4">1 2 7 6</VertexList>
+                      </Face>
+                      <Face IndexNo="2">
+                        <VertexList Length="4">2 3 8 7</VertexList>
+                      </Face>
+                      <Face IndexNo="3">
+                        <VertexList Length="4">3 4 9 8</VertexList>
+                      </Face>
+                      <Face IndexNo="4">
+                        <VertexList Length="4">5 6 11 10</VertexList>
+                      </Face>
+                      <Face IndexNo="5">
+                        <VertexList Length="4">6 7 12 11</VertexList>
+                      </Face>
+                      <Face IndexNo="6">
+                        <VertexList Length="4">7 8 13 12</VertexList>
+                      </Face>
+                      <Face IndexNo="7">
+                        <VertexList Length="4">8 9 14 13</VertexList>
+                      </Face>
+                      <Face IndexNo="8">
+                        <VertexList Length="4">15 16 21 20</VertexList>
+                      </Face>
+                      <Face IndexNo="9">
+                        <VertexList Length="4">16 17 22 21</VertexList>
+                      </Face>
+                      <Face IndexNo="10">
+                        <VertexList Length="4">17 18 23 22</VertexList>
+                      </Face>
+                      <Face IndexNo="11">
+                        <VertexList Length="4">18 19 24 23</VertexList>
+                      </Face>
+                      <Face IndexNo="12">
+                        <VertexList Length="4">20 21 26 25</VertexList>
+                      </Face>
+                      <Face IndexNo="13">
+                        <VertexList Length="4">21 22 27 26</VertexList>
+                      </Face>
+                      <Face IndexNo="14">
+                        <VertexList Length="4">22 23 28 27</VertexList>
+                      </Face>
+                      <Face IndexNo="15">
+                        <VertexList Length="4">23 24 29 28</VertexList>
+                      </Face>
+                      <Face IndexNo="16">
+                        <VertexList Length="4">30 31 36 35</VertexList>
+                      </Face>
+                      <Face IndexNo="17">
+                        <VertexList Length="4">31 32 37 36</VertexList>
+                      </Face>
+                      <Face IndexNo="18">
+                        <VertexList Length="4">32 33 38 37</VertexList>
+                      </Face>
+                      <Face IndexNo="19">
+                        <VertexList Length="4">33 34 39 38</VertexList>
+                      </Face>
+                      <Face IndexNo="20">
+                        <VertexList Length="4">35 36 41 40</VertexList>
+                      </Face>
+                      <Face IndexNo="21">
+                        <VertexList Length="4">36 37 42 41</VertexList>
+                      </Face>
+                      <Face IndexNo="22">
+                        <VertexList Length="4">37 38 43 42</VertexList>
+                      </Face>
+                      <Face IndexNo="23">
+                        <VertexList Length="4">38 39 44 43</VertexList>
+                      </Face>
+                      <Face IndexNo="24">
+                        <VertexList Length="4">0 1 16 15</VertexList>
+                      </Face>
+                      <Face IndexNo="25">
+                        <VertexList Length="4">1 2 17 16</VertexList>
+                      </Face>
+                      <Face IndexNo="26">
+                        <VertexList Length="4">2 3 18 17</VertexList>
+                      </Face>
+                      <Face IndexNo="27">
+                        <VertexList Length="4">3 4 19 18</VertexList>
+                      </Face>
+                      <Face IndexNo="28">
+                        <VertexList Length="4">15 16 31 30</VertexList>
+                      </Face>
+                      <Face IndexNo="29">
+                        <VertexList Length="4">16 17 32 31</VertexList>
+                      </Face>
+                      <Face IndexNo="30">
+                        <VertexList Length="4">17 18 33 32</VertexList>
+                      </Face>
+                      <Face IndexNo="31">
+                        <VertexList Length="4">18 19 34 33</VertexList>
+                      </Face>
+                      <Face IndexNo="32">
+                        <VertexList Length="4">5 6 21 20</VertexList>
+                      </Face>
+                      <Face IndexNo="33">
+                        <VertexList Length="4">6 7 22 21</VertexList>
+                      </Face>
+                      <Face IndexNo="34">
+                        <VertexList Length="4">7 8 23 22</VertexList>
+                      </Face>
+                      <Face IndexNo="35">
+                        <VertexList Length="4">8 9 24 23</VertexList>
+                      </Face>
+                      <Face IndexNo="36">
+                        <VertexList Length="4">20 21 36 35</VertexList>
+                      </Face>
+                      <Face IndexNo="37">
+                        <VertexList Length="4">21 22 37 36</VertexList>
+                      </Face>
+                      <Face IndexNo="38">
+                        <VertexList Length="4">22 23 38 37</VertexList>
+                      </Face>
+                      <Face IndexNo="39">
+                        <VertexList Length="4">23 24 39 38</VertexList>
+                      </Face>
+                      <Face IndexNo="40">
+                        <VertexList Length="4">10 11 26 25</VertexList>
+                      </Face>
+                      <Face IndexNo="41">
+                        <VertexList Length="4">11 12 27 26</VertexList>
+                      </Face>
+                      <Face IndexNo="42">
+                        <VertexList Length="4">12 13 28 27</VertexList>
+                      </Face>
+                      <Face IndexNo="43">
+                        <VertexList Length="4">13 14 29 28</VertexList>
+                      </Face>
+                      <Face IndexNo="44">
+                        <VertexList Length="4">25 26 41 40</VertexList>
+                      </Face>
+                      <Face IndexNo="45">
+                        <VertexList Length="4">26 27 42 41</VertexList>
+                      </Face>
+                      <Face IndexNo="46">
+                        <VertexList Length="4">27 28 43 42</VertexList>
+                      </Face>
+                      <Face IndexNo="47">
+                        <VertexList Length="4">28 29 44 43</VertexList>
+                      </Face>
+                      <Face IndexNo="48">
+                        <VertexList Length="4">0 5 20 15</VertexList>
+                      </Face>
+                      <Face IndexNo="49">
+                        <VertexList Length="4">5 10 25 20</VertexList>
+                      </Face>
+                      <Face IndexNo="50">
+                        <VertexList Length="4">15 20 35 30</VertexList>
+                      </Face>
+                      <Face IndexNo="51">
+                        <VertexList Length="4">20 25 40 35</VertexList>
+                      </Face>
+                      <Face IndexNo="52">
+                        <VertexList Length="4">1 6 21 16</VertexList>
+                      </Face>
+                      <Face IndexNo="53">
+                        <VertexList Length="4">6 11 26 21</VertexList>
+                      </Face>
+                      <Face IndexNo="54">
+                        <VertexList Length="4">16 21 36 31</VertexList>
+                      </Face>
+                      <Face IndexNo="55">
+                        <VertexList Length="4">21 26 41 36</VertexList>
+                      </Face>
+                      <Face IndexNo="56">
+                        <VertexList Length="4">2 7 22 17</VertexList>
+                      </Face>
+                      <Face IndexNo="57">
+                        <VertexList Length="4">7 12 27 22</VertexList>
+                      </Face>
+                      <Face IndexNo="58">
+                        <VertexList Length="4">17 22 37 32</VertexList>
+                      </Face>
+                      <Face IndexNo="59">
+                        <VertexList Length="4">22 27 42 37</VertexList>
+                      </Face>
+                      <Face IndexNo="60">
+                        <VertexList Length="4">3 8 23 18</VertexList>
+                      </Face>
+                      <Face IndexNo="61">
+                        <VertexList Length="4">8 13 28 23</VertexList>
+                      </Face>
+                      <Face IndexNo="62">
+                        <VertexList Length="4">18 23 38 33</VertexList>
+                      </Face>
+                      <Face IndexNo="63">
+                        <VertexList Length="4">23 28 43 38</VertexList>
+                      </Face>
+                      <Face IndexNo="64">
+                        <VertexList Length="4">4 9 24 19</VertexList>
+                      </Face>
+                      <Face IndexNo="65">
+                        <VertexList Length="4">9 14 29 24</VertexList>
+                      </Face>
+                      <Face IndexNo="66">
+                        <VertexList Length="4">19 24 39 34</VertexList>
+                      </Face>
+                      <Face IndexNo="67">
+                        <VertexList Length="4">24 29 44 39</VertexList>
+                      </Face>
+                    </Faces>
+                    <Cells>
+                      <Cell IndexNo="0" I="0" J="0" K="0">
+                        <FaceList Length="6">0 8 24 32 48 52</FaceList>
+                      </Cell>
+                      <Cell IndexNo="1" I="1" J="0" K="0">
+                        <FaceList Length="6">1 9 25 33 52 56</FaceList>
+                      </Cell>
+                      <Cell IndexNo="2" I="2" J="0" K="0">
+                        <FaceList Length="6">2 10 26 34 56 60</FaceList>
+                      </Cell>
+                      <Cell IndexNo="3" I="3" J="0" K="0">
+                        <FaceList Length="6">3 11 27 35 60 64</FaceList>
+                      </Cell>
+                      <Cell IndexNo="4" I="0" J="1" K="0">
+                        <FaceList Length="6">4 12 32 40 49 53</FaceList>
+                      </Cell>
+                      <Cell IndexNo="5" I="1" J="1" K="0">
+                        <FaceList Length="6">5 13 33 41 53 57</FaceList>
+                      </Cell>
+                      <Cell IndexNo="6" I="2" J="1" K="0">
+                        <FaceList Length="6">6 14 34 42 57 61</FaceList>
+                      </Cell>
+                      <Cell IndexNo="7" I="3" J="1" K="0">
+                        <FaceList Length="6">7 15 35 43 61 65</FaceList>
+                      </Cell>
+                      <Cell IndexNo="8" I="0" J="0" K="1">
+                        <FaceList Length="6">8 16 28 36 50 54</FaceList>
+                      </Cell>
+                      <Cell IndexNo="9" I="1" J="0" K="1">
+                        <FaceList Length="6">9 17 29 37 54 58</FaceList>
+                      </Cell>
+                      <Cell IndexNo="10" I="2" J="0" K="1">
+                        <FaceList Length="6">10 18 30 38 58 62</FaceList>
+                      </Cell>
+                      <Cell IndexNo="11" I="3" J="0" K="1">
+                        <FaceList Length="6">11 19 31 39 62 66</FaceList>
+                      </Cell>
+                      <Cell IndexNo="12" I="0" J="1" K="1">
+                        <FaceList Length="6">12 20 36 44 51 55</FaceList>
+                      </Cell>
+                      <Cell IndexNo="13" I="1" J="1" K="1">
+                        <FaceList Length="6">13 21 37 45 55 59</FaceList>
+                      </Cell>
+                      <Cell IndexNo="14" I="2" J="1" K="1">
+                        <FaceList Length="6">14 22 38 46 59 63</FaceList>
+                      </Cell>
+                      <Cell IndexNo="15" I="3" J="1" K="0">
+                        <FaceList Length="6">15 23 39 47 63 67</FaceList>
+                      </Cell>
+                    </Cells>
+                  </GeoTruncatedRegularGrid>
+                </Shape>
+                <ShapeProperty>
+                  <GeoDiscreteCoverage gml:id="be3d91e1-f89f-40f1-8d84-00cf4a44acab">
+                    <gml:name>网格属性场</gml:name>
+                    <DomainSetExt>
+                      <SamplingFrame xlink:type="simple" xlink:href="#1a044aa4-989d-4c48-8172-b5410817e685" />
+                      <SamplingTarget>VOXEL</SamplingTarget>
+                    </DomainSetExt>
+                    <Version Timestamp="2018-05-19T16:56:21+08:00">1.0.0</Version>
+                    <gmlcov:rangeType>
+                      <swe:DataRecord>
+                        <swe:field name="岩性">
+                          <swe:Category />
+                        </swe:field>
+                        <swe:field name="孔隙度">
+                          <swe:Quantity>
+                            <swe:uom code="%" />
+                          </swe:Quantity>
+                        </swe:field>
+                      </swe:DataRecord>
+                    </gmlcov:rangeType>
+                    <gml:rangeSet>
+                      <gml:ValueArray gml:id="02f1bcd1-4598-4f29-8315-afa345b028fa">
+                        <gml:valueComponents>
+                          <gml:Category>灰岩</gml:Category>
+                          <gml:Category>灰岩</gml:Category>
+                          <gml:Category>灰岩</gml:Category>
+                          <gml:Category>灰岩</gml:Category>
+                          <gml:Category>砾岩</gml:Category>
+                          <gml:Category>砾岩</gml:Category>
+                          <gml:Category>砾岩</gml:Category>
+                          <gml:Category>砾岩</gml:Category>
+                          <gml:Category>砂岩</gml:Category>
+                          <gml:Category>砂岩</gml:Category>
+                          <gml:Category>砂岩</gml:Category>
+                          <gml:Category>砂岩</gml:Category>
+                          <gml:Category>泥岩</gml:Category>
+                          <gml:Category>泥岩</gml:Category>
+                          <gml:Category>泥岩</gml:Category>
+                          <gml:Category>泥岩</gml:Category>
+                        </gml:valueComponents>
+                      </gml:ValueArray>
+                      <gml:ValueArray gml:id="1dfb6af7-34b5-4609-8407-f0bb96f89bbb">
+                        <gml:valueComponents>
+                          <gml:Quantity>3</gml:Quantity>
+                          <gml:Quantity>8</gml:Quantity>
+                          <gml:Quantity>4.1</gml:Quantity>
+                          <gml:Quantity>2.2</gml:Quantity>
+                          <gml:Quantity>11.3</gml:Quantity>
+                          <gml:Quantity>21.2</gml:Quantity>
+                          <gml:Quantity>16.7</gml:Quantity>
+                          <gml:Quantity>16.7</gml:Quantity>
+                          <gml:Quantity>9</gml:Quantity>
+                          <gml:Quantity>13</gml:Quantity>
+                          <gml:Quantity>15.2</gml:Quantity>
+                          <gml:Quantity>10.1</gml:Quantity>
+                          <gml:Quantity>2</gml:Quantity>
+                          <gml:Quantity>4</gml:Quantity>
+                          <gml:Quantity>4.4</gml:Quantity>
+                          <gml:Quantity>4.7</gml:Quantity>
+                        </gml:valueComponents>
+                      </gml:ValueArray>
+                    </gml:rangeSet>
+                  </GeoDiscreteCoverage>
+                </ShapeProperty>
+              </Geometry>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="79e0d442-e728-4a56-97ee-1610c0b205be">
+              <gml:name>地层C</gml:name>
+              <Fields>
+                <Field Name="stratigraphic_name">
+                  <swe:Text><swe:value>蓟县组-3</swe:value></swe:Text>
+                </Field>
+                <Field Name="lithology">
+                  <swe:Text><swe:value>灰岩</swe:value></swe:Text>
+                </Field>
+                <Field Name="density">
+                  <swe:Quantity>
+                    <swe:uom code="t/m3" />
+                    <swe:value>2.3</swe:value>
+                  </swe:Quantity>
+                </Field>
+              </Fields>
+              <Geometry Name="截断规则网格-2">
+                <Shape>
+                  <GeoTruncatedRegularGrid gml:id="c4b4dfe4-75ad-4175-a37f-07423fa29a77">
+                    <PlaneGrid>
+                      <Origin gml:srsDimension="2">0 0</Origin>
+                      <Azimuth>0</Azimuth>
+                      <Steps>100 100</Steps>
+                      <Dimension>2 1</Dimension>
+                    </PlaneGrid>
+                    <Vertices>
+                      <Vertex gml:srsDimension="3" IndexNo="0">250 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="1">350 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="2">450 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="3">250 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="4">350 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="5">450 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="6">250 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="7">350 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="8">450 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="9">250 100 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="10">350 100 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="11">450 100 110</Vertex>
+                    </Vertices>
+                    <Faces>
+                      <Face IndexNo="0">
+                        <VertexList Length="4">0 1 4 3</VertexList>
+                      </Face>
+                      <Face IndexNo="1">
+                        <VertexList Length="4">1 2 5 4</VertexList>
+                      </Face>
+                      <Face IndexNo="2">
+                        <VertexList Length="4">6 7 10 9</VertexList>
+                      </Face>
+                      <Face IndexNo="3">
+                        <VertexList Length="4">7 8 11 10</VertexList>
+                      </Face>
+                      <Face IndexNo="4">
+                        <VertexList Length="4">0 1 7 6</VertexList>
+                      </Face>
+                      <Face IndexNo="5">
+                        <VertexList Length="4">1 2 8 7</VertexList>
+                      </Face>
+                      <Face IndexNo="6">
+                        <VertexList Length="4">3 4 10 9</VertexList>
+                      </Face>
+                      <Face IndexNo="7">
+                        <VertexList Length="4">4 5 11 10</VertexList>
+                      </Face>
+                      <Face IndexNo="8">
+                        <VertexList Length="4">0 3 9 6</VertexList>
+                      </Face>
+                      <Face IndexNo="9">
+                        <VertexList Length="4">1 4 10 7</VertexList>
+                      </Face>
+                      <Face IndexNo="10">
+                        <VertexList Length="4">2 5 11 8</VertexList>
+                      </Face>
+                    </Faces>
+                    <Cells>
+                      <Cell IndexNo="0" I="0" J="0" K="0">
+                        <FaceList Length="6">0 2 4 6 8 9</FaceList>
+                      </Cell>
+                      <Cell IndexNo="1" I="1" J="0" K="0">
+                        <FaceList Length="6">1 3 5 7 9 10</FaceList>
+                      </Cell>
+                    </Cells>
+                  </GeoTruncatedRegularGrid>
+                </Shape>
+                <ShapeProperty>
+                  <GeoDiscreteCoverage gml:id="32eac130-cf94-47ec-addf-81dd1cf83e9e">
+                    <gml:name>网格属性场</gml:name>
+                    <DomainSetExt>
+                      <SamplingFrame xlink:type="simple" xlink:href="#c4b4dfe4-75ad-4175-a37f-07423fa29a77"/>
+                      <SamplingTarget>VOXEL</SamplingTarget>
+                    </DomainSetExt>
+                    <Version Timestamp="2018-05-19T17:00:05+08:00">1.0.0</Version>
+                    <gmlcov:rangeType>
+                      <swe:DataRecord>
+                        <swe:field name="岩性">
+                          <swe:Category />
+                        </swe:field>
+                        <swe:field name="孔隙度">
+                          <swe:Quantity>
+                            <swe:uom code="%" />
+                          </swe:Quantity>
+                        </swe:field>
+                      </swe:DataRecord>
+                    </gmlcov:rangeType>
+                    <gml:rangeSet>
+                      <gml:ValueArray gml:id="4b6692bf-454a-444a-9f58-4176f54ebb5c">
+                        <gml:valueComponents>
+                          <gml:Category>灰岩</gml:Category>
+                          <gml:Category>泥岩</gml:Category>
+                        </gml:valueComponents>
+                      </gml:ValueArray>
+                      <gml:ValueArray gml:id="9d903432-b1ee-49b7-af97-29963a21ede5">
+                        <gml:valueComponents>
+                          <gml:Quantity>11.1</gml:Quantity>
+                          <gml:Quantity>7.3</gml:Quantity>
+                        </gml:valueComponents>
+                      </gml:ValueArray>
+                    </gml:rangeSet>
+                  </GeoDiscreteCoverage>
+                </ShapeProperty>
+              </Geometry>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="1e61ba34-7969-2d22-1c04-d6ed8bf29d5e">
+              <gml:name>地层D</gml:name>
+              <Fields>
+                <Field Name="stratigraphic_name">
+                  <swe:Text><swe:value>蓟县组</swe:value></swe:Text>
+                </Field>
+                <Field Name="lithology">
+                  <swe:Text><swe:value>灰岩</swe:value></swe:Text>
+                </Field>
+                <Field Name="density">
+                  <swe:Quantity>
+                    <swe:uom code="t/m3" />
+                    <swe:value>2.3</swe:value>
+                  </swe:Quantity>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="三棱柱体" LOD="0">
+                  <Shape>
+                    <GeoTriangularPrismVolume gml:id="16718808-8472-4e4e-af83-f6e4a666348c">
+                      <Vertices>
+                        <Vertex gml:srsDimension="3" IndexNo="0">0 0 120</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="1">0 100 120</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="2">100 0 120</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="3">75 100 120</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="4">200 0 120</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="5">200 100 120</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="6">0 0 210</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="7">0 100 220</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="8">100 0 210</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="9">75 100 220</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="10">200 0 210</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="11">200 100 220</Vertex>
+                      </Vertices>
+                      <Prisms>
+                        <Prism IndexNo="0">
+                          <TopTriangle>6 9 7</TopTriangle>
+                          <BottomTriangle>0 3 1</BottomTriangle>
+                          <NeighborList>-1 -1 1</NeighborList>
+                        </Prism>
+                        <Prism IndexNo="1">
+                          <TopTriangle>9 6 8</TopTriangle>
+                          <BottomTriangle>3 0 2</BottomTriangle>
+                          <NeighborList>-1 2 0</NeighborList>
+                        </Prism>
+                        <Prism IndexNo="2">
+                          <TopTriangle>8 11 9</TopTriangle>
+                          <BottomTriangle>2 5 3</BottomTriangle>
+                          <NeighborList>-1 1 -1</NeighborList>
+                        </Prism>
+                        <!--
+                        <Prism IndexNo="3">
+                          <TopTriangle>11 8 10</TopTriangle>
+                          <BottomTriangle>5 2 4</BottomTriangle>
+                          <NeighborList>-1 -1 2</NeighborList>
+                        </Prism>
+                      -->
+                      </Prisms>
+                    </GeoTriangularPrismVolume>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+        </Features>
+      </GeoFeatureClass>
+    </FeatureClass>
+  </FeatureClasses>
+</geo3dml:Geo3DModel>

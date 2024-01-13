@@ -1,6 +1,7 @@
 /*
 !.gitignore
 !.gitmodules
+!data/
 !doc/
 !Geo3DML-CPP/
 !GridModel/

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<geo3dml:Geo3DModel xmlns:geo3dml="http://www.cgs.gov.cn/geo3dml" xmlns="http://www.cgs.gov.cn/geo3dml"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0"
+  xmlns:swe="http://www.opengis.net/swe/2.0"
+  xmlns:gco="http://www.isotc211.org/2005/gco"
+  xmlns:gmd="http://www.isotc211.org/2005/gmd"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.cgs.gov.cn/geo3dml file:///C:/Users/wliang/Workspace/Geo3DML/xsd/Geo3DML.xsd"
+  ID="6ab4433b-93a7-4b05-aacc-62ed059943c3">
+  <Name>体数据示例模型-1</Name>
+  <Type>3DModel</Type>
+  <Metadata>
+    <!-- 联系方式 -->
+    <gmd:contact>
+      <gmd:CI_ResponsibleParty>
+        <!-- 责任人名字 -->
+        <gmd:individualName>
+          <gco:CharacterString>模型创建人的名字</gco:CharacterString>
+        </gmd:individualName>
+        <!-- 所在机构名 -->
+        <gmd:organisationName>
+          <gco:CharacterString>单位名</gco:CharacterString>
+        </gmd:organisationName>
+        <!-- 职务 -->
+        <gmd:positionName></gmd:positionName>
+        <!-- 具体的联系信息 -->
+        <gmd:contactInfo>
+          <gmd:CI_Contact>
+            <gmd:phone>
+              <gmd:CI_Telephone>
+                <gmd:voice>
+                  <gco:CharacterString>010-87654321</gco:CharacterString>
+                </gmd:voice>
+              </gmd:CI_Telephone>
+            </gmd:phone>
+            <!-- 联系地址 -->
+            <gmd:address>
+              <gmd:CI_Address>
+                <gmd:deliveryPoint>
+                  <gco:CharacterString>北京市西城区阜成门外大街45号</gco:CharacterString>
+                </gmd:deliveryPoint>
+                <gmd:electronicMailAddress>
+                  <gco:CharacterString>mail@example.com</gco:CharacterString>
+                </gmd:electronicMailAddress>
+              </gmd:CI_Address>
+            </gmd:address>
+          </gmd:CI_Contact>
+        </gmd:contactInfo>
+        <gmd:role></gmd:role>
+      </gmd:CI_ResponsibleParty>
+    </gmd:contact>
+    <gmd:dateStamp>
+      <gco:Date>2013-11-13</gco:Date>
+    </gmd:dateStamp>
+    <!-- 数据的描述信息，如标题，摘要等。 -->
+    <gmd:identificationInfo>
+    </gmd:identificationInfo>
+    <!-- 扩展的元数据项 -->
+    <Description>关于体数据模型的示例，包括规则网格体、四面体单元体、长方体单元体。</Description>
+    <Version>1.0.0</Version>
+    <SpatialReferenceSystem>
+      <CoordinateReferenceSystem>
+        <Identifier>EPSG</Identifier>
+        <Parameter>4526</Parameter>
+      </CoordinateReferenceSystem>
+      <VerticalReferenceSystem>
+        <Category>大地高程系</Category>
+      </VerticalReferenceSystem>
+    </SpatialReferenceSystem> 
+    <ToolName>XX软件</ToolName>
+    <ToolVersion>vX.X.X</ToolVersion>
+  </Metadata>
+  <FeatureClasses>
+    <FeatureClass>
+      <GeoFeatureClass gml:id="92911658-7ef6-4905-bda5-b2c53a4a1e03">
+        <gml:name>地层体</gml:name>
+        <Schema>
+          <swe:field name="stratigraphic_name">
+            <swe:Text />
+          </swe:field>
+          <swe:field name="lithology">
+            <swe:Text />
+          </swe:field>
+          <swe:field name="density">
+            <swe:Quantity>
+              <swe:uom code="t/m3" />
+            </swe:Quantity>
+          </swe:field>
+        </Schema>
+        <Features>
+          <Feature>
+            <GeoFeature gml:id="79c95548-4db5-4536-b926-6074e7783cfc">
+              <gml:name>地层C</gml:name>
+              <Fields>
+                <Field Name="stratigraphic_name">
+                  <swe:Text><swe:value>石门组</swe:value></swe:Text>
+                </Field>
+                <Field Name="lithology">
+                  <swe:Text><swe:value>白云岩</swe:value></swe:Text>
+                </Field>
+                <Field Name="density">
+                  <swe:Quantity>
+                    <swe:uom code="t/m3" />
+                    <swe:value>2.3</swe:value>
+                  </swe:Quantity>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="Rectified Grid">
+                  <Shape>
+                    <gml:RectifiedGrid gml:id="c2096e54-d72e-48b8-a4be-ee3ea386f359" gml:dimension="3">
+                      <gml:limits>
+                        <gml:GridEnvelope>
+                          <gml:low>-1 -1 -1</gml:low>
+                          <gml:high>6 5 3</gml:high>
+                        </gml:GridEnvelope>
+                      </gml:limits>
+                      <gml:axisLabels>I J K</gml:axisLabels>
+                      <gml:origin>
+                        <gml:Point>43.21 11.3 25.8</gml:Point>
+                      </gml:origin>
+                      <gml:offsetVector>4.8 4.8 2</gml:offsetVector>
+                      <gml:offsetVector>0 10 0</gml:offsetVector>
+                      <gml:offsetVector>0 0 6.8</gml:offsetVector>
+                    </gml:RectifiedGrid>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="94f52090-1c20-490c-ae12-7e1583af1cef">
+              <gml:name>地层D</gml:name>
+              <Fields>
+                <Field Name="stratigraphic_name">
+                  <swe:Text><swe:value>雾迷山组</swe:value></swe:Text>
+                </Field>
+                <Field Name="lithology">
+                  <swe:Text><swe:value>砂岩</swe:value></swe:Text>
+                </Field>
+                <Field Name="density">
+                  <swe:Quantity>
+                    <swe:uom code="t/m3" />
+                    <swe:value>2.3</swe:value>
+                  </swe:Quantity>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="四面体">
+                  <Shape>
+                    <GeoTetrahedronVolume gml:id="89da5941-1285-4995-925f-bf6419b3eb8f">
+                      <Vertices>
+                        <Vertex gml:srsDimension="3" IndexNo="0">0 120 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="1">100 120 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="2">200 120 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="3">0 170 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="4">100 170 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="5">200 170 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="6">20 130 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="7">100 130 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="8">180 130 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="9">20 160 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="10">100 160 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="11">180 160 110</Vertex>
+                      </Vertices>
+                      <Tetrahedrons>
+                        <Tetrahedron IndexNo="0">
+                          <VertexList>0 1 3 6</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="1">
+                          <VertexList>6 7 1 10</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="2">
+                          <VertexList>6 3 10 1</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="3">
+                          <VertexList>6 10 3 9</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="4">
+                          <VertexList>1 4 3 10</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="4">
+                          <VertexList>1 4 10 5</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="4">
+                          <VertexList>1 10 7 8</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="4">
+                          <VertexList>1 2 5 8</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="4">
+                          <VertexList>5 8 10 1</VertexList>
+                        </Tetrahedron>
+                        <Tetrahedron IndexNo="4">
+                          <VertexList>5 10 8 11</VertexList>
+                        </Tetrahedron>
+                      </Tetrahedrons>
+                    </GeoTetrahedronVolume>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="a9c42896-77eb-4ba8-bc7f-f7d6d8544c1f">
+              <gml:name>地层E</gml:name>
+              <Fields>
+                <Field Name="stratigraphic_name">
+                  <swe:Text><swe:value>雾迷山组</swe:value></swe:Text>
+                </Field>
+                <Field Name="lithology">
+                  <swe:Text><swe:value>白云岩</swe:value></swe:Text>
+                </Field>
+                <Field Name="density">
+                  <swe:Quantity>
+                    <swe:uom code="t/m3" />
+                    <swe:value>2.3</swe:value>
+                  </swe:Quantity>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="六面体">
+                  <Shape>
+                    <GeoCuboidVolume gml:id="5b5607bf-714f-42e9-8925-fb51ece4c01e">
+                      <Vertices>
+                        <Vertex gml:srsDimension="3" IndexNo="0">0 200 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="1">0 300 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="2">100 300 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="3">100 250 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="4">100 200 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="5">200 200 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="6">200 250 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="7">200 275 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="8">150 275 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="9">150 250 10</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="10">0 200 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="11">0 300 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="12">100 300 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="13">100 200 110</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="14">100 250 90</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="15">100 200 90</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="16">200 200 90</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="17">200 250 90</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="18">200 250 60</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="19">200 275 60</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="20">150 275 60</Vertex>
+                        <Vertex gml:srsDimension="3" IndexNo="21">150 250 60</Vertex>
+                      </Vertices>
+                      <Cuboids>
+                        <Cuboid IndexNo="0">
+                          <VertexList>0 4 2 1 10 13 12 11</VertexList>
+                        </Cuboid>
+                        <Cuboid IndexNo="1">
+                          <VertexList>4 5 6 3 15 16 17 14</VertexList>
+                        </Cuboid>
+                        <Cuboid IndexNo="2">
+                          <VertexList>6 7 8 9 18 19 20 21</VertexList>
+                        </Cuboid>
+                      </Cuboids>
+                    </GeoCuboidVolume>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+        </Features>
+      </GeoFeatureClass>
+    </FeatureClass>
+  </FeatureClasses>
+</geo3dml:Geo3DModel>

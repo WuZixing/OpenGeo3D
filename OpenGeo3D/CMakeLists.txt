@@ -31,10 +31,56 @@ else()
   set(TARGET_PROPERTY "")
 endif(MSVC)
 
+# get git hash
+macro(get_git_hash _git_hash)
+    find_package(Git QUIET)     # 查找Git，QUIET静默方式不报错
+    if(GIT_FOUND)
+      execute_process(          # 执行一个子进程
+        COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:%h # 命令
+        OUTPUT_VARIABLE ${_git_hash}        # 输出字符串存入变量
+        OUTPUT_STRIP_TRAILING_WHITESPACE    # 删除字符串尾的换行符
+        ERROR_QUIET                         # 对执行错误静默
+        WORKING_DIRECTORY                   # 执行路径
+          ${CMAKE_CURRENT_SOURCE_DIR}
+        )
+    endif()
+endmacro()
+
+# get git branch
+macro(get_git_branch _git_branch)
+    find_package(Git QUIET)     # 查找Git，QUIET静默方式不报错
+    if(GIT_FOUND)
+      execute_process(          # 执行一个子进程
+        COMMAND ${GIT_EXECUTABLE} symbolic-ref --short -q HEAD # 命令
+        OUTPUT_VARIABLE ${_git_branch}      # 输出字符串存入变量
+        OUTPUT_STRIP_TRAILING_WHITESPACE    # 删除字符串尾的换行符
+        ERROR_QUIET                         # 对执行错误静默
+        WORKING_DIRECTORY                   # 执行路径
+          ${CMAKE_CURRENT_SOURCE_DIR}
+        )
+    endif()
+endmacro()
+# 获取当前的GIT_HASH
+set(GIT_HASH "")
+get_git_hash(GIT_HASH)
+message(STATUS "Git hash is ${GIT_HASH}")
+# 获取当前的分支
+set(GIT_BRANCH "")
+get_git_branch(GIT_BRANCH)
+message(STATUS "Git branch is ${GIT_BRANCH}")
+string(TIMESTAMP BUILD_TIMESTAMP %Y-%m-%dT%H:%M:%S)
+message(STATUS "Build time is ${BUILD_TIMESTAMP}")
+configure_file(
+  config/gitVersion.h.in  # 输入
+  ${CMAKE_CURRENT_SOURCE_DIR}/generated/gitVersion.h # 输出
+  @ONLY
+)
+
 aux_source_directory(. CPP_SOURCES)
 
 add_executable(${APP_NAME} ${TARGET_PROPERTY}
   ${CPP_SOURCES}
+  config/gitVersion.h.in
   AppFrame.h
   BusyCursor.h
   ComboBoxItemDelegate.h

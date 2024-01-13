@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<geo3dml:Geo3DModel xmlns:geo3dml="http://www.cgs.gov.cn/geo3dml" xmlns="http://www.cgs.gov.cn/geo3dml"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:swe="http://www.opengis.net/swe/2.0"
+  xmlns:gco="http://www.isotc211.org/2005/gco"
+  xmlns:gmd="http://www.isotc211.org/2005/gmd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.cgs.gov.cn/geo3dml file:///D:/GMML/Document/schema/GMML/1.0/Geo3DML.xsd"
+  ID="152eef1d-b298-41fc-9680-71bc248b9b65">
+  <Name>钻孔_ZK0</Name>
+  <Type>Drill</Type>
+  <Metadata>
+    <!-- 联系方式 -->
+    <gmd:contact>
+      <gmd:CI_ResponsibleParty>
+        <!-- 责任人名字 -->
+        <gmd:individualName>
+          <gco:CharacterString>模型创建人的名字</gco:CharacterString>
+        </gmd:individualName>
+        <!-- 所在机构名 -->
+        <gmd:organisationName>
+          <gco:CharacterString>单位名</gco:CharacterString>
+        </gmd:organisationName>
+        <!-- 职务 -->
+        <gmd:positionName></gmd:positionName>
+        <!-- 具体的联系信息 -->
+        <gmd:contactInfo>
+          <gmd:CI_Contact>
+            <gmd:phone>
+              <gmd:CI_Telephone>
+                <gmd:voice>
+                  <gco:CharacterString>010-87654321</gco:CharacterString>
+                </gmd:voice>
+              </gmd:CI_Telephone>
+            </gmd:phone>
+            <!-- 联系地址 -->
+            <gmd:address>
+              <gmd:CI_Address></gmd:CI_Address>
+            </gmd:address>
+          </gmd:CI_Contact>
+        </gmd:contactInfo>
+        <gmd:role></gmd:role>
+      </gmd:CI_ResponsibleParty>
+    </gmd:contact>
+    <gmd:dateStamp>
+      <gco:DateTime>2013-11-13T14:20:33</gco:DateTime>
+    </gmd:dateStamp>
+    <!-- 数据的描述信息，如标题，摘要等。 -->
+    <gmd:identificationInfo>
+    </gmd:identificationInfo>
+    <!-- 扩展的元数据项 -->
+    <Description>钻孔是一种地质模型，刻画地质现象沿钻孔轨迹线的空间分布规律。</Description>
+    <Version>1.0.0</Version>
+    <SpatialReferenceSystem>
+      <CoordinateReferenceSystem>
+        <Identifier>EPSG</Identifier>
+        <Parameter>4526</Parameter>
+      </CoordinateReferenceSystem>
+      <VerticalReferenceSystem>
+        <Category>国家高程系</Category>
+        <ReferenceSystem>1985年国家高程系</ReferenceSystem>
+      </VerticalReferenceSystem>
+    </SpatialReferenceSystem>
+    <ToolName>XX工具</ToolName>
+    <ToolVersion>vXX.XX</ToolVersion>
+  </Metadata>
+  <FeatureClasses>
+    <FeatureClass>
+      <GeoFeatureClass gml:id="ZK0-Mark">
+        <gml:name>Drill Mark</gml:name>
+        <Schema>
+          <swe:field name="Up_Attribute">
+            <swe:Text definition="可选的属性字段的规范化定义。">
+              <swe:description>可选的属性字段描述信息：上属性。</swe:description>
+            </swe:Text>
+          </swe:field>
+          <swe:field name="Down_Attribute">
+            <swe:Text>
+              <swe:description>下属性。</swe:description>
+            </swe:Text>
+          </swe:field>
+          <swe:field name="Fault_No">
+            <swe:Count>
+              <swe:description>断层编号。</swe:description>
+            </swe:Count>
+          </swe:field>
+        </Schema>
+        <Features>
+          <Feature>
+            <GeoFeature gml:id="ZK0-Mark-0">
+              <gml:name>Mark-0</gml:name>
+              <Fields>
+                <Field Name="Up_Attribute">
+                  <swe:Text>
+                    <swe:value>-1</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Down_Attribute">
+                  <swe:Text>
+                    <swe:value>M</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Fault_No">
+                  <swe:Count>
+                    <swe:value>0</swe:value>
+                  </swe:Count>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="G1">
+                  <Shape>
+                    <gml:Point gml:id="ZK0-Mark-Geo-0">
+                      <gml:pos srsDimension="3">0 0 100</gml:pos>
+                    </gml:Point>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="ZK0-Mark-1">
+              <gml:name>Mark-1</gml:name>
+              <Fields>
+                <Field Name="Up_Attribute">
+                  <swe:Text>
+                    <swe:value>M</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Down_Attribute">
+                  <swe:Text>
+                    <swe:value>C</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Fault_No">
+                  <swe:Count>
+                    <swe:value>0</swe:value>
+                  </swe:Count>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="G1">
+                  <Shape>
+                    <gml:Point gml:id="ZK0-Mark-Geo-1">
+                      <gml:pos srsDimension="3">0 0 70</gml:pos>
+                    </gml:Point>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="ZK0-Mark-2">
+              <gml:name>Mark-2</gml:name>
+              <Fields>
+                <Field Name="Up_Attribute">
+                  <swe:Text>
+                    <swe:value>C</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Down_Attribute">
+                  <swe:Text>
+                    <swe:value>A</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Fault_No">
+                  <swe:Count>
+                    <swe:value>0</swe:value>
+                  </swe:Count>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="G1">
+                  <Shape>
+                    <gml:Point gml:id="ZK0-Mark-Geo-2">
+                      <gml:pos srsDimension="3">0 0 40</gml:pos>
+                    </gml:Point>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="ZK0-Mark-3">
+              <gml:name>Mark-3</gml:name>
+              <Fields>
+                <Field Name="Up_Attribute">
+                  <swe:Text>
+                    <swe:value>A</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Down_Attribute">
+                  <swe:Text>
+                    <swe:value>-2</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Fault_No">
+                  <swe:Count>
+                    <swe:value>0</swe:value>
+                  </swe:Count>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="G1">
+                  <Shape>
+                    <gml:Point gml:id="ZK0-Mark-Geo-3">
+                      <gml:pos srsDimension="3">0 0 10</gml:pos>
+                    </gml:Point>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+        </Features>
+      </GeoFeatureClass>
+    </FeatureClass>
+    <FeatureClass>
+      <GeoFeatureClass gml:id="ZK0-Stratum">
+        <gml:name>Stratum</gml:name>
+        <Schema>
+          <swe:field name="stratigraphical_name">
+            <swe:Text>
+              <swe:description>地层的名字。</swe:description>
+            </swe:Text>
+          </swe:field>
+        </Schema>
+        <Features>
+          <Feature>
+            <GeoFeature gml:id="ZK0-Stratum-0">
+              <gml:name>Stratum-0</gml:name>
+              <Fields>
+                <Field Name="stratigraphical_name">
+                  <swe:Text>
+                    <swe:value>M</swe:value>
+                  </swe:Text>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="G1">
+                  <Shape>
+                    <gml:LineString gml:id="ZK0-Stratum-Geo-0">
+                      <gml:posList srsDimension="3" count="2">
+                      0 0 100
+                      0 0 70
+                      </gml:posList>
+                    </gml:LineString>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="ZK0-Stratum-1">
+              <gml:name>Stratum-1</gml:name>
+              <Fields>
+                <Field Name="stratigraphical_name">
+                  <swe:Text>
+                    <swe:value>C</swe:value>
+                  </swe:Text>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="G1">
+                  <Shape>
+                    <gml:LineString gml:id="ZK0-Stratum-Geo-1">
+                      <gml:posList srsDimension="3" count="2">
+                      0 0 70
+                      0 0 40
+                      </gml:posList>
+                    </gml:LineString>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+          <Feature>
+            <GeoFeature gml:id="ZK0-Stratum-2">
+              <gml:name>Stratum-2</gml:name>
+              <Fields>
+                <Field Name="stratigraphical_name">
+                  <swe:Text>
+                    <swe:value>A</swe:value>
+                  </swe:Text>
+                </Field>
+              </Fields>
+              <Geometries>
+                <Geometry Name="G1">
+                  <Shape>
+                    <gml:LineString gml:id="ZK0-Stratum-Geo-2">
+                      <gml:posList srsDimension="3" count="2">
+                      0 0 40
+                      0 0 10
+                      </gml:posList>
+                    </gml:LineString>
+                  </Shape>
+                </Geometry>
+              </Geometries>
+            </GeoFeature>
+          </Feature>
+        </Features>
+      </GeoFeatureClass>
+    </FeatureClass>
+  </FeatureClasses>
+</geo3dml:Geo3DModel>

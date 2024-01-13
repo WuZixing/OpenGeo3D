@@ -1,0 +1,10 @@
+// UTF-8编码
+#pragma once
+
+#include <string>
+
+namespace OpenGeo3D {
+    const std::string git_branch = "@GIT_BRANCH@";
+    const std::string git_hash = "@GIT_HASH@";
+    const std::string build_timestamp = "@BUILD_TIMESTAMP@";
+}

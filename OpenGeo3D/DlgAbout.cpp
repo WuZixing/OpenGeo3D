@@ -4,6 +4,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
 #include "Text.h"
+#include "generated/gitVersion.h"
 
 DlgAbout::DlgAbout(QWidget* parent) : QDialog(parent, Qt::Dialog | Qt::WindowCloseButtonHint) {
 	setWindowTitle(Text::titleOfDlgAbout());
@@ -16,6 +17,7 @@ DlgAbout::~DlgAbout() {
 
 void DlgAbout::initUI() {
 	QLabel* appInfo = new QLabel(Text::appName() + "  " + Text::appVersion());
+	QLabel* gitVersion = new QLabel(QStringLiteral("Git commit: ") + QString::fromStdString(OpenGeo3D::git_hash) + QStringLiteral("@") + QString::fromStdString(OpenGeo3D::git_branch));
 	QString copyRightString = QString::fromUtf8("\u00A92020");
 	QDate dt = QDate::currentDate();
 	if (dt.year() > 2020) {
@@ -30,6 +32,7 @@ void DlgAbout::initUI() {
 
 	QVBoxLayout* vLayout = new QVBoxLayout(this);
 	vLayout->addWidget(appInfo, 0, Qt::AlignmentFlag::AlignHCenter);
+	vLayout->addWidget(gitVersion, 0, Qt::AlignmentFlag::AlignHCenter);
 	vLayout->addWidget(appCopyright, 0, Qt::AlignmentFlag::AlignHCenter);
 	vLayout->addWidget(appDescription, 0, Qt::AlignmentFlag::AlignHCenter);
 	vLayout->addWidget(appWebSite, 0, Qt::AlignmentFlag::AlignHCenter);
