@@ -50,6 +50,10 @@ QString Text::nameOfClassG3DLineString() {
 	return QStringLiteral("Line String");
 }
 
+QString Text::nameOfClassG3DMLineString() {
+	return QStringLiteral("Multiple Line String");
+}
+
 QString Text::nameOfClassG3DTIN() {
 	return QStringLiteral("TIN");
 }
@@ -116,6 +120,10 @@ QString Text::menuOpenGeo3DML() {
 
 QString Text::menuOpenDrillLog() {
 	return QStringLiteral("打开简单钻孔记录...");
+}
+
+QString Text::menuOpenGeoJSON() {
+	return QStringLiteral("打开GeoJSON...");
 }
 
 QString Text::menuGridModel() {
@@ -228,6 +236,10 @@ QString Text::filterOfDrillLogFile() {
 
 QString Text::filterOfShpFile() {
 	return QStringLiteral("Shape文件(*.shp)");
+}
+
+QString Text::filterOfGeoJSONFile() {
+	return QStringLiteral("GeoJSON文件(*.json)");
 }
 
 QString Text::labelOfBasicMetaInfo() {
