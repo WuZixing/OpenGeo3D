@@ -71,7 +71,7 @@ void MetadataPage::setCurrentItemAsG3DProject(geo3dml::Project* g3dProject) {
 	propItem->setAttribute(attriReadOnly_, true);
 	propProject->addSubProperty(propItem);
 	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfDescription());
-	propItem->setValue(QString::fromUtf8(g3dProject->GetDescription().c_str()));
+	propItem->setValue(QString::fromUtf8(g3dProject->GetMetadata().GetDescription().c_str()));
 	propItem->setAttribute(attriReadOnly_, true);
 	propProject->addSubProperty(propItem);
 	addProperty(propProject);
@@ -345,14 +345,6 @@ void MetadataPage::setGeometryInfo(geo3dml::Geometry* g3dGeometry) {
 
 	QtVariantProperty* propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfId());
 	propItem->setValue(QString::fromUtf8(g3dGeometry->GetID().c_str()));
-	propItem->setAttribute(attriReadOnly_, true);
-	propGeometry->addSubProperty(propItem);
-	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfName());
-	propItem->setValue(QString::fromUtf8(g3dGeometry->GetName().c_str()));
-	propItem->setAttribute(attriReadOnly_, true);
-	propGeometry->addSubProperty(propItem);
-	propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfLOD());
-	propItem->setValue(g3dGeometry->GetLODLevel());
 	propItem->setAttribute(attriReadOnly_, true);
 	propGeometry->addSubProperty(propItem);
 	propItem = propManager_->addProperty(QMetaType::Type::QString, Text::labelOfClassName());

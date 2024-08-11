@@ -120,7 +120,7 @@ void AppFrame::openGeo3DML() {
 				// 工程的基本信息
 				geo3dml::Project* innerProject = projectPanel_->getG3DProject();
 				innerProject->SetName(project->GetName());
-				innerProject->SetDescription(project->GetDescription());
+				innerProject->SetMetadata(project->GetMetadata());
 			}
 			delete g3dObject;
 		}
@@ -295,7 +295,7 @@ void AppFrame::saveToGeo3DML() {
 	g3dProject->SetName(fileInfo.baseName().toUtf8().constData());
 	g3dxml::XMLWriter projectWriter;
 	bool isOK = projectWriter.Write(g3dProject, filePath.toUtf8().constData(), 
-		selectedFilter.contains(QStringLiteral("v1.x")) ? g3dxml::SchemaVersion::Schema_1_x : g3dxml::SchemaVersion::Schema_1_0);
+		selectedFilter.contains(QStringLiteral("v1.0")) ? g3dxml::SchemaVersion::Schema_1_0 : g3dxml::SchemaVersion::Schema_2_0);
 	BusyCursor::endWaiting();
 	if (isOK) {
 		QMessageBox::information(this, QString(), Text::tipOfSucceedInSavingToGeo3DMLFile(projName));

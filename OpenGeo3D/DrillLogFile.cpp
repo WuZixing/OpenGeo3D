@@ -30,7 +30,6 @@ g3dvtk::MultiPoint* DrillLogFile::ToMultiPoint(const std::map<std::string, geo3d
 	g3dvtk::ObjectFactory g3dFactory;
 	g3dvtk::MultiPoint* pts = static_cast<g3dvtk::MultiPoint*>(g3dFactory.NewMultiPoint());
 	pts->SetID(geo3dml::Object::NewID());
-	pts->SetName("Samples");
 	if (ToMultiPoinit(shapeProperties, pts)) {
 		return pts;
 	} else {

@@ -159,10 +159,6 @@ void RenderOptionPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 	propItem->setValue(geoClassName);
 	propItem->setEnabled(false);
 	propBasicInfo->addSubProperty(propItem);
-	propItem = propManager_->addProperty(QMetaType::Type::Int, Text::labelOfLOD());
-	propItem->setValue(g3dGeometry->GetLODLevel());
-	propItem->setAttribute(attriReadOnly_, true);
-	propBasicInfo->addSubProperty(propItem);
 	// render option
 	g3dActor_ = dynamic_cast<g3dvtk::Actor*>(g3dActor);
 	if (g3dActor_ == nullptr || !g3dActor_->GetVTKProp()->IsA("vtkActor")) {
