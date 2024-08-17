@@ -215,7 +215,7 @@ QString Text::filterOfGeo3DMLFile() {
 }
 
 QString Text::filterOfGeo3DMLFileWithVersion() {
-	return QStringLiteral("Geo3DML（v1.x）文件(*.xml);;Geo3DML（v1.0）文件(*.xml)");
+	return QStringLiteral("Geo3DML（v2.0）文件(*.xml);;Geo3DML（v1.0）文件(*.xml)");
 }
 
 QString Text::filterOfDrillPositionFile() {
