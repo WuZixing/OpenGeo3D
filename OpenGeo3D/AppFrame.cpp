@@ -15,6 +15,7 @@
 #include "icon.xpm"
 #include "BusyCursor.h"
 #include "Events.h"
+#include "DataLoaderGeoJSON.h"
 #include "DlgAbout.h"
 #include "DlgOpenSimpleDrillLog.h"
 #include "ProjectPanel.h"
@@ -41,6 +42,7 @@ void AppFrame::setupMenu() {
 	QMenu* subMenu = menu->addMenu(Text::menuStructureModel());
 	subMenu->addAction(Text::menuOpenGeo3DML(), this, &AppFrame::openGeo3DML);
 	subMenu->addAction(Text::menuOpenDrillLog(), this, &AppFrame::openDrillLog);
+	subMenu->addAction(Text::menuOpenGeoJSON(), this, &AppFrame::openGeoJSON);
 	subMenu->addSeparator();
 	subMenu->addAction(Text::menuSaveToGeo3DML(), this, &AppFrame::saveToGeo3DML);
 	subMenu->addAction(Text::menuCloseStructureModel(), this, &AppFrame::closeStructureModel);
@@ -136,6 +138,17 @@ void AppFrame::openDrillLog() {
 	}
 	BusyCursor waiting;
 	geo3dml::Model* g3dModel = dlg.loadAsG3DModel();
+	if (g3dModel != nullptr) {
+		projectPanel_->appendG3DModel(g3dModel, true);
+		projectPanel_->expandStructureModelTree();
+		Events::PostEvent(Events::Type::ResetAndUpdateScene, this);
+	}
+}
+
+void AppFrame::openGeoJSON() {
+	opengeo3d::DataLoaderGeoJSON loader;
+	BusyCursor waiting;
+	geo3dml::Model* g3dModel = loader.loadAsG3DModel();
 	if (g3dModel != nullptr) {
 		projectPanel_->appendG3DModel(g3dModel, true);
 		projectPanel_->expandStructureModelTree();

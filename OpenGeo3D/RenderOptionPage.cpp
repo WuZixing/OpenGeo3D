@@ -4,6 +4,7 @@
 #include <geo3dml/CornerPointGrid.h>
 #include <geo3dml/LineString.h>
 #include <geo3dml/MultiPoint.h>
+#include <geo3dml/MultiLineString.h>
 #include <geo3dml/Point.h>
 #include <geo3dml/TIN.h>
 #include <geo3dml/TriangularPrismVolume.h>
@@ -90,6 +91,7 @@ void RenderOptionPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 	geo3dml::CornerPointGrid* cornerGrid = nullptr;
 	geo3dml::Point* point = nullptr;
 	geo3dml::LineString* lineString = nullptr;
+	geo3dml::MultiLineString* mLineString = nullptr;
 	geo3dml::Annotation* annotation = nullptr;
 	geo3dml::MultiPoint* mPoint = nullptr;
 	geo3dml::TriangularPrismVolume* gtpGrid = nullptr;
@@ -109,37 +111,42 @@ void RenderOptionPage::setCurrentItemAsG3DActor(geo3dml::Actor* g3dActor) {
 			if (point != nullptr) {
 				geoClassName = Text::nameOfClassG3DPoint();
 			} else {
-				lineString = dynamic_cast<geo3dml::LineString*>(g3dGeometry);
-				if (lineString != nullptr) {
-					geoClassName = Text::nameOfClassG3DLineString();
+				mLineString = dynamic_cast<geo3dml::MultiLineString*>(g3dGeometry);
+				if (mLineString != nullptr) {
+					geoClassName = Text::nameOfClassG3DMLineString();
 				} else {
-					annotation = dynamic_cast<geo3dml::Annotation*>(g3dGeometry);
-					if (annotation != nullptr) {
-						geoClassName = Text::nameOfClassG3DAnnotation();
+					lineString = dynamic_cast<geo3dml::LineString*>(g3dGeometry);
+					if (lineString != nullptr) {
+						geoClassName = Text::nameOfClassG3DLineString();
 					} else {
-						mPoint = dynamic_cast<geo3dml::MultiPoint*>(g3dGeometry);
-						if (mPoint != nullptr) {
-							geoClassName = Text::nameOfClassG3DMPoint();
+						annotation = dynamic_cast<geo3dml::Annotation*>(g3dGeometry);
+						if (annotation != nullptr) {
+							geoClassName = Text::nameOfClassG3DAnnotation();
 						} else {
-							gtpGrid = dynamic_cast<geo3dml::TriangularPrismVolume*>(g3dGeometry);
-							if (gtpGrid != nullptr) {
-								geoClassName = Text::nameOfClassG3DGTPVolume();
+							mPoint = dynamic_cast<geo3dml::MultiPoint*>(g3dGeometry);
+							if (mPoint != nullptr) {
+								geoClassName = Text::nameOfClassG3DMPoint();
 							} else {
-								rectGrid = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
-								if (rectGrid != nullptr) {
-									geoClassName = Text::nameOfClassRectifiedGrid();
+								gtpGrid = dynamic_cast<geo3dml::TriangularPrismVolume*>(g3dGeometry);
+								if (gtpGrid != nullptr) {
+									geoClassName = Text::nameOfClassG3DGTPVolume();
 								} else {
-									tetraGrid = dynamic_cast<geo3dml::TetrahedronVolume*>(g3dGeometry);
-									if (tetraGrid != nullptr) {
-										geoClassName = Text::nameOfClassTetrahedronVolume();
+									rectGrid = dynamic_cast<geo3dml::RectifiedGrid*>(g3dGeometry);
+									if (rectGrid != nullptr) {
+										geoClassName = Text::nameOfClassRectifiedGrid();
 									} else {
-										cuboidGrid = dynamic_cast<geo3dml::CuboidVolume*>(g3dGeometry);
-										if (cuboidGrid != nullptr) {
-											geoClassName = Text::nameOfClassCuboidVolume();
+										tetraGrid = dynamic_cast<geo3dml::TetrahedronVolume*>(g3dGeometry);
+										if (tetraGrid != nullptr) {
+											geoClassName = Text::nameOfClassTetrahedronVolume();
 										} else {
-											trGrid = dynamic_cast<geo3dml::TruncatedRegularGrid*>(g3dGeometry);
-											if (trGrid != nullptr) {
-												geoClassName = Text::nameOfClassTruncatedRegularGrid();
+											cuboidGrid = dynamic_cast<geo3dml::CuboidVolume*>(g3dGeometry);
+											if (cuboidGrid != nullptr) {
+												geoClassName = Text::nameOfClassCuboidVolume();
+											} else {
+												trGrid = dynamic_cast<geo3dml::TruncatedRegularGrid*>(g3dGeometry);
+												if (trGrid != nullptr) {
+													geoClassName = Text::nameOfClassTruncatedRegularGrid();
+												}
 											}
 										}
 									}

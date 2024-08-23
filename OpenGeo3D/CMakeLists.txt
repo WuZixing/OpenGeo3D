@@ -85,6 +85,7 @@ add_executable(${APP_NAME} ${TARGET_PROPERTY}
   BusyCursor.h
   ComboBoxItemDelegate.h
   CRSSet.h
+  DataLoaderGeoJSON.h
   DlgAbout.h
   DlgOpenSimpleDrillLog.h
   DrillLogFile.h

@@ -14,6 +14,7 @@ public:
 private slots:
 	void openGeo3DML();
 	void openDrillLog();
+	void openGeoJSON();
 	void closeStructureModel();
 	void about();
 	void quit();

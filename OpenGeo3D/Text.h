@@ -19,6 +19,7 @@ public:
 	static QString nameOfClassG3DMPoint();
 	static QString nameOfClassG3DAnnotation();
 	static QString nameOfClassG3DLineString();
+	static QString nameOfClassG3DMLineString();
 	static QString nameOfClassG3DTIN();
 	static QString nameOfClassG3DCornerGrid();
 	static QString nameOfClassG3DGTPVolume();
@@ -40,6 +41,7 @@ public:
 	static QString menuStructureModel();
 	static QString menuOpenGeo3DML();
 	static QString menuOpenDrillLog();
+	static QString menuOpenGeoJSON();
 	static QString menuGridModel();
 	static QString menuCloseStructureModel();
 	static QString menuCloseAllModels();
@@ -73,6 +75,7 @@ public:
 	static QString filterOfDrillPositionFile();
 	static QString filterOfDrillLogFile();
 	static QString filterOfShpFile();
+	static QString filterOfGeoJSONFile();
 	///@}
 
 	/// @name Labels.
