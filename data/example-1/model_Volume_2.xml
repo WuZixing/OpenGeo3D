@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<geo3dml:Geo3DModel xmlns:geo3dml="http://www.cgs.gov.cn/geo3dml" xmlns="http://www.cgs.gov.cn/geo3dml"
+<geo3dml:Geo3DModel xmlns:geo3dml="https://www.iheg.cgs.gov.cn/Standard/geo3dml" xmlns="https://www.iheg.cgs.gov.cn/Standard/geo3dml"
   xmlns:gml="http://www.opengis.net/gml/3.2"
   xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0"
   xmlns:swe="http://www.opengis.net/swe/2.0"
@@ -7,7 +7,7 @@
   xmlns:gmd="http://www.isotc211.org/2005/gmd"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.cgs.gov.cn/geo3dml file:///C:/Users/wliang/Workspace/Geo3DML/xsd/Geo3DML.xsd"
+  xsi:schemaLocation="https://www.iheg.cgs.gov.cn/Standard/geo3dml https://www.iheg.cgs.gov.cn/Standard/Geo3DML/Schemas/Geo3DML.xsd"
   ID="c3607415-fa31-4b07-97fc-b22638050315">
   <Name>体数据示例模型-2</Name>
   <Type>3DModel</Type>
@@ -57,6 +57,7 @@
     <Version>1.0.0</Version>
     <ToolName>XX软件</ToolName>
     <ToolVersion>vX.X.X</ToolVersion>
+    <TopicCategory>工程地质</TopicCategory>
   </Metadata>
   <FeatureClasses>
     <FeatureClass>
@@ -93,74 +94,72 @@
                   </swe:Quantity>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="TIN" LOD="0">
-                  <Shape>
-                    <GeoTin gml:id="111ba61a-5412-439e-bd9b-2cd4181eb4c4">
-                      <Vertices>
-                        <Vertex gml:srsDimension="3" IndexNo="0">0 0 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="1">0 100 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="2">200 0 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="3">200 100 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="4">200 0 100</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="5">200 100 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="6">0 0 100</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="7">0 100 110</Vertex>
-                      </Vertices>
-                      <Triangles>
-                        <Triangle IndexNo="0">
-                          <VertexList>0 1 2</VertexList>
-                          <NeighborList>1 8 7</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="1">
-                          <VertexList>2 1 3</VertexList>
-                          <NeighborList>10 2 0</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="2">
-                          <VertexList>2 3 4</VertexList>
-                          <NeighborList>3 9 1</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="3">
-                          <VertexList>4 3 5</VertexList>
-                          <NeighborList>11 4 2</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="4">
-                          <VertexList>4 5 6</VertexList>
-                          <NeighborList>5 9 3</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="5">
-                          <VertexList>6 5 7</VertexList>
-                          <NeighborList>11 6 4</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="6">
-                          <VertexList>6 7 0</VertexList>
-                          <NeighborList>7 8 5</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="7">
-                          <VertexList>0 7 1</VertexList>
-                          <NeighborList>10 0 6</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="8">
-                          <VertexList>0 2 6</VertexList>
-                          <NeighborList>9 6 0</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="9">
-                          <VertexList>6 2 4</VertexList>
-                          <NeighborList>2 4 8</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="10">
-                          <VertexList>1 7 3</VertexList>
-                          <NeighborList>11 1 7</NeighborList>
-                        </Triangle>
-                        <Triangle IndexNo="11">
-                          <VertexList>3 7 5</VertexList>
-                          <NeighborList>5 3 10</NeighborList>
-                        </Triangle>
-                      </Triangles>
-                    </GeoTin>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <GeoTin gml:id="111ba61a-5412-439e-bd9b-2cd4181eb4c4">
+                    <Vertices>
+                      <Vertex gml:srsDimension="3" IndexNo="0">0 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="1">0 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="2">200 0 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="3">200 100 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="4">200 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="5">200 100 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="6">0 0 100</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="7">0 100 110</Vertex>
+                    </Vertices>
+                    <Triangles>
+                      <Triangle IndexNo="0">
+                        <VertexList>0 1 2</VertexList>
+                        <NeighborList>1 8 7</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="1">
+                        <VertexList>2 1 3</VertexList>
+                        <NeighborList>10 2 0</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="2">
+                        <VertexList>2 3 4</VertexList>
+                        <NeighborList>3 9 1</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="3">
+                        <VertexList>4 3 5</VertexList>
+                        <NeighborList>11 4 2</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="4">
+                        <VertexList>4 5 6</VertexList>
+                        <NeighborList>5 9 3</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="5">
+                        <VertexList>6 5 7</VertexList>
+                        <NeighborList>11 6 4</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="6">
+                        <VertexList>6 7 0</VertexList>
+                        <NeighborList>7 8 5</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="7">
+                        <VertexList>0 7 1</VertexList>
+                        <NeighborList>10 0 6</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="8">
+                        <VertexList>0 2 6</VertexList>
+                        <NeighborList>9 6 0</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="9">
+                        <VertexList>6 2 4</VertexList>
+                        <NeighborList>2 4 8</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="10">
+                        <VertexList>1 7 3</VertexList>
+                        <NeighborList>11 1 7</NeighborList>
+                      </Triangle>
+                      <Triangle IndexNo="11">
+                        <VertexList>3 7 5</VertexList>
+                        <NeighborList>5 3 10</NeighborList>
+                      </Triangle>
+                    </Triangles>
+                  </GeoTin>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
           <Feature>
@@ -180,7 +179,7 @@
                   </swe:Quantity>
                 </Field>
               </Fields>
-              <Geometry Name="截断规则网格-1">
+              <Geometry>
                 <Shape>
                   <GeoTruncatedRegularGrid gml:id="1a044aa4-989d-4c48-8172-b5410817e685">
                     <PlaneGrid>
@@ -578,7 +577,7 @@
                   </swe:Quantity>
                 </Field>
               </Fields>
-              <Geometry Name="截断规则网格-2">
+              <Geometry>
                 <Shape>
                   <GeoTruncatedRegularGrid gml:id="c4b4dfe4-75ad-4175-a37f-07423fa29a77">
                     <PlaneGrid>
@@ -702,52 +701,50 @@
                   </swe:Quantity>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="三棱柱体" LOD="0">
-                  <Shape>
-                    <GeoTriangularPrismVolume gml:id="16718808-8472-4e4e-af83-f6e4a666348c">
-                      <Vertices>
-                        <Vertex gml:srsDimension="3" IndexNo="0">0 0 120</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="1">0 100 120</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="2">100 0 120</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="3">75 100 120</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="4">200 0 120</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="5">200 100 120</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="6">0 0 210</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="7">0 100 220</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="8">100 0 210</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="9">75 100 220</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="10">200 0 210</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="11">200 100 220</Vertex>
-                      </Vertices>
-                      <Prisms>
-                        <Prism IndexNo="0">
-                          <TopTriangle>6 9 7</TopTriangle>
-                          <BottomTriangle>0 3 1</BottomTriangle>
-                          <NeighborList>-1 -1 1</NeighborList>
-                        </Prism>
-                        <Prism IndexNo="1">
-                          <TopTriangle>9 6 8</TopTriangle>
-                          <BottomTriangle>3 0 2</BottomTriangle>
-                          <NeighborList>-1 2 0</NeighborList>
-                        </Prism>
-                        <Prism IndexNo="2">
-                          <TopTriangle>8 11 9</TopTriangle>
-                          <BottomTriangle>2 5 3</BottomTriangle>
-                          <NeighborList>-1 1 -1</NeighborList>
-                        </Prism>
-                        <!--
-                        <Prism IndexNo="3">
-                          <TopTriangle>11 8 10</TopTriangle>
-                          <BottomTriangle>5 2 4</BottomTriangle>
-                          <NeighborList>-1 -1 2</NeighborList>
-                        </Prism>
-                      -->
-                      </Prisms>
-                    </GeoTriangularPrismVolume>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry Name="三棱柱体" LOD="0">
+                <Shape>
+                  <GeoTriangularPrismVolume gml:id="16718808-8472-4e4e-af83-f6e4a666348c">
+                    <Vertices>
+                      <Vertex gml:srsDimension="3" IndexNo="0">0 0 120</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="1">0 100 120</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="2">100 0 120</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="3">75 100 120</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="4">200 0 120</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="5">200 100 120</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="6">0 0 210</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="7">0 100 220</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="8">100 0 210</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="9">75 100 220</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="10">200 0 210</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="11">200 100 220</Vertex>
+                    </Vertices>
+                    <Prisms>
+                      <Prism IndexNo="0">
+                        <TopTriangle>6 9 7</TopTriangle>
+                        <BottomTriangle>0 3 1</BottomTriangle>
+                        <NeighborList>-1 -1 1</NeighborList>
+                      </Prism>
+                      <Prism IndexNo="1">
+                        <TopTriangle>9 6 8</TopTriangle>
+                        <BottomTriangle>3 0 2</BottomTriangle>
+                        <NeighborList>-1 2 0</NeighborList>
+                      </Prism>
+                      <Prism IndexNo="2">
+                        <TopTriangle>8 11 9</TopTriangle>
+                        <BottomTriangle>2 5 3</BottomTriangle>
+                        <NeighborList>-1 1 -1</NeighborList>
+                      </Prism>
+                      <!--
+                      <Prism IndexNo="3">
+                        <TopTriangle>11 8 10</TopTriangle>
+                        <BottomTriangle>5 2 4</BottomTriangle>
+                        <NeighborList>-1 -1 2</NeighborList>
+                      </Prism>
+                    -->
+                    </Prisms>
+                  </GeoTriangularPrismVolume>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
         </Features>

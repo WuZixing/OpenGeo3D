@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<geo3dml:Geo3DModel xmlns:geo3dml="http://www.cgs.gov.cn/geo3dml" xmlns="http://www.cgs.gov.cn/geo3dml"
+<geo3dml:Geo3DModel xmlns:geo3dml="https://www.iheg.cgs.gov.cn/Standard/geo3dml"
+  xmlns="https://www.iheg.cgs.gov.cn/Standard/geo3dml"
   xmlns:gml="http://www.opengis.net/gml/3.2"
   xmlns:swe="http://www.opengis.net/swe/2.0"
   xmlns:gco="http://www.isotc211.org/2005/gco"
   xmlns:gmd="http://www.isotc211.org/2005/gmd"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.cgs.gov.cn/geo3dml file:///D:/GMML/Document/schema/GMML/1.0/Geo3DML.xsd"
+  xsi:schemaLocation="https://www.iheg.cgs.gov.cn/Standard/geo3dml https://www.iheg.cgs.gov.cn/Standard/Geo3DML/Schemas/Geo3DML.xsd"
   ID="152eef1d-b298-41fc-9680-71bc248b9b65">
   <Name>钻孔_ZK0</Name>
   <Type>Drill</Type>
@@ -63,6 +64,7 @@
     </SpatialReferenceSystem>
     <ToolName>XX工具</ToolName>
     <ToolVersion>vXX.XX</ToolVersion>
+    <TopicCategory>工程地质</TopicCategory>
   </Metadata>
   <FeatureClasses>
     <FeatureClass>
@@ -106,15 +108,13 @@
                   </swe:Count>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="G1">
-                  <Shape>
-                    <gml:Point gml:id="ZK0-Mark-Geo-0">
-                      <gml:pos srsDimension="3">0 0 100</gml:pos>
-                    </gml:Point>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <gml:Point gml:id="ZK0-Mark-Geo-0">
+                    <gml:pos srsDimension="3">0 0 100</gml:pos>
+                  </gml:Point>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
           <Feature>
@@ -137,15 +137,13 @@
                   </swe:Count>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="G1">
-                  <Shape>
-                    <gml:Point gml:id="ZK0-Mark-Geo-1">
-                      <gml:pos srsDimension="3">0 0 70</gml:pos>
-                    </gml:Point>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <gml:Point gml:id="ZK0-Mark-Geo-1">
+                    <gml:pos srsDimension="3">0 0 70</gml:pos>
+                  </gml:Point>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
           <Feature>
@@ -168,15 +166,13 @@
                   </swe:Count>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="G1">
-                  <Shape>
-                    <gml:Point gml:id="ZK0-Mark-Geo-2">
-                      <gml:pos srsDimension="3">0 0 40</gml:pos>
-                    </gml:Point>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <gml:Point gml:id="ZK0-Mark-Geo-2">
+                    <gml:pos srsDimension="3">0 0 40</gml:pos>
+                  </gml:Point>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
           <Feature>
@@ -199,15 +195,13 @@
                   </swe:Count>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="G1">
-                  <Shape>
-                    <gml:Point gml:id="ZK0-Mark-Geo-3">
-                      <gml:pos srsDimension="3">0 0 10</gml:pos>
-                    </gml:Point>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <gml:Point gml:id="ZK0-Mark-Geo-3">
+                    <gml:pos srsDimension="3">0 0 10</gml:pos>
+                  </gml:Point>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
         </Features>
@@ -234,18 +228,16 @@
                   </swe:Text>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="G1">
-                  <Shape>
-                    <gml:LineString gml:id="ZK0-Stratum-Geo-0">
-                      <gml:posList srsDimension="3" count="2">
-                      0 0 100
-                      0 0 70
-                      </gml:posList>
-                    </gml:LineString>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <gml:LineString gml:id="ZK0-Stratum-Geo-0">
+                    <gml:posList srsDimension="3" count="2">
+                    0 0 100
+                    0 0 70
+                    </gml:posList>
+                  </gml:LineString>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
           <Feature>
@@ -258,18 +250,16 @@
                   </swe:Text>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="G1">
-                  <Shape>
-                    <gml:LineString gml:id="ZK0-Stratum-Geo-1">
-                      <gml:posList srsDimension="3" count="2">
-                      0 0 70
-                      0 0 40
-                      </gml:posList>
-                    </gml:LineString>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <gml:LineString gml:id="ZK0-Stratum-Geo-1">
+                    <gml:posList srsDimension="3" count="2">
+                    0 0 70
+                    0 0 40
+                    </gml:posList>
+                  </gml:LineString>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
           <Feature>
@@ -282,18 +272,16 @@
                   </swe:Text>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="G1">
-                  <Shape>
-                    <gml:LineString gml:id="ZK0-Stratum-Geo-2">
-                      <gml:posList srsDimension="3" count="2">
-                      0 0 40
-                      0 0 10
-                      </gml:posList>
-                    </gml:LineString>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <gml:LineString gml:id="ZK0-Stratum-Geo-2">
+                    <gml:posList srsDimension="3" count="2">
+                    0 0 40
+                    0 0 10
+                    </gml:posList>
+                  </gml:LineString>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
         </Features>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<geo3dml:Geo3DModel xmlns:geo3dml="http://www.cgs.gov.cn/geo3dml" xmlns="http://www.cgs.gov.cn/geo3dml"
+<geo3dml:Geo3DModel xmlns:geo3dml="https://www.iheg.cgs.gov.cn/Standard/geo3dml" xmlns="https://www.iheg.cgs.gov.cn/Standard/geo3dml"
   xmlns:gml="http://www.opengis.net/gml/3.2"
   xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0"
   xmlns:swe="http://www.opengis.net/swe/2.0"
@@ -7,7 +7,7 @@
   xmlns:gmd="http://www.isotc211.org/2005/gmd"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.cgs.gov.cn/geo3dml file:///C:/Users/wliang/Workspace/Geo3DML/xsd/Geo3DML.xsd"
+  xsi:schemaLocation="https://www.iheg.cgs.gov.cn/Standard/geo3dml https://www.iheg.cgs.gov.cn/Standard/Geo3DML/Schemas/Geo3DML.xsd"
   ID="6ab4433b-93a7-4b05-aacc-62ed059943c3">
   <Name>体数据示例模型-1</Name>
   <Type>3DModel</Type>
@@ -71,6 +71,7 @@
     </SpatialReferenceSystem> 
     <ToolName>XX软件</ToolName>
     <ToolVersion>vX.X.X</ToolVersion>
+    <TopicCategory>工程地质</TopicCategory>
   </Metadata>
   <FeatureClasses>
     <FeatureClass>
@@ -107,27 +108,25 @@
                   </swe:Quantity>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="Rectified Grid">
-                  <Shape>
-                    <gml:RectifiedGrid gml:id="c2096e54-d72e-48b8-a4be-ee3ea386f359" gml:dimension="3">
-                      <gml:limits>
-                        <gml:GridEnvelope>
-                          <gml:low>-1 -1 -1</gml:low>
-                          <gml:high>6 5 3</gml:high>
-                        </gml:GridEnvelope>
-                      </gml:limits>
-                      <gml:axisLabels>I J K</gml:axisLabels>
-                      <gml:origin>
-                        <gml:Point>43.21 11.3 25.8</gml:Point>
-                      </gml:origin>
-                      <gml:offsetVector>4.8 4.8 2</gml:offsetVector>
-                      <gml:offsetVector>0 10 0</gml:offsetVector>
-                      <gml:offsetVector>0 0 6.8</gml:offsetVector>
-                    </gml:RectifiedGrid>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <gml:RectifiedGrid gml:id="c2096e54-d72e-48b8-a4be-ee3ea386f359" gml:dimension="3">
+                    <gml:limits>
+                      <gml:GridEnvelope>
+                        <gml:low>-1 -1 -1</gml:low>
+                        <gml:high>6 5 3</gml:high>
+                      </gml:GridEnvelope>
+                    </gml:limits>
+                    <gml:axisLabels>I J K</gml:axisLabels>
+                    <gml:origin>
+                      <gml:Point>43.21 11.3 25.8</gml:Point>
+                    </gml:origin>
+                    <gml:offsetVector>4.8 4.8 2</gml:offsetVector>
+                    <gml:offsetVector>0 10 0</gml:offsetVector>
+                    <gml:offsetVector>0 0 6.8</gml:offsetVector>
+                  </gml:RectifiedGrid>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
           <Feature>
@@ -147,60 +146,58 @@
                   </swe:Quantity>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="四面体">
-                  <Shape>
-                    <GeoTetrahedronVolume gml:id="89da5941-1285-4995-925f-bf6419b3eb8f">
-                      <Vertices>
-                        <Vertex gml:srsDimension="3" IndexNo="0">0 120 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="1">100 120 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="2">200 120 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="3">0 170 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="4">100 170 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="5">200 170 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="6">20 130 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="7">100 130 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="8">180 130 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="9">20 160 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="10">100 160 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="11">180 160 110</Vertex>
-                      </Vertices>
-                      <Tetrahedrons>
-                        <Tetrahedron IndexNo="0">
-                          <VertexList>0 1 3 6</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="1">
-                          <VertexList>6 7 1 10</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="2">
-                          <VertexList>6 3 10 1</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="3">
-                          <VertexList>6 10 3 9</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="4">
-                          <VertexList>1 4 3 10</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="4">
-                          <VertexList>1 4 10 5</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="4">
-                          <VertexList>1 10 7 8</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="4">
-                          <VertexList>1 2 5 8</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="4">
-                          <VertexList>5 8 10 1</VertexList>
-                        </Tetrahedron>
-                        <Tetrahedron IndexNo="4">
-                          <VertexList>5 10 8 11</VertexList>
-                        </Tetrahedron>
-                      </Tetrahedrons>
-                    </GeoTetrahedronVolume>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <GeoTetrahedronVolume gml:id="89da5941-1285-4995-925f-bf6419b3eb8f">
+                    <Vertices>
+                      <Vertex gml:srsDimension="3" IndexNo="0">0 120 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="1">100 120 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="2">200 120 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="3">0 170 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="4">100 170 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="5">200 170 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="6">20 130 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="7">100 130 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="8">180 130 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="9">20 160 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="10">100 160 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="11">180 160 110</Vertex>
+                    </Vertices>
+                    <Tetrahedrons>
+                      <Tetrahedron IndexNo="0">
+                        <VertexList>0 1 3 6</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="1">
+                        <VertexList>6 7 1 10</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="2">
+                        <VertexList>6 3 10 1</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="3">
+                        <VertexList>6 10 3 9</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="4">
+                        <VertexList>1 4 3 10</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="4">
+                        <VertexList>1 4 10 5</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="4">
+                        <VertexList>1 10 7 8</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="4">
+                        <VertexList>1 2 5 8</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="4">
+                        <VertexList>5 8 10 1</VertexList>
+                      </Tetrahedron>
+                      <Tetrahedron IndexNo="4">
+                        <VertexList>5 10 8 11</VertexList>
+                      </Tetrahedron>
+                    </Tetrahedrons>
+                  </GeoTetrahedronVolume>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
           <Feature>
@@ -220,49 +217,47 @@
                   </swe:Quantity>
                 </Field>
               </Fields>
-              <Geometries>
-                <Geometry Name="六面体">
-                  <Shape>
-                    <GeoCuboidVolume gml:id="5b5607bf-714f-42e9-8925-fb51ece4c01e">
-                      <Vertices>
-                        <Vertex gml:srsDimension="3" IndexNo="0">0 200 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="1">0 300 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="2">100 300 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="3">100 250 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="4">100 200 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="5">200 200 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="6">200 250 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="7">200 275 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="8">150 275 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="9">150 250 10</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="10">0 200 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="11">0 300 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="12">100 300 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="13">100 200 110</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="14">100 250 90</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="15">100 200 90</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="16">200 200 90</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="17">200 250 90</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="18">200 250 60</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="19">200 275 60</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="20">150 275 60</Vertex>
-                        <Vertex gml:srsDimension="3" IndexNo="21">150 250 60</Vertex>
-                      </Vertices>
-                      <Cuboids>
-                        <Cuboid IndexNo="0">
-                          <VertexList>0 4 2 1 10 13 12 11</VertexList>
-                        </Cuboid>
-                        <Cuboid IndexNo="1">
-                          <VertexList>4 5 6 3 15 16 17 14</VertexList>
-                        </Cuboid>
-                        <Cuboid IndexNo="2">
-                          <VertexList>6 7 8 9 18 19 20 21</VertexList>
-                        </Cuboid>
-                      </Cuboids>
-                    </GeoCuboidVolume>
-                  </Shape>
-                </Geometry>
-              </Geometries>
+              <Geometry>
+                <Shape>
+                  <GeoCuboidVolume gml:id="5b5607bf-714f-42e9-8925-fb51ece4c01e">
+                    <Vertices>
+                      <Vertex gml:srsDimension="3" IndexNo="0">0 200 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="1">0 300 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="2">100 300 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="3">100 250 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="4">100 200 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="5">200 200 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="6">200 250 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="7">200 275 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="8">150 275 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="9">150 250 10</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="10">0 200 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="11">0 300 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="12">100 300 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="13">100 200 110</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="14">100 250 90</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="15">100 200 90</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="16">200 200 90</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="17">200 250 90</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="18">200 250 60</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="19">200 275 60</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="20">150 275 60</Vertex>
+                      <Vertex gml:srsDimension="3" IndexNo="21">150 250 60</Vertex>
+                    </Vertices>
+                    <Cuboids>
+                      <Cuboid IndexNo="0">
+                        <VertexList>0 4 2 1 10 13 12 11</VertexList>
+                      </Cuboid>
+                      <Cuboid IndexNo="1">
+                        <VertexList>4 5 6 3 15 16 17 14</VertexList>
+                      </Cuboid>
+                      <Cuboid IndexNo="2">
+                        <VertexList>6 7 8 9 18 19 20 21</VertexList>
+                      </Cuboid>
+                    </Cuboids>
+                  </GeoCuboidVolume>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
         </Features>
