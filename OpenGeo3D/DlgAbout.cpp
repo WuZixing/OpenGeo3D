@@ -1,3 +1,4 @@
+// UTF-8编码
 #include "DlgAbout.h"
 #include <QtCore/QDate>
 #include <QtWidgets/QDialogButtonBox>
@@ -25,7 +26,7 @@ void DlgAbout::initUI() {
 	}
 	QLabel* appCopyright = new QLabel(copyRightString);
 	QLabel* appDescription = new QLabel(Text::appDescription());
-	QLabel* appWebSite = new QLabel(QStringLiteral("<a href=") + Text::appWebSite() + QStringLiteral(">") + Text::appWebSite() + QStringLiteral("</a>"));
+	QLabel* appWebSite = new QLabel(QStringLiteral("开源项目地址：<a href=") + Text::appWebSite() + QStringLiteral(">") + Text::appWebSite() + QStringLiteral("</a>"));
 	appWebSite->setTextInteractionFlags(Qt::TextInteractionFlag::LinksAccessibleByMouse);
 	appWebSite->setOpenExternalLinks(true);
 	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::StandardButton::Ok, Qt::Orientation::Horizontal);
@@ -34,8 +35,8 @@ void DlgAbout::initUI() {
 	vLayout->addWidget(appInfo, 0, Qt::AlignmentFlag::AlignHCenter);
 	vLayout->addWidget(gitVersion, 0, Qt::AlignmentFlag::AlignHCenter);
 	vLayout->addWidget(appCopyright, 0, Qt::AlignmentFlag::AlignHCenter);
-	vLayout->addWidget(appDescription, 0, Qt::AlignmentFlag::AlignHCenter);
-	vLayout->addWidget(appWebSite, 0, Qt::AlignmentFlag::AlignHCenter);
+	vLayout->addWidget(appDescription, 0, Qt::AlignmentFlag::AlignLeft);
+	vLayout->addWidget(appWebSite, 0, Qt::AlignmentFlag::AlignLeft);
 	vLayout->addWidget(buttonBox, 0, Qt::AlignmentFlag::AlignHCenter);
 
 	setLayout(vLayout);

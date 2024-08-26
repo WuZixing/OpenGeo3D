@@ -11,7 +11,7 @@ QString Text::appVersion() {
 }
 
 QString Text::appDescription() {
-	return QStringLiteral("本工具支持读写和查看Geo3DML数据。");
+	return QStringLiteral("这是一个开源的Geo3DML数据读写和查看工具。");
 }
 
 QString Text::appWebSite() {
