@@ -7,15 +7,15 @@ QString Text::appName() {
 }
 
 QString Text::appVersion() {
-	return QStringLiteral(APP_VERSION);
+	return QStringLiteral("for Geo3DML");
 }
 
 QString Text::appDescription() {
-	return appName() + QStringLiteral("是一个开源的、以网格为基础的三维地质建模工具。");
+	return QStringLiteral("这是一个开源的Geo3DML数据读写和查看工具。");
 }
 
 QString Text::appWebSite() {
-	return QStringLiteral("https://github.com/WuZixing/OpenGeo3D");
+	return QStringLiteral("https://gitee.com/zhizhi-link/OpenGeo3D");
 }
 
 QString Text::nameOfStructureModel() {
