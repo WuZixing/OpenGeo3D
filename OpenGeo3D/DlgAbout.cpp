@@ -17,7 +17,7 @@ DlgAbout::~DlgAbout() {
 }
 
 void DlgAbout::initUI() {
-	QLabel* appInfo = new QLabel(Text::appName() + "  " + Text::appVersion());
+	QLabel* appInfo = new QLabel(Text::appName() + " " + Text::appVersion());
 	QLabel* gitVersion = new QLabel(QStringLiteral("Git commit: ") + QString::fromStdString(OpenGeo3D::git_hash) + QStringLiteral("@") + QString::fromStdString(OpenGeo3D::git_branch));
 	QString copyRightString = QString::fromUtf8("\u00A92020");
 	QDate dt = QDate::currentDate();
