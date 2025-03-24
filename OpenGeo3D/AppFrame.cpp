@@ -51,11 +51,11 @@ void AppFrame::setupMenu() {
 	menu->addAction(Text::menuQuit(), this, &AppFrame::quit);
 
 	menu = menuBar()->addMenu(Text::menuWindow());
-	menu->addAction(Text::menuFullView(), this, &AppFrame::fullView, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_R));
-	menu->addAction(Text::menuBackgroundColor(), this, &AppFrame::changeBackgroundColor, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
+	menu->addAction(Text::menuFullView(), QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_R), this, &AppFrame::fullView);
+	menu->addAction(Text::menuBackgroundColor(), QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B), this, &AppFrame::changeBackgroundColor);
 	menu->addSeparator();
-	menu->addAction(Text::menuScaleZUp(), this, &AppFrame::scaleZUp, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Up));
-	menu->addAction(Text::menuScaleZDown(), this, &AppFrame::scaleZDown, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Down));
+	menu->addAction(Text::menuScaleZUp(), QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Up), this, &AppFrame::scaleZUp);
+	menu->addAction(Text::menuScaleZDown(), QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Down), this, &AppFrame::scaleZDown);
 	menu->addAction(Text::menuCustomizedZScale(), this, &AppFrame::customizedZScale);
 	menu->addAction(Text::menuResetZScale(), this, &AppFrame::resetZScale);
 	menu->addSeparator();
