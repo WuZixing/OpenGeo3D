@@ -1358,6 +1358,38 @@
             </GeoFeature>
           </Feature>
           <Feature>
+            <GeoFeature gml:id="m1-GeoBoundary-27">
+              <gml:name>Boundary-27</gml:name>
+              <Fields>
+                <Field Name="Up_Attribute">
+                  <swe:Text>
+                    <swe:value>F</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Down_Attribute">
+                  <swe:Text>
+                    <swe:value>M</swe:value>
+                  </swe:Text>
+                </Field>
+                <Field Name="Fault_No">
+                  <swe:Count>
+                    <swe:value>0</swe:value>
+                  </swe:Count>
+                </Field>
+              </Fields>
+              <Geometry>
+                <Shape>
+                  <gml:LineString gml:id="m1-GeoBoundary-Geo-27">
+                    <gml:posList srsDimension="3" count="2">
+                    87.4525 0 10.0187
+                    87.4525 0 9.92023
+                    </gml:posList>
+                  </gml:LineString>
+                </Shape>
+              </Geometry>
+            </GeoFeature>
+          </Feature>
+          <Feature>
             <GeoFeature gml:id="m1-GeoBoundary-28">
               <gml:name>Boundary-28</gml:name>
               <Fields>
@@ -1755,38 +1787,7 @@
               </Geometry>
             </GeoFeature>
           </Feature>
-          <Feature>
-            <GeoFeature gml:id="m1-GeoBoundary-27">
-              <gml:name>Boundary-27</gml:name>
-              <Fields>
-                <Field Name="Up_Attribute">
-                  <swe:Text>
-                    <swe:value></swe:value>
-                  </swe:Text>
-                </Field>
-                <Field Name="Down_Attribute">
-                  <swe:Text>
-                    <swe:value></swe:value>
-                  </swe:Text>
-                </Field>
-                <Field Name="Fault_No">
-                  <swe:Count>
-                    <swe:value>0</swe:value>
-                  </swe:Count>
-                </Field>
-              </Fields>
-              <Geometry>
-                <Shape>
-                  <gml:LineString gml:id="m1-GeoBoundary-Geo-27">
-                    <gml:posList srsDimension="3" count="2">
-                    87.4525 0 10.0187
-                    87.4525 0 9.92023
-                    </gml:posList>
-                  </gml:LineString>
-                </Shape>
-              </Geometry>
-            </GeoFeature>
-          </Feature>
+          
         </Features>
       </GeoFeatureClass>
     </FeatureClass>
@@ -1903,6 +1904,84 @@
                   </swe:Text>
                 </Field>
               </Fields>
+            </GeoFeature>
+          </Feature>
+        </Features>
+      </GeoFeatureClass>
+    </FeatureClass>
+    <FeatureClass>
+      <GeoFeatureClass gml:id="m1-MultiLine">
+        <gml:name>地质线</gml:name>
+        <Schema>
+          <swe:field name="name">
+            <swe:Text />
+          </swe:field>
+        </Schema>
+        <Features>
+          <Feature>
+            <GeoFeature gml:id="m1-MultiLine-1">
+              <gml:name>MultiLine-1</gml:name>
+              <Fields>
+                <Field Name="name">
+                  <swe:Text>
+                    <swe:value>A</swe:value>
+                  </swe:Text>
+                </Field>
+              </Fields>
+              <Geometry>
+                <Shape>
+                  <gml:MultiCurve>
+                    <gml:curveMember>
+                      <gml:LineString>
+                        <gml:posList srsDimension="3" count="15">
+                        61.2611 -40 83.3473
+                        61.4852 -40 83.068
+                        61.9523 -40 82.4804
+                        62.4161 -40 81.8908
+                        62.8762 -40 81.2988
+                        63.3323 -40 80.7045
+                        63.7842 -40 80.1074
+                        64.2314 -40 79.5075
+                        64.6736 -40 78.9045
+                        65.1105 -40 78.2982
+                        65.5417 -40 77.6884
+                        65.9669 -40 77.0748
+                        66.3855 -40 76.4571
+                        66.7972 -40 75.8352
+                        67.7597 -40 74.3157
+                        </gml:posList>
+                      </gml:LineString>
+                    </gml:curveMember>
+                    <gml:curveMember>
+                      <gml:LineString>
+                        <gml:posList srsDimension="3" count="21">
+                        -0.91339 -40 109.75
+                        -0.004008 -40 99.25
+                        -0.008062 -40 98.5
+                        -0.012154 -40 97.75
+                        -0.016277 -40 97
+                        -0.020422 -40 96.2501
+                        -0.024583 -40 95.5001
+                        -0.02875 -40 94.7501
+                        -0.032916 -40 94.0001
+                        -0.037073 -40 93.2501
+                        -0.041215 -40 92.5001
+                        -0.045332 -40 91.7501
+                        -0.049416 -40 91.0001
+                        -0.053461 -40 90.2502
+                        -0.057457 -40 89.5002
+                        -0.061397 -40 88.7502
+                        -0.065272 -40 88.0002
+                        -0.069074 -40 87.2502
+                        -0.072794 -40 86.5002
+                        -0.076423 -40 85.7502
+                        -0.081992 -40 84.5559
+                        </gml:posList>
+                      </gml:LineString>
+                    </gml:curveMember>
+                  </gml:MultiCurve>
+                </Shape>
+              </Geometry>
             </GeoFeature>
           </Feature>
         </Features>
