@@ -21,6 +21,7 @@ public:
 	static QString nameOfClassG3DLineString();
 	static QString nameOfClassG3DMLineString();
 	static QString nameOfClassG3DTIN();
+	static QString nameOfClassG3DMultiTIN();
 	static QString nameOfClassG3DCornerGrid();
 	static QString nameOfClassG3DGTPVolume();
 	static QString nameOfClassRectifiedGrid();

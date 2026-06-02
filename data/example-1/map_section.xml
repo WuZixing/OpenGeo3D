@@ -980,5 +980,11 @@
         </Styles>
       </Geo3DLayer>
     </Layer>
+    <Layer>
+      <Geo3DLayer gml:id="m1-MultiLine-Layer">
+        <gml:name>地质线</gml:name>
+        <FeatureClass xlink:type="simple" xlink:href="./model_section.xml#m1-MultiLine" />
+      </Geo3DLayer>
+    </Layer>
   </Layers>
 </geo3dml:Geo3DMap>

@@ -58,6 +58,10 @@ QString Text::nameOfClassG3DTIN() {
 	return QStringLiteral("TIN");
 }
 
+QString Text::nameOfClassG3DMultiTIN() {
+	return QStringLiteral("Multiple TIN");
+}
+
 QString Text::nameOfClassG3DCornerGrid() {
 	return QStringLiteral("Corner Grid");
 }
