@@ -1,7 +1,6 @@
 /*
 !.gitignore
 !.gitmodules
-!data/
 !doc/
 !Geo3DML-CPP/
 !GridModel/
@@ -10,3 +9,4 @@
 !LICENSE
 !README.md
 !AGENTS.md
+!vcpkg.json
